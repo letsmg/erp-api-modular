@@ -37,6 +37,7 @@ class SupplierController extends Controller
             'phone_1'            => 'required|string|max:20',
             'contact_name_2'     => 'nullable|string|max:100',
             'phone_2'            => 'nullable|string|max:20',
+            'is_active'          => 'boolean',
         ], [
             'company_name.required' => 'A Razão Social é obrigatória.',
             'cnpj.required'         => 'O CNPJ é obrigatório.',
@@ -60,6 +61,15 @@ class SupplierController extends Controller
 
     public function update(Request $request, Supplier $supplier)
     {
+        // Se a requisição contiver APENAS o campo is_active (mudança rápida no Index)
+        if ($request->has('is_active') && count($request->all()) <= 2) {
+            $supplier->update([
+                'is_active' => $request->is_active
+            ]);
+            return back()->with('message', 'Status atualizado!');
+        }
+
+        // Validação completa para o formulário de edição (Edit.vue)
         $data = $request->validate([
             'company_name'       => 'required|string|max:150',
             'cnpj'               => [
@@ -79,6 +89,7 @@ class SupplierController extends Controller
             'phone_1'            => 'required|string|max:20',
             'contact_name_2'     => 'nullable|string|max:100',
             'phone_2'            => 'nullable|string|max:20',
+            'is_active'          => 'boolean',
         ], [
             'company_name.required' => 'A Razão Social é obrigatória.',
             'cnpj.unique'           => 'Este CNPJ já pertence a outro fornecedor.',

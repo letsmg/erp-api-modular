@@ -24,7 +24,8 @@ class Supplier extends Model
         'contact_name_1',
         'phone_1',
         'contact_name_2',
-        'phone_2'
+        'phone_2',
+        'is_active', // <--- ADICIONE ESTA LINHA
     ];
 
     /**
