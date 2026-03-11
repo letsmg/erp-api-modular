@@ -1,49 +1,89 @@
-# ERP Zenite - Laravel 11 & Vue 3 (Inertia.js)
+# 🌌 ERP Zenite — Gestão Inteligente
+> Sistema de gestão empresarial (ERP) moderno, focado em alta performance, segurança robusta e experiência do desenvolvedor (DX).
 
-Sistema de gestão empresarial (ERP) focado em alta performance, segurança e SEO.
+![Laravel](https://img.shields.io/badge/Laravel-11-FF2D20?style=for-the-badge&logo=laravel)
+![Vue.js](https://img.shields.io/badge/Vue.js-3-4FC08D?style=for-the-badge&logo=vue.js)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1?style=for-the-badge&logo=postgresql)
+![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-3.4-38B2AC?style=for-the-badge&logo=tailwind-css)
 
-## 🚀 Tecnologias Utilizadas
-- **Backend:** Laravel 11 (PHP 8.2+)
-- **Frontend:** Vue 3 com Vite e Tailwind CSS
-- **Banco de Dados:** PostgreSQL
-- **Comunicação:** Inertia.js (Padrão SPA sem complexidade de API externa)
-- **Segurança:** Hashing de senhas via **Argon2id** (Configurado para 64MB/2 Threads)
+---
 
-### 🏛️ Estrutura Arquitetural (Inertia vs API Pura)
-- Optamos pelo uso de **Controllers Híbridos** (Inertia) em vez de uma pasta `/Api` separada.
-- **Motivo:** O Inertia.js elimina a necessidade de rotas de API externas para o funcionamento do Frontend, utilizando o estado compartilhado e garantindo maior segurança via CSRF nativo do Laravel.
-- **Vantagem:** Desenvolvimento 2x mais rápido para sistemas de gestão (ERP).
+## 🚀 Tecnologias Core
+| Camada | Tecnologia |
+| :--- | :--- |
+| **Backend** | Laravel 11 (PHP 8.2+) |
+| **Frontend** | Vue 3 (Composition API) |
+| **Build Tool** | Vite |
+| **Comunicação** | Inertia.js (Padrão SPA com SSR-ready) |
+| **Estilização** | Tailwind CSS |
+| **Icons** | Lucide-Vue-Next |
 
-### 🔌 Escalabilidade para Terceiros
-- **Status Atual:** Interface via Inertia.js (Consumo interno).
-- **Estratégia Futura:** Caso haja necessidade de API pública, a lógica de negócio será extraída para `Services`, permitindo que `Controllers/Api` exponham dados em JSON puro via Laravel Sanctum, mantendo o reaproveitamento de código.
+---
 
-### 📡 Comunicação Front-End / Back-End
-- **Inertia.js como Middleware:** Explicado no projeto como a ferramenta que substitui a necessidade de Axios/API Rest para consumo interno, permitindo que o Laravel injete dados diretamente nas props do Vue 3.
-- **Reatividade Progressiva:** Implementada busca em tempo real (Debounce Search) nos módulos de fornecedores utilizando `router.get` do Inertia.
+## ⚡ Developer Experience (DX) — Magic Shortcuts
+Para acelerar o ciclo de testes e desenvolvimento, implementamos utilitários globais de manipulação de formulários:
+
+- `CTRL` + `SHIFT` + `P` (**Populate**)  
+  *Preenche automaticamente todos os campos com dados fictícios (Fakers) coerentes.*
+- `CTRL` + `SHIFT` + `L` (**Clear**)  
+  *Limpa instantaneamente os campos e remove erros de validação.*
+
+> [!TIP]
+> Esses atalhos utilizam **Custom Events** disparados no `AuthenticatedLayout.vue`, mantendo a reatividade do Inertia sem poluir a lógica de negócio das páginas.
+
+---
+
+## 🛠️ Instalação e Configuração
+
+### 1. Banco de Dados (PostgreSQL)
+Certifique-se de que as extensões `pdo_pgsql` e `pgsql` estão ativas no seu `php.ini`. No seu `.env`, configure:
+
+```env
+DB_CONNECTION=pgsql
+DB_HOST=127.0.0.1
+DB_PORT=5432
+DB_DATABASE=erp_vue_laravel
+DB_USERNAME=postgres
+DB_PASSWORD=123456
+
+# Instalar dependências do PHP
+composer install
+
+# Instalar dependências do JS e compilar assets
+npm install && npm run dev
+
+# Rodar migrações e popular banco (Usuário Admin inicial)
+php artisan migrate --seed
+
+Inertia vs API Pura
+Optamos pelo uso de Controllers Híbridos via Inertia.js em vez de uma pasta /Api separada.
+
+Vantagem: O Inertia.js elimina a necessidade de rotas de API externas para o funcionamento do Frontend, utilizando o estado compartilhado e garantindo maior segurança via CSRF nativo do Laravel.
+
+Agilidade: Desenvolvimento 2x mais rápido para sistemas de gestão (ERP).
+
+Escalabilidade para Terceiros
+Caso haja necessidade de uma API pública no futuro, a lógica de negócio está preparada para ser extraída para Services, permitindo que Controllers/Api exponham dados em JSON puro via Laravel Sanctum, mantendo o reaproveitamento total do código.
+
+Segurança e Performance
+Autenticação: Sistema manual (sem pacotes prontos) com Hashing Argon2id (64MB/2 Threads).
+
+SEO & Vitrine: Tabela de produtos inclui campos de slug, seo_title e seo_keywords com geração automática de URL amigável.
+
+UX Reativa: Busca em tempo real (Debounce Search) no módulo de fornecedores.
+
+📦 Módulos Implementados
+[x] Gestão de Usuários: Controle de acesso (Admin/Operador) e visibilidade de senha.
+
+[x] Fornecedores: Cadastro completo com máscaras dinâmicas de CNPJ e CEP.
+
+[ ] Produtos: Catálogo com suporte a SEO e controle de estoque.
+
+[ ] Vendas: Fluxo operacional e relatórios.
+
+<p align="center">
+<strong>ERP Zenite — Tecnologia em Gestão</strong>
 
 
-## 🛠️ Configurações Implementadas
-
-### 1. Banco de Dados & Performance
-- Migrations criadas para `users`, `suppliers` e `products`.
-- Estrutura de **Cache** preparada no servidor para reduzir consultas ao banco (PostgreSQL).
-- Relacionamento entre Produtos e Fornecedores estabelecido.
-
-### 2. Segurança (Auth)
-- Sistema de login manual (sem pacotes prontos como Breeze) para total controle.
-- Validação de senha: Mínimo 6 caracteres e confirmação obrigatória.
-- Interface de login com recurso de visibilidade de senha (toggle eye icon).
-
-### 3. SEO & Vitrine
-- Tabela de produtos inclui campos de `slug`, `seo_title` e `seo_keywords`.
-- Geração automática de URL amigável (slug) ao cadastrar novos produtos.
-
-## 📦 Como rodar o projeto
-1. Configure o `.env` com suas credenciais do PostgreSQL.
-2. Ative as extensões `pdo_pgsql` e `pgsql` no seu `php.ini`.
-3. Rode as migrações e seeders:
-   ```bash
-   php artisan migrate:fresh --seed
-
-
+&copy; 2026 — Desenvolvido com foco em escalabilidade.
+</p>

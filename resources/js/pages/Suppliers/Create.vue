@@ -2,6 +2,8 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, useForm, Link } from '@inertiajs/vue3';
 import { Save, ArrowLeft, Building2, Phone, MapPin } from 'lucide-vue-next';
+import { onMounted, onUnmounted } from 'vue';
+import { fillFormData, clearFormData } from '@/lib/utils';
 
 const form = useForm({
     company_name: '',
@@ -14,6 +16,10 @@ const form = useForm({
     contact_name_1: '',
     phone_1: '',
 });
+
+// --- 1. DEFINA AS FUNÇÕES PRIMEIRO ---
+const filler = () => fillFormData(form);
+const clearer = () => clearFormData(form);
 
 // Máscara de CNPJ (00.000.000/0000-00)
 const maskCNPJ = (e) => {
@@ -35,6 +41,15 @@ const maskCEP = (e) => {
 const submit = () => {
     form.post(route('suppliers.store'));
 };
+onMounted(() => {
+    window.addEventListener('magic-fill', filler);
+    window.addEventListener('magic-clear', clearer); // Escuta o limpar
+});
+
+onUnmounted(() => {
+    window.removeEventListener('magic-fill', filler);
+    window.removeEventListener('magic-clear', clearer);
+});
 </script>
 
 <template>

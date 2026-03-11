@@ -3,6 +3,8 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, useForm, Link } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import { UserPlus, Save, ArrowLeft, Shield, Mail, Lock, User, Eye, EyeOff } from 'lucide-vue-next';
+import { onMounted, onUnmounted } from 'vue';
+import { fillFormData, clearFormData } from '@/lib/utils';
 
 const showPassword = ref(false);
 
@@ -15,11 +17,24 @@ const form = useForm({
     is_active: true,
 });
 
+// --- 1. DEFINA AS FUNÇÕES PRIMEIRO ---
+const filler = () => fillFormData(form);
+const clearer = () => clearFormData(form);
+
 const submit = () => {
     form.post(route('users.store'), {
         onFinish: () => form.reset('password', 'password_confirmation'),
     });
 };
+onMounted(() => {
+    window.addEventListener('magic-fill', filler);
+    window.addEventListener('magic-clear', clearer); // Escuta o limpar
+});
+
+onUnmounted(() => {
+    window.removeEventListener('magic-fill', filler);
+    window.removeEventListener('magic-clear', clearer);
+});
 </script>
 
 <template>
