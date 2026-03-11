@@ -9,46 +9,61 @@ use Inertia\Inertia;
 class SupplierController extends Controller
 {
     /**
-     * Exibe a listagem com suporte a busca em tempo real.
+     * Exibe a lista de fornecedores
      */
-    public function index(Request $request)
+    public function index()
     {
-        // 1. Iniciamos a consulta (Query Builder)
-        $query = Supplier::query();
-
-        // 2. Verificamos se existe um termo de busca vindo da URL (?search=...)
-        if ($request->has('search')) {
-            $search = $request->input('search');
-            $query->where('company_name', 'like', "%{$search}%")
-                  ->orWhere('cnpj', 'like', "%{$search}%");
-        }
-
-        // 3. Retornamos a renderização para o Vue (Inertia)
-        return Inertia::render('Suppliers/SuppliersIndex', [
-            'suppliers' => $query->latest()->get(),
-            'filters' => $request->only(['search']) // Mantém o texto no input após a busca
+        return Inertia::render('Suppliers/Index', [
+            'suppliers' => Supplier::latest()->get()
         ]);
     }
 
     /**
-     * Processa o cadastro de um novo fornecedor.
+     * Exibe o formulário de criação (O método que estava faltando!)
+     */
+    public function create()
+    {
+        return Inertia::render('Suppliers/Create');
+    }
+
+    /**
+     * Salva o novo fornecedor no banco
      */
     public function store(Request $request)
     {
-        // Validação dos dados (Crucial para integridade do banco PostgreSQL)
-        $validated = $request->validate([
-            'company_name' => 'required|string|max:150',
-            'cnpj' => 'required|string|unique:suppliers,cnpj|max:18',
+        $data = $request->validate([
+            'company_name'       => 'required|string|max:150',
+            'cnpj'               => 'required|string|max:18|unique:suppliers,cnpj',
             'state_registration' => 'required|string|max:20',
-            'phone_1' => 'required|string|max:20',
-            'contact_name_1' => 'required|string|max:100',
+            'address'            => 'required|string|max:150',
+            'neighborhood'       => 'required|string|max:100',
+            'city'               => 'required|string|max:100',
+            'zip_code'           => 'required|string|max:10',
+            'contact_name_1'     => 'required|string|max:100',
+            'phone_1'            => 'required|string|max:20',
+            'contact_name_2'     => 'nullable|string|max:100',
+            'phone_2'            => 'nullable|string|max:20',
+        ], [
+            'company_name.required' => 'A Razão Social é obrigatória.',
+            'cnpj.required'         => 'O CNPJ é obrigatório.',
+            'cnpj.unique'           => 'Este CNPJ já está cadastrado.',
+            'state_registration.required' => 'A Inscrição Estadual é obrigatória.',
         ]);
 
-        // Criação no banco
-        Supplier::create($validated);
+        Supplier::create($data);
 
-        // Redireciona de volta para a lista com mensagem de sucesso
         return redirect()->route('suppliers.index')
-                         ->with('message', 'Fornecedor cadastrado com sucesso!');
+            ->with('message', 'Fornecedor cadastrado com sucesso!');
+    }
+
+    /**
+     * Exclui um fornecedor
+     */
+    public function destroy(Supplier $supplier)
+    {
+        $supplier->delete();
+
+        return redirect()->route('suppliers.index')
+            ->with('message', 'Fornecedor removido com sucesso!');
     }
 }
