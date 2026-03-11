@@ -1,4 +1,4 @@
-# 🌌 ERP Zenite — Gestão Inteligente
+# 🌌 ERP Vue Laravel — Gestão Inteligente
 > Sistema de gestão empresarial (ERP) moderno, focado em alta performance, segurança robusta e experiência do desenvolvedor (DX).
 
 ![Laravel](https://img.shields.io/badge/Laravel-11-FF2D20?style=for-the-badge&logo=laravel)
@@ -38,7 +38,7 @@ Para acelerar o ciclo de testes e desenvolvimento, implementamos utilitários gl
 ### 1. Banco de Dados (PostgreSQL)
 Certifique-se de que as extensões `pdo_pgsql` e `pgsql` estão ativas no seu `php.ini`. No seu `.env`, configure:
 
-```env
+
 DB_CONNECTION=pgsql
 DB_HOST=127.0.0.1
 DB_PORT=5432
@@ -73,17 +73,29 @@ SEO & Vitrine: Tabela de produtos inclui campos de slug, seo_title e seo_keyword
 UX Reativa: Busca em tempo real (Debounce Search) no módulo de fornecedores.
 
 📦 Módulos Implementados
-[x] Gestão de Usuários: Controle de acesso (Admin/Operador) e visibilidade de senha.
 
+
+
+<ul>
+   <li>
+      [x] Gestão de Usuários: Controle de acesso (Admin/Operador) e visibilidade de senha.
+   </li>
+   <li>
 [x] Fornecedores: Cadastro completo com máscaras dinâmicas de CNPJ e CEP.
-
+   </li>
+   <li>
 [ ] Produtos: Catálogo com suporte a SEO e controle de estoque.
+   </li>
+   <li>
+   [ ] Vendas: Fluxo operacional e relatórios.
+   </li>
+<ul>
 
-[ ] Vendas: Fluxo operacional e relatórios.
 
 <p align="center">
-<strong>ERP Zenite — Tecnologia em Gestão</strong>
+   <strong> ERP Vue Laravel — Tecnologia em Gestão </strong>   
+</p>
 
-
-&copy; 2026 — Desenvolvido com foco em escalabilidade.
+<p align="center">
+   &copy; 2026 — Desenvolvido com foco em escalabilidade.
 </p>
