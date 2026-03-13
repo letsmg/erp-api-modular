@@ -10,6 +10,7 @@ class StoreController extends Controller
 {
     public function index(Request $request)
     {
+        // 1. Query base para a listagem principal (com filtros)
         $query = Product::query()
             ->with(['images'])
             ->where('is_active', true);
@@ -32,12 +33,34 @@ class StoreController extends Controller
         }
 
         return Inertia::render('Store/Index', [
-            // Paginação de 10 itens com persistência de filtros na URL
+            // Listagem com Paginação (O que aparece no grid principal)
             'products' => $query->orderBy('created_at', 'desc')
                                 ->paginate(10)
                                 ->withQueryString(),
-            'brands'   => Product::distinct()->whereNotNull('brand')->pluck('brand'),
-            'filters'  => $request->only(['search', 'min_price', 'max_price', 'brand'])
+
+            // 2. PRODUTOS EM DESTAQUE (Para o Carousel Superior)
+            // Aqui pegamos 5 produtos aleatórios ou os mais caros para o "impacto"
+            'featuredProducts' => Product::with(['images'])
+                                    ->where('is_active', true)
+                                    ->inRandomOrder()
+                                    ->limit(5)
+                                    ->get(),
+
+            // 3. PRODUTOS EM PROMOÇÃO (Para o Mini Carousel)
+            // Simulando promoção pegando os de menor preço ou uma lógica de desconto
+            'onSaleProducts' => Product::with(['images'])
+                                    ->where('is_active', true)
+                                    ->orderBy('sale_price', 'asc')
+                                    ->limit(8)
+                                    ->get(),
+
+            'brands'  => Product::distinct()->whereNotNull('brand')->pluck('brand'),
+            'filters' => $request->only(['search', 'min_price', 'max_price', 'brand']),
+            
+            // Dados para o banner de Ads (pode ser estático ou vir do banco)
+            'ads' => [
+                ['id' => 1, 'title' => 'Cupom BEMVINDO10']
+            ]
         ]);
     }
 }
