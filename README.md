@@ -1,9 +1,8 @@
 <img src="https://raw.githubusercontent.com/letsmg/erp-vue-laravel/main/pacman-contribution-graph.svg" />
 
+# 🌌 ERP Vue Laravel — Smart Business Management
 
-
-# 🌌 ERP Vue Laravel — Gestão Inteligente
-> Sistema de gestão empresarial (ERP) moderno, focado em alta performance, segurança robusta e experiência do desenvolvedor (DX).
+> Sistema moderno de gestão empresarial (ERP) construído com **Laravel + Vue**, focado em **performance, segurança e experiência do desenvolvedor (DX)**.
 
 ![Laravel](https://img.shields.io/badge/Laravel-11-FF2D20?style=for-the-badge&logo=laravel)
 ![Vue.js](https://img.shields.io/badge/Vue.js-3-4FC08D?style=for-the-badge&logo=vue.js)
@@ -12,131 +11,316 @@
 
 ---
 
-## 🚀 Tecnologias Core
+# 🌎 Language / Idioma
+
+- 🇧🇷 [Ver em Português](#-português)
+- 🇺🇸 [Read in English](#-english)
+
+---
+
+# 🇧🇷 Português
+
+# 📦 Visão Geral
+
+ERP Vue Laravel é um ERP moderno projetado para entregar:
+
+- ⚡ Alta performance
+- 🔒 Segurança robusta
+- 🧠 Excelente experiência para desenvolvedores
+- 🧩 Arquitetura modular
+- 🚀 Desenvolvimento rápido usando Inertia.js
+
+O projeto foca em **simplicidade sem perder escalabilidade**.
+
+---
+
+# 🧰 Tecnologias
+
 | Camada | Tecnologia |
-| :--- | :--- |
-| **Backend** | Laravel 11 (PHP 8.2+) |
-| **Frontend** | Vue 3 (Composition API) |
-| **Build Tool** | Vite |
-| **Comunicação** | Inertia.js (Padrão SPA com SSR-ready) |
-| **Estilização** | Tailwind CSS |
-| **Icons** | Lucide-Vue-Next |
+|------|------------|
+| Backend | Laravel 11 (PHP 8.2+) |
+| Frontend | Vue 3 (Composition API) |
+| Build Tool | Vite |
+| Comunicação | Inertia.js |
+| Estilização | Tailwind CSS |
+| Icons | Lucide Vue |
 
 ---
 
-## ⚡ Developer Experience (DX) — Magic Shortcuts
-Para acelerar o ciclo de testes e desenvolvimento, implementamos utilitários globais de manipulação de formulários:
+# ⚡ Experiência do Desenvolvedor (DX)
 
-- `CTRL` + `SHIFT` + `P` (**Populate**)  
-  *Preenche automaticamente todos os campos com dados fictícios (Fakers) coerentes.*
-- `CTRL` + `SHIFT` + `L` (**Clear**)  
-  *Limpa instantaneamente os campos e remove erros de validação.*
+Para acelerar desenvolvimento e testes, o sistema possui utilitários globais de formulário.
 
-> [!TIP]
-> Esses atalhos utilizam **Custom Events** disparados no `AuthenticatedLayout.vue`, mantendo a reatividade do Inertia sem poluir a lógica de negócio das páginas.
+## Atalhos de Teclado
+
+| Atalho | Ação |
+|------|------|
+| CTRL + SHIFT + P | Preenche formulário com dados fictícios |
+| CTRL + SHIFT + L | Limpa campos e erros de validação |
+
+TIP  
+Esses atalhos utilizam **Custom Events** disparados dentro do `AuthenticatedLayout.vue`, mantendo a lógica das páginas limpa.
 
 ---
 
-## 🛠️ Instalação e Configuração
+# 🚀 Instalação
 
-### 1. Banco de Dados (PostgreSQL)
-Certifique-se de que as extensões `pdo_pgsql` e `pgsql` estão ativas no seu `php.ini`. No seu `.env`, configure:
+## 1. Clonar o repositório
 
+```bash
+git clone https://github.com/letsmg/erp-vue-laravel.git
+cd erp-vue-laravel
+```
 
+---
+
+## 2. Instalar dependências
+
+### PHP
+
+```bash
+composer install
+```
+
+### JavaScript
+
+```bash
+npm install
+npm run dev
+```
+
+---
+
+## 3. Configurar ambiente
+
+Copie o arquivo `.env`
+
+```bash
+cp .env.example .env
+```
+
+Configure o banco:
+
+```
 DB_CONNECTION=pgsql
 DB_HOST=127.0.0.1
 DB_PORT=5432
 DB_DATABASE=erp_vue_laravel
 DB_USERNAME=postgres
 DB_PASSWORD=123456
+```
 
-# Instalar dependências do PHP
-composer install
+NOTE  
+Certifique-se de que as extensões **pdo_pgsql** e **pgsql** estão ativas no `php.ini`.
 
-# Instalar dependências do JS e compilar assets
-npm install && npm run dev
+---
 
-# Rodar migrações e popular banco (Usuário Admin inicial)
+## 4. Rodar migrações
+
+```bash
 php artisan migrate --seed
+```
 
-Inertia vs API Pura
-Optamos pelo uso de Controllers Híbridos via Inertia.js em vez de uma pasta /Api separada.
+Isso criará a estrutura do banco e o **usuário administrador inicial**.
 
-Vantagem: O Inertia.js elimina a necessidade de rotas de API externas para o funcionamento do Frontend, utilizando o estado compartilhado e garantindo maior segurança via CSRF nativo do Laravel.
+---
 
-Agilidade: Desenvolvimento 2x mais rápido para sistemas de gestão (ERP).
+# ⚙️ Arquitetura
 
-Escalabilidade para Terceiros
-Caso haja necessidade de uma API pública no futuro, a lógica de negócio está preparada para ser extraída para Services, permitindo que Controllers/Api exponham dados em JSON puro via Laravel Sanctum, mantendo o reaproveitamento total do código.
+## Inertia vs API REST
 
-Segurança e Performance
-Autenticação: Sistema manual (sem pacotes prontos) com Hashing Argon2id (64MB/2 Threads).
+O projeto utiliza **Controllers híbridos com Inertia.js** ao invés de uma pasta `/api`.
 
-SEO & Vitrine: Tabela de produtos inclui campos de slug, seo_title e seo_keywords com geração automática de URL amigável.
+### Vantagens
 
-UX Reativa: Busca em tempo real (Debounce Search) no módulo de fornecedores.
+- Não necessita API separada
+- Proteção CSRF nativa
+- Desenvolvimento mais rápido
+- Estado compartilhado entre backend e frontend
 
-________________________________
+### API futura
 
-🚀 Funcionalidades Extra:
+Caso seja necessário expor API pública:
 
-Moderação de Imagens via IA: O sistema está preparado para integrar com Google Cloud Vision. Se detectar conteúdo impróprio, o upload é bloqueado automaticamente.
+- A lógica pode ser extraída para **Services**
+- Controllers podem expor endpoints via **Laravel Sanctum**
+- Total reaproveitamento do código
 
-Caso você decida usar deve seguir esses passos:
+---
 
-1. Você precisa criar um projeto no Google Cloud Console:
+# 🔒 Segurança e Performance
 
-2. Acesse o Google Cloud Console.
+## Autenticação
 
-3. Crie um novo projeto (ex: "ERP-Sistema").
+Sistema de autenticação customizado com:
 
-4. No menu lateral, vá em APIs e Serviços > Biblioteca.
+- Hash Argon2id
+- Memory cost: 64MB
+- Threads: 2
 
-5. Procure por "Cloud Vision API" e clique em Ativar.
+---
 
-6. Depois de ativa, vá em APIs e Serviços > Credenciais.
+## SEO
 
-7. Clique em Criar Credenciais > Chave de conta de serviço.
+A tabela de produtos possui suporte para:
 
-8. Escolha um nome, e no papel (role), coloque Proprietário ou Cloud Vision AI > Usuário.
+- slug
+- seo_title
+- seo_keywords
 
-9. Ao final, ele vai baixar automaticamente um arquivo JSON para o seu computador.
+Com geração automática de **URLs amigáveis**.
 
-10. SALVE O ARQUIVO COM A API NA RAIZ DO PROJETO COM O NOME
+---
 
-**google-credentials.json**
+## UX Reativa
 
-______________________________________
+Funcionalidades implementadas:
 
+- Busca em tempo real com debounce
+- Filtros rápidos no módulo de fornecedores
 
+---
 
-📦 Módulos Implementados
+# 🤖 Moderação de Imagens com IA (Opcional)
 
+O sistema pode integrar com **Google Cloud Vision** para detectar imagens impróprias durante upload.
 
-<ul>
-   <li>
-      [x] Gestão de Usuários: Controle de acesso (Admin/Operador) e visibilidade de senha.
-   </li>
-   <li>
-[x] Fornecedores: Cadastro completo com máscaras dinâmicas de CNPJ e CEP.
-   </li>
-   <li>
-[ ] Produtos: Catálogo com suporte a SEO e controle de estoque.
-   </li>
-   <li>
-   [ ] Vendas: Fluxo operacional e relatórios.
-   </li>
-<ul>
+Se conteúdo inadequado for detectado, o upload será bloqueado.
 
+---
+
+# 📦 Módulos
+
+- [x] Gestão de Usuários
+- [x] Fornecedores
+- [ ] Produtos
+- [ ] Vendas
+
+---
+
+# 🇺🇸 English
+
+# 📦 Overview
+
+ERP Vue Laravel is a modern ERP designed to deliver:
+
+- ⚡ High performance
+- 🔒 Robust security
+- 🧠 Excellent developer experience
+- 🧩 Modular architecture
+- 🚀 Rapid development using Inertia.js
+
+The project focuses on **simplicity without sacrificing scalability**.
+
+---
+
+# 🧰 Tech Stack
+
+| Layer | Technology |
+|------|------------|
+| Backend | Laravel 11 (PHP 8.2+) |
+| Frontend | Vue 3 (Composition API) |
+| Build Tool | Vite |
+| Communication | Inertia.js |
+| Styling | Tailwind CSS |
+| Icons | Lucide Vue |
+
+---
+
+# ⚡ Developer Experience (DX)
+
+To accelerate development and testing, the system includes global form utilities.
+
+## Keyboard Shortcuts
+
+| Shortcut | Action |
+|------|------|
+| CTRL + SHIFT + P | Populate form with fake data |
+| CTRL + SHIFT + L | Clear form fields and validation errors |
+
+These shortcuts use **Custom Events** triggered inside `AuthenticatedLayout.vue`.
+
+---
+
+# 🚀 Installation
+
+## 1. Clone repository
+
+```bash
+git clone https://github.com/letsmg/erp-vue-laravel.git
+cd erp-vue-laravel
+```
+
+---
+
+## 2. Install dependencies
+
+### PHP
+
+```bash
+composer install
+```
+
+### JavaScript
+
+```bash
+npm install
+npm run dev
+```
+
+---
+
+## 3. Configure environment
+
+```bash
+cp .env.example .env
+```
+
+Database example:
+
+```
+DB_CONNECTION=pgsql
+DB_HOST=127.0.0.1
+DB_PORT=5432
+DB_DATABASE=erp_vue_laravel
+DB_USERNAME=postgres
+DB_PASSWORD=123456
+```
+
+---
+
+## 4. Run migrations
+
+```bash
+php artisan migrate --seed
+```
+
+This will create the database structure and generate the **initial admin user**.
+
+---
+
+# 🔒 Security
+
+Authentication system using:
+
+- Argon2id hashing
+- Memory cost: 64MB
+- Threads: 2
+
+---
+
+# 📄 License
+
+MIT License
+
+---
 
 <p align="center">
-   <strong> ERP Vue Laravel — Tecnologia em Gestão </strong>   
+<strong>ERP Vue Laravel — Technology for Smart Business</strong>
 </p>
 
 <p align="center">
-   &copy; 2026 — Desenvolvido com foco em escalabilidade.
+© 2026 — Built with scalability in mind
 </p>
-
-
 
 <img src="https://raw.githubusercontent.com/letsmg/erp-vue-laravel/main/snake-dark.svg?palette=github-dark" />
