@@ -4,12 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
  * Model que representa os Fornecedores no sistema.
  */
 class Supplier extends Model
 {
+    use HasFactory;
     // Define explicitamente os campos que podem ser preenchidos via formulário (Segurança)
     protected $fillable = [
         'company_name',
