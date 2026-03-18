@@ -58,7 +58,7 @@ jobs:
             
             echo "📥 Atualizando código..."
             # Garante que o usuário ubuntu seja dono temporariamente para o git pull não falhar
-            sudo chown -R ubuntu:ubuntu /var/www/erp
+            sudo chown -R ubuntu:www-data /var/www/erp
             
             git reset --hard
             git pull origin main
