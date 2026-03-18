@@ -15,6 +15,13 @@ jobs:
         with:
           php-version: '8.3'
           extensions: mbstring, xml, ctype, iconv, intl, pdo_sqlite
+          cache: composer # ⚡ Acelera a instalação do PHP
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm' # ⚡ Acelera a instalação do Node
 
       - name: Install Dependencies
         run: |
@@ -23,13 +30,15 @@ jobs:
           npm run build
 
       - name: Run Tests
+        # O --stop-on-failure faz o GitHub cancelar o job no SEGUNDO que o primeiro erro aparecer
         run: php artisan test --stop-on-failure
         env:
+          APP_ENV: testing
           DB_CONNECTION: sqlite
           DB_DATABASE: ":memory:"
 
   deploy:
-    needs: test # Só roda se o job acima (test) terminar com sucesso
+    needs: test
     runs-on: ubuntu-latest
     steps:
       - name: 🔑 Configure SSH
@@ -40,6 +49,7 @@ jobs:
       - name: 🚀 Executar deploy no servidor
         run: |
           ssh -o StrictHostKeyChecking=no ubuntu@147.15.80.52 << 'EOF'
+            set -e # Faz o script parar imediatamente se qualquer comando falhar no servidor
             cd /var/www/erp
             
             echo "📥 Atualizando código..."
