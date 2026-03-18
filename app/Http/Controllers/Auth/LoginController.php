@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use Inertia\Inertia;
+use App\Mail\RecuperarSenhaMail;
+use Illuminate\Support\Facades\Mail;
 
 class LoginController extends Controller
 {
@@ -77,4 +79,36 @@ class LoginController extends Controller
 
         return redirect('/');
     }
+
+    /**
+     * Exibe a tela de "Esqueci minha senha"
+     */
+    public function showForgotPassword()
+    {
+        return Inertia::render('Auth/ForgotPassword');
+    }
+
+    /**
+     * Processa o pedido de recuperação e envia o e-mail
+     */
+    public function sendResetLinkEmail(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email|exists:users,email',
+        ]);
+
+        try {
+            // Passamos a URL para o construtor da classe
+            $url = route('login'); 
+            
+            Mail::to($request->email)->send(new RecuperarSenhaMail($url));
+            
+            return back()->with('success', 'Link enviado com sucesso!');
+        } catch (\Exception $e) {
+            // Se der erro de API do Resend, ele vai cair aqui
+            return back()->withErrors(['email' => 'Erro no provedor de e-mail: ' . $e->getMessage()]);
+        }
+    }
+
+    
 }

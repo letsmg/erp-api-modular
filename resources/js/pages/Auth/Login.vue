@@ -1,5 +1,5 @@
 <script setup>
-import { useForm } from '@inertiajs/vue3';
+import { useForm, Link } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import { Eye, EyeOff, LogIn } from 'lucide-vue-next';
 
@@ -82,9 +82,12 @@ const submit = () => {
                 </div>
 
                 <div class="text-sm">
-                    <a href="#" class="font-medium text-blue-600 hover:text-blue-500">
+                    <Link 
+                        :href="route('password.request')" 
+                        class="font-medium text-blue-600 hover:text-blue-500"
+                    >
                         Esqueceu a senha?
-                    </a>
+                    </Link>
                 </div>
             </div>
 

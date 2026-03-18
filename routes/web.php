@@ -19,6 +19,9 @@ Route::middleware('guest')->group(function () {
     Route::get('/', [StoreController::class, 'index'])->name('store.index');
     Route::get('/login', [LoginController::class, 'showLogin'])->name('login');
     Route::post('/login', [LoginController::class, 'login'])->name('login.post');
+    // Esqueci Senha
+    Route::get('/forgot-password', [LoginController::class, 'showForgotPassword'])->name('password.request');
+    Route::post('/forgot-password', [LoginController::class, 'sendResetLinkEmail'])->name('password.email');
 });
 
 // 3. PAINEL ADMINISTRATIVO (Protegido por login)
