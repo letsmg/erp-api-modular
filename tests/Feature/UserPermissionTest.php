@@ -13,9 +13,11 @@ class UserPermissionTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        // Pode usar seeders se quiser dados adicionais
+        // Seeders opcionais se precisar de dados adicionais
         //$this->seed();
     }
+
+    /** --- TESTES DE ACESSO --- **/
 
     public function test_admin_pode_acessar_dashboard()
     {
@@ -44,12 +46,12 @@ class UserPermissionTest extends TestCase
     {
         $user = User::factory()->create();
         $response = $this->actingAs($user)->post(route('logout'));
-        
+
         $response->assertRedirect('/');
         $this->assertGuest();
     }
 
-    /** --- TESTES DE PERMISSÃO (ADMIN / USUÁRIO COMUM) --- **/
+    /** --- TESTES DE PERMISSÃO --- **/
 
     public function test_admin_pode_acessar_lista_de_usuarios()
     {
@@ -60,18 +62,11 @@ class UserPermissionTest extends TestCase
 
     public function test_usuario_comum_pode_visualizar_usuarios_nivel_0()
     {
-        // Cria o usuário comum que fará a requisição
         $user = User::factory()->create(['access_level' => 0]);
-
-        // Cria outros usuários nível 0 no banco
         $outroUsuario = User::factory()->create(['access_level' => 0]);
 
         $response = $this->actingAs($user)->get(route('users.index'));
-
-        // Espera 200 porque usuários comuns podem ver outros nível 0
         $response->assertStatus(200);
-
-        // Confirma que os usuários retornados incluem o outro usuário nível 0
         $response->assertSee($outroUsuario->name);
     }
 
@@ -81,15 +76,12 @@ class UserPermissionTest extends TestCase
         $outroUsuario = User::factory()->create(['access_level' => 0]);
 
         $response = $this->actingAs($user)->patch(route('users.reset', $outroUsuario));
-
-        // Espera 200 porque usuários nível 0 podem resetar senha de outros nível 0
         $response->assertStatus(200);
     }
 
     public function test_admin_pode_cadastrar_usuario()
     {
         $admin = User::factory()->create(['access_level' => 1]);
-        
         $senhaForte = 'Senha@Forte123';
 
         $novoUsuario = [
@@ -108,7 +100,6 @@ class UserPermissionTest extends TestCase
         }
 
         $response->assertRedirect(route('users.index'));
-        
         $this->assertDatabaseHas('users', [
             'email' => 'clone@teste.com',
             'is_active' => 1
@@ -119,23 +110,24 @@ class UserPermissionTest extends TestCase
     {
         $user = User::factory()->create(['access_level' => 0]);
 
-        // Tenta deletar um usuário nível 1 (admin)
+        // Tenta deletar um usuário admin (nível 1)
         $alvoAdmin = User::factory()->create(['access_level' => 1]);
         $response = $this->actingAs($user)->delete(route('users.destroy', $alvoAdmin));
 
-        // Como a função retorna redirect com mensagem, assertStatus(403) falha
-        // Devemos verificar a mensagem de erro na sessão
-        $response->assertRedirect(); 
-        $response->assertSessionHasErrors(['Você não tem permissão para deletar este usuário.']);
-
+        $response->assertRedirect();
+        $response->assertSessionHasErrors(function ($errors) {
+            return isset($errors['code']) && $errors['code'] === 403;
+        });
         $this->assertDatabaseHas('users', ['id' => $alvoAdmin->id]);
 
-        // Tenta deletar um usuário nível 0
+        // Tenta deletar outro usuário nível 0
         $alvoNivel0 = User::factory()->create(['access_level' => 0]);
         $response = $this->actingAs($user)->delete(route('users.destroy', $alvoNivel0));
 
         $response->assertRedirect();
-        $response->assertSessionHasErrors(['Você não tem permissão para deletar este usuário.']);
+        $response->assertSessionHasErrors(function ($errors) {
+            return isset($errors['code']) && $errors['code'] === 403;
+        });
         $this->assertDatabaseHas('users', ['id' => $alvoNivel0->id]);
     }
 }
