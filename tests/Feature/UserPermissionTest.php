@@ -126,18 +126,28 @@ class UserPermissionTest extends TestCase
     {
         $user = User::factory()->create(['access_level' => 0]);
 
-        // Tenta deletar um admin
+        // Tenta deletar um usuário admin
         $alvoAdmin = User::factory()->create(['access_level' => 1]);
         $response = $this->actingAs($user)->delete(route('users.destroy', $alvoAdmin));
+
         $response->assertRedirect();
-        $response->assertSessionHasErrors(fn ($errors) => isset($errors['code']) && $errors['code'] === 403);
+        $this->assertEquals(
+            'Você não tem permissão para deletar este usuário.',
+            session('errors')->get('message')[0]
+        );
+        $this->assertEquals(403, session('errors')->get('code')[0]);
         $this->assertDatabaseHas('users', ['id' => $alvoAdmin->id]);
 
-        // Tenta deletar outro nível 0
+        // Tenta deletar outro usuário nível 0
         $alvoNivel0 = User::factory()->create(['access_level' => 0]);
         $response = $this->actingAs($user)->delete(route('users.destroy', $alvoNivel0));
+
         $response->assertRedirect();
-        $response->assertSessionHasErrors(fn ($errors) => isset($errors['code']) && $errors['code'] === 403);
+        $this->assertEquals(
+            'Você não tem permissão para deletar este usuário.',
+            session('errors')->get('message')[0]
+        );
+        $this->assertEquals(403, session('errors')->get('code')[0]);
         $this->assertDatabaseHas('users', ['id' => $alvoNivel0->id]);
     }
 }
