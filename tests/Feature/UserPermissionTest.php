@@ -130,16 +130,23 @@ class UserPermissionTest extends TestCase
     {
         $user = User::factory()->create(['access_level' => 0]);
 
-        // 1️⃣ Alvo nível 0
-        $alvoNivel0 = User::factory()->create(['access_level' => 0]);
-        $response = $this->actingAs($user)->delete(route('users.destroy', $alvoNivel0));
-        $response->assertStatus(403); // Usuário comum não pode deletar outro nível 0
-        $this->assertDatabaseHas('users', ['id' => $alvoNivel0->id]);
-
-        // 2️⃣ Alvo nível 1 (admin)
+        // Tenta deletar um usuário nível 1 (admin)
         $alvoAdmin = User::factory()->create(['access_level' => 1]);
         $response = $this->actingAs($user)->delete(route('users.destroy', $alvoAdmin));
-        $response->assertStatus(403); // Usuário comum não pode deletar admin
+
+        // Como a função retorna redirect com mensagem, assertStatus(403) falha
+        // Devemos verificar a mensagem de erro na sessão
+        $response->assertRedirect(); 
+        $response->assertSessionHasErrors(['Você não tem permissão para deletar este usuário.']);
+
         $this->assertDatabaseHas('users', ['id' => $alvoAdmin->id]);
+
+        // Tenta deletar um usuário nível 0
+        $alvoNivel0 = User::factory()->create(['access_level' => 0]);
+        $response = $this->actingAs($user)->delete(route('users.destroy', $alvoNivel0));
+
+        $response->assertRedirect();
+        $response->assertSessionHasErrors(['Você não tem permissão para deletar este usuário.']);
+        $this->assertDatabaseHas('users', ['id' => $alvoNivel0->id]);
     }
 }
