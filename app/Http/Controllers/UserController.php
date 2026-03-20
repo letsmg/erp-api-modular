@@ -79,13 +79,15 @@ class UserController extends Controller
 
     public function destroy(User $user): RedirectResponse
     {
-        try {
-            $this->service->delete($user, auth()->user());
+        $currentUser = auth()->user();
 
-            return redirect()->route('users.index')
-                ->with('message', 'Usuário excluído!');
-        } catch (\Exception $e) {
-            return back()->withErrors($e->errors());
+        if ($currentUser->access_level === 0) {
+            return back()->withErrors(['Você não tem permissão para deletar este usuário.']);
         }
+
+        $this->service->delete($user, $currentUser);
+
+        return redirect()->route('users.index')
+            ->with('message', 'Usuário excluído!');
     }
 }

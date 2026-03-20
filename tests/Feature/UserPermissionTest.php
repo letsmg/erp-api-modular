@@ -129,11 +129,17 @@ class UserPermissionTest extends TestCase
     public function test_usuario_comum_nao_pode_deletar_ninguem()
     {
         $user = User::factory()->create(['access_level' => 0]);
-        $alvo = User::factory()->create(['access_level' => 0]);
 
-        $response = $this->actingAs($user)->delete(route('users.destroy', $alvo));
+        // 1️⃣ Alvo nível 0
+        $alvoNivel0 = User::factory()->create(['access_level' => 0]);
+        $response = $this->actingAs($user)->delete(route('users.destroy', $alvoNivel0));
+        $response->assertStatus(403); // Usuário comum não pode deletar outro nível 0
+        $this->assertDatabaseHas('users', ['id' => $alvoNivel0->id]);
 
-        $response->assertStatus(403); // Nível 0 não pode deletar ninguém
-        $this->assertDatabaseHas('users', ['id' => $alvo->id]);
+        // 2️⃣ Alvo nível 1 (admin)
+        $alvoAdmin = User::factory()->create(['access_level' => 1]);
+        $response = $this->actingAs($user)->delete(route('users.destroy', $alvoAdmin));
+        $response->assertStatus(403); // Usuário comum não pode deletar admin
+        $this->assertDatabaseHas('users', ['id' => $alvoAdmin->id]);
     }
 }
