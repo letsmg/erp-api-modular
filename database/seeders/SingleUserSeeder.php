@@ -12,7 +12,7 @@ class SingleUserSeeder extends Seeder
         $user = User::updateOrCreate(
             ['email' => '1@1.com'],
             [
-                'name' => 'Admin Zenite',
+                'name' => 'Admin',
                 'password' => \Illuminate\Support\Facades\Hash::make('[SenhaNova2026]'),
                 'access_level' => 1,
                 'is_active' => true,
