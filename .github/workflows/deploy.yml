@@ -15,6 +15,10 @@ on:
 jobs:
   deploy:    
     runs-on: ubuntu-latest
+    
+    #trava de segurança para substituir o needs em arquivos separados:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }} #
+
     steps:
       - name: 🔑 Configure SSH
         uses: webfactory/ssh-agent@v0.8.0
