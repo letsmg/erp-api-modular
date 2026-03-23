@@ -44,7 +44,13 @@
         <title inertia>{{ config('app.name', 'ERP Vue Laravel') }}</title>
 
         @routes
-        @vite(['resources/js/app.ts', @vite(['resources/js/app.ts'])])
+        @vite(['resources/js/app.ts', 
+            @env('testing')
+                {{-- Vite desabilitado para testes --}}
+            @else
+                @vite(['resources/js/app.ts'])
+            @endenv        
+        )])
         
         {{-- 4. O InertiaHead injeta o que você colocar no <Head> do Vue aqui --}}
         @inertiaHead
