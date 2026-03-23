@@ -46,7 +46,7 @@ jobs:
           npm install
           npm run build
         
-       - name: Run Tests
+      - name: Run Tests
         run: php artisan test --stop-on-failure
         env:
           APP_ENV: testing
