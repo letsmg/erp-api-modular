@@ -6,16 +6,11 @@ use App\Models\User;
 use App\Models\Supplier;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
+use Inertia\Testing\AssertableInertia as Assert; // Importação necessária
 
 class SupplierTest extends TestCase
 {
     use RefreshDatabase;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $admin = User::factory()->create(['access_level' => 1]);
-    }
 
     /** 1. TESTES DE ACESSO (PROTEÇÃO) **/
 
@@ -27,11 +22,15 @@ class SupplierTest extends TestCase
 
     public function test_usuario_logado_pode_ver_lista_de_fornecedores()
     {
-        $user = User::factory()->create(); // Usuário comum
+        $user = User::factory()->create();
 
         $response = $this->actingAs($user)->get(route('suppliers.index'));
 
-        $response->assertStatus(200);
+        // Substituímos o assertStatus simples pelo assertInertia
+        // Isso impede que o Laravel procure o manifest do Vite
+        $response->assertInertia(fn (Assert $page) => $page
+            ->component('Suppliers/Index')
+        );
     }
 
     /** 2. TESTE DE CRIAÇÃO (STORE) **/
@@ -70,7 +69,7 @@ class SupplierTest extends TestCase
 
         $response = $this->actingAs($user)->put(route('suppliers.update', $supplier), [
             'company_name' => 'Novo Nome Atualizado',
-            'cnpj' => $supplier->cnpj, // CNPJ é unique, mantemos o mesmo
+            'cnpj' => $supplier->cnpj,
             'state_registration' => $supplier->state_registration,
             'email' => 'novo@email.com',
             'address' => $supplier->address,
@@ -80,14 +79,16 @@ class SupplierTest extends TestCase
             'zip_code' => $supplier->zip_code,
             'contact_name_1' => $supplier->contact_name_1,
             'phone_1' => $supplier->phone_1,
-            'is_active' => false, // Desativando no update
+            'is_active' => false,
         ]);
 
         $response->assertRedirect(route('suppliers.index'));
+        
+        // No PostgreSQL ou MySQL, usamos true/false ou 1/0 dependendo da config
         $this->assertDatabaseHas('suppliers', [
             'id' => $supplier->id,
             'company_name' => 'Novo Nome Atualizado',
-            'is_active' => 0 // SQLite interpreta boolean como 0/1
+            'is_active' => false
         ]);
     }
 
@@ -95,17 +96,12 @@ class SupplierTest extends TestCase
 
     public function test_usuario_pode_excluir_fornecedor()
     {
-        // 1. Cria usuários e fornecedores de forma simplificada
         $user = User::factory()->create();
         $supplier = Supplier::factory()->create();
 
-        // 2. Executa a deleção
         $response = $this->actingAs($user)->delete(route('suppliers.destroy', $supplier));
 
-        // 3. Verificações rápidas
         $response->assertRedirect(route('suppliers.index'));
-        
-        // assertModelMissing é mais rápido e moderno que assertDatabaseMissing para instâncias de Model
         $this->assertModelMissing($supplier);
     }
 }
