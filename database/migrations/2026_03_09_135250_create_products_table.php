@@ -28,8 +28,7 @@ return new class extends Migration {
             $table->boolean('is_active')->default(true);
             $table->boolean('is_featured')->default(false);
 
-            $table->string('slug')->unique();
-            $table->json('images')->nullable(); 
+            $table->string('slug')->unique();            
             $table->timestamps();
 
             $table->index('supplier_id');

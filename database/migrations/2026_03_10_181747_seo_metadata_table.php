@@ -14,6 +14,10 @@ return new class extends Migration
         Schema::create('seo_metadata', function (Blueprint $table) {
             $table->id();
             $table->morphs('seoable'); // Cria seoable_id e seoable_type
+            //conceito de poliformismo.. gera dois campos seoable_type e seoable_id
+            //caso algum dos outros campos fique em branco, pelo type ele sabe quais
+            //as meta tags usar e fica melhor que criar apenas uma lista de booleanos
+            //1 para seo de produtos, 2 para categorais, etc...
             $table->string('meta_title', 70)->nullable();
             $table->string('meta_description', 160)->nullable();
             $table->string('meta_keywords')->nullable();
