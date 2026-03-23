@@ -1,15 +1,10 @@
 <script setup>
 import StoreLayout from '@/Layouts/StoreLayout.vue';
-import { ref, onMounted, onUnmounted } from 'vue';
 import { Head, Link } from '@inertiajs/vue3';
-import { useStoreIndex } from './useStoreIndex';
+import { useStoreIndex } from './useStoreIndex'; // Certifique-se do caminho correto
 import { 
-    SlidersHorizontal, 
-    ShoppingBag, 
-    ChevronLeft, 
-    ChevronRight, 
-    X, 
-    ExternalLink 
+    SlidersHorizontal, ShoppingBag, ChevronLeft, 
+    ChevronRight, X, ExternalLink 
 } from 'lucide-vue-next';
 
 const props = defineProps({
@@ -17,46 +12,38 @@ const props = defineProps({
     featuredProducts: Array,
     onSaleProducts: Array,
     ads: Array,
-    brands: Array
+    brands: Array,
+    categories: Array, // Se houver categorias no banco
+    filters: Object
 });
 
-const { search, minPrice, maxPrice, brand } = useStoreIndex(props);
+// Extraímos tudo do nosso arquivo JS
+const { 
+    search, minPrice, maxPrice, brand, category,
+    isModalOpen, selectedProduct, openDetails, closeModal,
+    scroll, seoData
+} = useStoreIndex(props);
 
-// Lógica do Modal
-const isModalOpen = ref(false);
-const selectedProduct = ref(null);
-
-const openDetails = (p) => { 
-    selectedProduct.value = p; 
-    isModalOpen.value = true; 
-};
-
-// Lógica do Carousel
-let timer = null;
-const scroll = (id, direction) => {
-    const el = document.getElementById(id);
-    if (!el) return;
-    const isAtEnd = el.scrollLeft + el.offsetWidth >= el.scrollWidth - 10;
-    if (direction === 'right' && isAtEnd) {
-        el.scrollTo({ left: 0, behavior: 'smooth' });
-    } else {
-        const offset = direction === 'left' ? -el.offsetWidth : el.offsetWidth;
-        el.scrollBy({ left: offset, behavior: 'smooth' });
-    }
-};
-
-onMounted(() => { 
-    timer = setInterval(() => scroll('hero-carousel', 'right'), 7000); 
-});
-
-onUnmounted(() => clearInterval(timer));
 </script>
 
 <template>
     <StoreLayout v-model:searchTerm="search">
-        <Head title="Vitrine Premium" />
+        <Head>
+            <title>{{ seoData.title }}</title>
+            <meta name="description" :content="seoData.description" />
+            <meta name="keywords" :content="seoData.keywords" />
+        </Head>
 
-        <section v-if="featuredProducts?.length" class="max-w-7xl mx-auto px-4 md:px-6 mt-4 md:mt-8">
+        <header class="max-w-7xl mx-auto px-4 md:px-6 pt-8">
+            <h1 class="text-3xl md:text-5xl font-black text-slate-900 tracking-tighter uppercase italic">
+                {{ seoData.h1 }}
+            </h1>
+            <p class="text-slate-400 text-[10px] md:text-xs font-black mt-2 uppercase tracking-[0.3em]">
+                {{ seoData.description }}
+            </p>
+        </header>
+
+        <section v-if="featuredProducts?.length" class="max-w-7xl mx-auto px-4 md:px-6 mt-6 md:mt-10">
             <div class="relative group">
                 <div id="hero-carousel" class="flex overflow-x-auto snap-x snap-mandatory scrollbar-hide gap-4 rounded-[2rem] md:rounded-[3rem] shadow-2xl">
                     <div v-for="p in featuredProducts" :key="p.id" 
@@ -156,7 +143,7 @@ onUnmounted(() => clearInterval(timer));
                     </div>
 
                     <div class="w-full md:w-1/2 p-8 md:p-12 flex flex-col justify-center">
-                        <span class="text-indigo-600 text-[10px] font-black uppercase tracking-[0.2em] mb-2">Erp Vue Laravel</span>
+                        <span class="text-indigo-600 text-[10px] font-black uppercase tracking-[0.2em] mb-2">{{ seoData.title }}</span>
                         <h2 class="text-2xl md:text-4xl font-black text-slate-900 mb-2 leading-tight">{{ selectedProduct?.description }}</h2>
                         
                         <Link 
