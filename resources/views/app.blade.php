@@ -39,7 +39,7 @@
         <title inertia>{{ config('app.name', 'ERP Vue Laravel') }}</title>
 
         @routes
-        @vite(['resources/js/app.ts', "resources/js/Pages/{$page['component']}.vue"])
+        @vite(['resources/js/app.ts', @vite(['resources/js/app.ts'])])
         
         {{-- 4. O InertiaHead injeta o que você colocar no <Head> do Vue aqui --}}
         @inertiaHead
