@@ -24,6 +24,8 @@ Route::middleware('guest')->group(function () {
     Route::post('/forgot-password', [LoginController::class, 'sendResetLinkEmail'])->name('password.email');
 });
 
+Route::post('/terms/accept', [StoreController::class, 'acceptTerms'])->name('store.terms.accept');
+
 // 3. PAINEL ADMINISTRATIVO (Protegido por login)
 Route::middleware(['auth'])->group(function () {
     
@@ -36,7 +38,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/products/{product}/preview', [ProductController::class, 'preview'])->name('products.preview');
     Route::patch('/products/{product}/toggle', [ProductController::class, 'toggle'])
     ->name('products.toggle');
-    
+
     Route::resource('suppliers', SupplierController::class);
     
     // Relatórios

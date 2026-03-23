@@ -48,9 +48,19 @@ export function useStoreIndex(props) {
     const termsAccepted = ref(false);
 
     const acceptTerms = () => {
-        if (termsAccepted.value) {
-            localStorage.setItem('erp_terms_accepted', 'true');
-            showTermsModal.value = false;
+    if (termsAccepted.value) {
+            // Usando o router do Inertia para gravar no banco
+            router.post(route('store.terms.accept'), {}, {
+                preserveScroll: true,
+                onSuccess: () => {
+                    // Só salva no navegador se gravou no banco com sucesso
+                    localStorage.setItem('erp_terms_accepted', 'true');
+                    showTermsModal.value = false;
+                },
+                onError: () => {
+                    alert("Erro ao registrar aceite no banco de dados.");
+                }
+            });
         }
     };
 

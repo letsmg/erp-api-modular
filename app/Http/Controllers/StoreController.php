@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use App\Models\TermAcceptance;
 
 class StoreController extends Controller
 {
@@ -62,5 +63,18 @@ class StoreController extends Controller
                 ['id' => 1, 'title' => 'Cupom BEMVINDO10']
             ]
         ]);
+    }
+
+    public function acceptTerms(Request $request)
+    {
+        TermAcceptance::create([
+            'user_id' => auth()->id(),
+            'ip_address' => $request->ip(),
+            'user_agent' => $request->userAgent(),
+            'accepted_at' => now(),
+            'term_version' => '1.0'
+        ]);
+
+        return back(); 
     }
 }
