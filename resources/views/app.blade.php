@@ -1,63 +1,50 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-    @env('testing')
-        {{-- Não carrega Vite durante testes --}}
-    @else
-        @vite(['resources/js/app.ts'])
-    @endenv
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        {{-- 1. Lógica de Robots (Privacidade) --}}
-        @auth
-            @if(in_array(auth()->user()->access_level, [0, 1]))
-                <meta name="robots" content="noindex, nofollow">
-            @else
-                <meta name="robots" content="index, follow">
-            @endif
+    {{-- VITE (desabilitado no testing) --}}
+    @if (!app()->environment('testing'))
+        @vite(['resources/js/app.ts'])
+    @endif
+
+    {{-- 1. Lógica de Robots --}}
+    @auth
+        @if(in_array(auth()->user()->access_level, [0, 1]))
+            <meta name="robots" content="noindex, nofollow">
         @else
             <meta name="robots" content="index, follow">
-        @endauth
+        @endif
+    @else
+        <meta name="robots" content="index, follow">
+    @endauth
 
-        {{-- 2. Scripts Globais de SEO (GTM / ADS / Scripts) --}}
-        @if(isset($seo_global))
-            {{-- Google Tag Manager --}}
-            @if($seo_global->google_tag_manager)
-                {!! $seo_global->google_tag_manager !!}
-            @endif
-
-            {{-- Scripts de ADS --}}
-            @if($seo_global->ads)
-                {!! $seo_global->ads !!}
-            @endif
-
-            {{-- Schema Markup (JSON-LD geralmente) --}}
-            @if($seo_global->schema_markup)
-                <script type="application/ld+json">
-                    {!! $seo_global->schema_markup !!}
-                </script>
-            @endif
+    {{-- 2. Scripts Globais SEO --}}
+    @if(isset($seo_global))
+        @if($seo_global->google_tag_manager)
+            {!! $seo_global->google_tag_manager !!}
         @endif
 
-        {{-- 3. Título Padrão (Será sobrescrito pelo <Head> do Vue) --}}
-        <title inertia>{{ config('app.name', 'ERP Vue Laravel') }}</title>
+        @if($seo_global->ads)
+            {!! $seo_global->ads !!}
+        @endif
 
-        @routes
-        @vite(['resources/js/app.ts', 
-            @env('testing')
-                {{-- Vite desabilitado para testes --}}
-            @else
-                @vite(['resources/js/app.ts'])
-            @endenv        
-        )])
-        
-        {{-- 4. O InertiaHead injeta o que você colocar no <Head> do Vue aqui --}}
-        @inertiaHead
-    </head>
-    <body class="font-sans antialiased">
-        @inertia
+        @if($seo_global->schema_markup)
+            <script type="application/ld+json">
+                {!! $seo_global->schema_markup !!}
+            </script>
+        @endif
+    @endif
 
-        {{-- Scripts de rodapé se necessário --}}
-    </body>
+    {{-- 3. Title --}}
+    <title inertia>{{ config('app.name', 'ERP Vue Laravel') }}</title>
+
+    @routes
+    @inertiaHead
+</head>
+
+<body class="font-sans antialiased">
+    @inertia
+</body>
 </html>
