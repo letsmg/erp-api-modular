@@ -7,22 +7,23 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\StoreController;
+use App\Http\Controllers\ClientController; // Adicionado
+use App\Http\Controllers\SaleController;   // Adicionado
+use App\Http\Controllers\MessageController; // Adicionado
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-// 1. VITRINE (Pública para todos)
-
+// 1. VITRINE (Pública para todos - Visitantes e Logados)
+// Nota: Movi para fora do 'guest' para que o Admin logado também veja a loja.
 Route::get('/sitemap.xml', [SitemapController::class, 'index']);
+Route::get('/', [StoreController::class, 'index'])->name('store.index');
+Route::get('/store/product/{id}', [StoreController::class, 'show'])->name('store.product');
+Route::post('/terms/accept', [StoreController::class, 'acceptTerms'])->name('store.terms.accept');
 
-// 2. AUTENTICAÇÃO (Apenas para quem não está logado)
+// 2. AUTENTICAÇÃO (Apenas para quem NÃO está logado)
 Route::middleware('guest')->group(function () {
-    Route::get('/', [StoreController::class, 'index'])->name('store.index');
-    Route::post('/terms/accept', [StoreController::class, 'acceptTerms'])->name('store.terms.accept');
-    // Rota de Detalhes do Produto (A que o erro acusou falta)
-    // O {slug} ou {id} é necessário para identificar o produto
-    Route::get('/store/product/{id}', [StoreController::class, 'show'])->name('store.product');
-    // Rota de Preview (Exclusiva para Admin/Preview)
-    Route::get('/products/{id}/preview', [StoreController::class, 'preview'])->name('products.preview');
+    // Rota de Preview que você tinha (Apenas para não logados ou links externos)
+    Route::get('/products/{id}/preview', [StoreController::class, 'preview'])->name('products.preview.public');
     
     Route::get('/login', [LoginController::class, 'showLogin'])->name('login');    
     Route::post('/login', [LoginController::class, 'login'])->name('login.post');
@@ -32,8 +33,6 @@ Route::middleware('guest')->group(function () {
     Route::post('/forgot-password', [LoginController::class, 'sendResetLinkEmail'])->name('password.email');    
 });
 
-
-
 // 3. PAINEL ADMINISTRATIVO (Protegido por login)
 Route::middleware(['auth'])->group(function () {
     
@@ -41,34 +40,32 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', fn () => Inertia::render('Dashboard'))->name('dashboard');
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
-    // Gerenciamento (Agora protegidos!)
+    // Gerenciamento de Produtos
     Route::resource('products', ProductController::class);
-    Route::get('/products/{product}/preview', [ProductController::class, 'preview'])->name('products.preview');
-    Route::patch('/products/{product}/toggle', [ProductController::class, 'toggle'])
-    ->name('products.toggle');    
+    // Sua rota original de preview do Admin
+    Route::get('/products/{product}/preview', [ProductController::class, 'preview'])->name('products.preview.admin');
+    Route::patch('/products/{product}/toggle', [ProductController::class, 'toggle'])->name('products.toggle');    
 
+    // Outros Recursos (Recuperando os Resources que você tinha)
     Route::resource('suppliers', SupplierController::class);
-    
+    Route::resource('clients', ClientController::class);
+    Route::resource('sales', SaleController::class);
+
     // Relatórios
     Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
     Route::get('/reports/products', [ReportController::class, 'products'])->name('reports.products');
 
-    //permite visualizar, bloquear/ativar, resetar senha apenas a si mesmo e outros padrao
+    // Usuários
     Route::resource('users', UserController::class);    
     Route::patch('/users/{user}/reset-password', [UserController::class, 'resetPassword'])->name('users.reset');
     Route::patch('/users/{user}/toggle', [UserController::class, 'toggleStatus'])->name('users.toggle');
 
-    // Clientes
-    Route::resource('clients', ClientController::class);
-    
-    // Vendas
-    Route::resource('sales', SaleController::class);
-
+    // Mensagens
     Route::get('/messages', [MessageController::class, 'index'])->name('messages.index');
     Route::post('/messages/send', [MessageController::class, 'send'])->name('messages.send');
 
-    // 4. ÁREA DO SUPER-ADMIN (Protegido por login + middleware de Admin)
-    Route::middleware([\App\Http\Middleware\AdminMiddleware::class])->group(function () {        
-        //por hora vou permitir acesso para testes
+    // 4. ÁREA DO SUPER-ADMIN
+    Route::middleware([\App\Http\Middleware\AdminMiddleware::class])->group(function () {         
+        // Espaço para rotas exclusivas de Admin Master
     });
 });

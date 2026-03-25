@@ -80,7 +80,7 @@ const isUrl = (url) => page.url === url || page.url.startsWith(url + '/');
 
         <!-- Logo -->
         <div class="p-6 border-b border-slate-900 flex justify-between">
-            <span class="font-black">ERP ZENITE</span>
+            <span class="font-black">ERP Vue Laravel</span>
             <X @click="isMobileMenuOpen = false" class="md:hidden"/>
         </div>
 

@@ -5,80 +5,52 @@ import { debounce } from 'lodash';
 export function useStoreIndex(props) {
     const page = usePage();
 
-    // --- FILTROS ---
+    // --- ESTADO DOS FILTROS ---
     const search = ref(props.filters?.search || '');
     const minPrice = ref(props.filters?.min_price || '');
     const maxPrice = ref(props.filters?.max_price || '');
     const brand = ref(props.filters?.brand || '');
-    const category = ref(props.filters?.category || '');
 
+    // --- LÓGICA DE FILTRAGEM (SERVER-SIDE) ---
     const filterProducts = debounce(() => {
-        const searchTerm = search.value.length > 0 && search.value.length < 3 ? '' : search.value;
         router.get(route('store.index'), {
-            search: searchTerm,
+            search: search.value.length >= 3 ? search.value : '',
             min_price: minPrice.value,
             max_price: maxPrice.value,
-            brand: brand.value,
-            category: category.value
+            brand: brand.value
         }, {
             preserveState: true,
-            preserveScroll: true,
+            preserveScroll: false, // Volta ao topo para ver a paginação sticky
             replace: true
         });
     }, 500);
 
-    watch([search, minPrice, maxPrice, brand, category], () => filterProducts());
-
-    // --- MODAL DE PRODUTO ---
-    const isModalOpen = ref(false);
-    const selectedProduct = ref(null);
-
-    const openDetails = (p) => { 
-        selectedProduct.value = p; 
-        isModalOpen.value = true; 
-    };
-
-    const closeModal = () => {
-        isModalOpen.value = false;
-        selectedProduct.value = null;
-    };
+    watch([search, minPrice, maxPrice, brand], () => filterProducts());
 
     // --- MODAL DE TERMOS (LGPD) ---
     const showTermsModal = ref(false);
     const termsAccepted = ref(false);
 
     const acceptTerms = () => {
-    if (termsAccepted.value) {
-            // Usando o router do Inertia para gravar no banco
-            router.post(route('store.terms.accept'), {}, {
-                preserveScroll: true,
-                onSuccess: () => {
-                    // Só salva no navegador se gravou no banco com sucesso
-                    localStorage.setItem('erp_terms_accepted', 'true');
-                    showTermsModal.value = false;
-                },
-                onError: () => {
-                    alert("Erro ao registrar aceite no banco de dados.");
-                }
-            });
-        }
+        if (!termsAccepted.value) return;
+
+        router.post(route('store.terms.accept'), {}, {
+            preserveScroll: true,
+            onSuccess: () => {
+                localStorage.setItem('erp_terms_accepted', 'true');
+                showTermsModal.value = false;
+            }
+        });
     };
 
-    // --- ATALHO DE TECLADO (CTRL + M) ---
-    const handleKeyDown = (event) => {
-        // Verifica se Ctrl + M (ou Cmd + M no Mac) foi pressionado
-        if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'm') {
-            event.preventDefault();
-            showTermsModal.value = true;
-        }
-    };
-
-    // --- CARROSSEL ---
+    // --- CONTROLE DO CARROSSEL ---
     let timer = null;
     const scroll = (id, direction) => {
         const el = document.getElementById(id);
         if (!el) return;
+        
         const isAtEnd = el.scrollLeft + el.offsetWidth >= el.scrollWidth - 10;
+        
         if (direction === 'right' && isAtEnd) {
             el.scrollTo({ left: 0, behavior: 'smooth' });
         } else {
@@ -88,38 +60,40 @@ export function useStoreIndex(props) {
     };
 
     // --- CICLO DE VIDA ---
-    onMounted(() => { 
-        // Checagem automática de Termos ao carregar
+    onMounted(() => {
+        // Checagem LGPD
         if (!localStorage.getItem('erp_terms_accepted')) {
             showTermsModal.value = true;
         }
 
-        // Adiciona ouvinte para o atalho de teclado
-        window.addEventListener('keydown', handleKeyDown);
-
-        // Timer do carrossel
-        timer = setInterval(() => scroll('hero-carousel', 'right'), 7000); 
-    });
-
-    onUnmounted(() => { 
-        // Remove ouvintes e timers para evitar memory leaks
-        window.removeEventListener('keydown', handleKeyDown);
-        if (timer) clearInterval(timer); 
-    });
-
-    // --- SEO ---
-    const seoData = computed(() => {
-        return page.props.store_seo ?? {
-            title: "Vitrine Premium",
-            description: "ERP Vue Laravel - Portfólio de E-commerce",
-            keywords: "laravel, vue, portfolio",
-            h1: "Explore Nossa Vitrine"
+        // Atalho CTRL+M para termos
+        const handleKeyDown = (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'm') {
+                e.preventDefault();
+                showTermsModal.value = true;
+            }
         };
+
+        window.addEventListener('keydown', handleKeyDown);
+        
+        // Auto-play do carrossel
+        timer = setInterval(() => scroll('hero-carousel', 'right'), 7000);
+
+        onUnmounted(() => {
+            window.removeEventListener('keydown', handleKeyDown);
+            if (timer) clearInterval(timer);
+        });
+    });
+
+    // --- SEO DATA ---
+    const seoData = computed(() => page.props.store_seo ?? {
+        title: "Vitrine Premium | ERP Zenite",
+        description: "Explore nossa seleção exclusiva de produtos de alta qualidade.",
+        h1: "Catálogo de Produtos"
     });
 
     return {
-        search, minPrice, maxPrice, brand, category,
-        isModalOpen, selectedProduct, openDetails, closeModal,
+        search, minPrice, maxPrice, brand,
         showTermsModal, termsAccepted, acceptTerms,
         scroll, seoData
     };
