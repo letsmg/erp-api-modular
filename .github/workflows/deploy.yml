@@ -8,12 +8,21 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    env:
+      DEPLOY_SSH_KEY: ${{ secrets.SSH_PRIVATE_KEY != '' && secrets.SSH_PRIVATE_KEY || secrets.DEPLOY_SSH_PRIVATE_KEY }}
 
     steps:
+      - name: Validate deploy secrets
+        run: |
+          if [ -z "${{ env.DEPLOY_SSH_KEY }}" ]; then
+            echo "Missing SSH key secret. Configure SSH_PRIVATE_KEY or DEPLOY_SSH_PRIVATE_KEY in this repository."
+            exit 1
+          fi
+
       - name: Configure SSH
         uses: webfactory/ssh-agent@v0.8.0
         with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+          ssh-private-key: ${{ env.DEPLOY_SSH_KEY }}
 
       - name: Execute deploy on server
         run: |
