@@ -1,67 +1,76 @@
-name: 🚀 Deploy
+name: Deploy
 
 on:
   push:
-    branches: [main]
-   
-#quando usar em producao, aguardar testes primeiro
-
-#   workflow_run:
-#     workflows: ["🚀 CI tests"] # Deve ser o nome exato do outro arquivo
-#     types:
-#       - completed
-#     branches: [main]        
+    branches:
+      - main
 
 jobs:
-  deploy:    
+  deploy:
     runs-on: ubuntu-latest
-    
-    #trava de segurança para substituir o needs em arquivos separados:
-    # aqui em baixo está comentado sim mesmo parecendo que não está com #
-    # if: ${{ github.event.workflow_run.conclusion == 'success' }} #
 
     steps:
-      - name: 🔑 Configure SSH
+      - name: Configure SSH
         uses: webfactory/ssh-agent@v0.8.0
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      - name: 🚀 Executar deploy no servidor
+      - name: Execute deploy on server
         run: |
           ssh -o StrictHostKeyChecking=no ubuntu@147.15.80.52 << 'EOF'
             set -e
-            
-            echo "🛡️ Configurando exceção de segurança do Git"
-            git config --global --add safe.directory /var/www/erp
 
-            cd /var/www/erp
-            
-            echo "📥 Atualizando código..."
-            sudo chown -R ubuntu:www-data /var/www/erp
-            git reset --hard
-            git pull origin main
+            APP_DIR="/var/www/erp-api-modular"
+            REPO_URL="https://github.com/letsmg/erp-api-modular.git"
 
-            echo "📦 Dependências e Build..."
+            echo "Preparing application directory..."
+            sudo mkdir -p /var/www
+
+            if [ ! -d "$APP_DIR/.git" ]; then
+              echo "Cloning repository for first deploy..."
+              sudo rm -rf "$APP_DIR"
+              sudo git clone "$REPO_URL" "$APP_DIR"
+            fi
+
+            sudo chown -R ubuntu:www-data "$APP_DIR"
+            git config --global --add safe.directory "$APP_DIR"
+
+            cd "$APP_DIR"
+
+            echo "Updating code..."
+            git fetch origin main --prune
+            git checkout -f main
+            git reset --hard origin/main
+
+            if [ ! -f .env ]; then
+              echo ".env not found in $APP_DIR. Configure the production environment file on the server before deploying."
+              exit 1
+            fi
+
+            echo "Installing dependencies and building assets..."
             composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist --no-progress
-            npm install --quiet
+            npm ci --no-audit --no-fund
             npm run build
 
-            echo "🧹 Otimização Laravel..."
-            php artisan optimize:clear            
-            
-            #para refazer o storage link
-            rm -rf public/storage && php artisan storage:link            
+            echo "Clearing and warming Laravel caches..."
+            php artisan optimize:clear
+            php artisan config:cache
+            php artisan route:cache
+            php artisan view:cache
 
-            echo "🗄️ Migrations..."
-            php artisan migrate:fresh --seed
-            #php artisan migrate --force
+            echo "Ensuring storage link..."
+            rm -rf public/storage
+            php artisan storage:link
 
-            echo "🔐 Restaurando permissões de produção..."
-            sudo chown -R www-data:www-data /var/www/erp
+            echo "Running migrations..."
+            php artisan migrate --force
+
+            echo "Restoring production permissions..."
+            sudo chown -R www-data:www-data "$APP_DIR"
             sudo chmod -R 775 storage bootstrap/cache
 
-            echo "🔄 Reiniciando PHP..."
+            echo "Restarting PHP-FPM..."
             sudo systemctl restart php8.3-fpm
-            
-            echo "✅ Deploy finalizado com sucesso!"
+
+            echo "Deploy completed successfully."
           EOF

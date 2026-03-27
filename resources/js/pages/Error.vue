@@ -3,7 +3,6 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Link } from '@inertiajs/vue3';
 import { AlertCircle, Home } from 'lucide-vue-next';
 
-// Recebe o status do erro (404, 500, etc) do Laravel
 defineProps({ status: Number });
 </script>
 

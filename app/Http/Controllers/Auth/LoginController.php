@@ -3,24 +3,17 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Services\AuthService;
-use Inertia\Inertia;
-use App\Http\Requests\Auth\LoginRequest;
-use App\Http\Requests\Auth\RegisterRequest;
-use App\Http\Requests\Auth\ForgotPasswordRequest;
+use App\Modules\Auth\Requests\ForgotPasswordRequest;
+use App\Modules\Auth\Requests\LoginRequest;
+use App\Modules\Auth\Services\AuthService;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class LoginController extends Controller
 {
-    protected AuthService $service;
+    public function __construct(private readonly AuthService $service) {}
 
-    public function __construct(AuthService $service)
-    {
-        $this->service = $service;
-    }
-
-    // Unificamos showLogin e showLoginForm aqui
     public function showLogin()
     {
         return Inertia::render('Auth/Login', [
@@ -29,21 +22,15 @@ class LoginController extends Controller
         ]);
     }
 
-    public function showRegister()
-    {
-        return Inertia::render('Auth/Register');
-    }
-
     public function login(LoginRequest $request): RedirectResponse
     {
-        $credentials = $request->validated();
-
-        if ($this->service->login($credentials, $request->boolean('remember'))) {
+        if ($this->service->login($request->validated(), $request->boolean('remember'))) {
+            $request->session()->regenerate();
             return redirect()->intended('/dashboard');
         }
 
         return back()->withErrors([
-            'email' => 'Credenciais inválidas ou conta bloqueada.',
+            'email' => 'Credenciais invalidas ou conta bloqueada.',
         ]);
     }
 
@@ -60,17 +47,7 @@ class LoginController extends Controller
 
     public function sendResetLinkEmail(ForgotPasswordRequest $request): RedirectResponse
     {
-        $data = $request->validated();
-
-        try {
-            $this->service->sendResetLink($data['email']);
-            return back()->with('success', 'Link enviado com sucesso!');
-        } catch (\Exception $e) {
-            return back()->withErrors([
-                'email' => 'Erro no provedor de e-mail: ' . $e->getMessage()
-            ]);
-        }
+        $this->service->sendResetLink($request->validated('email'));
+        return back()->with('success', 'Link enviado com sucesso!');
     }
-    
-    // Remova o método showLoginForm() duplicado se ele existir no final do arquivo
 }

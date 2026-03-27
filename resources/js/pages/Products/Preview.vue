@@ -1,12 +1,11 @@
 <script setup>
-import { Head, Link, usePage, router} from '@inertiajs/vue3';
-import { watch } from 'vue'
-import { 
-    ArrowLeft, ShoppingCart, Globe, Star, Loader2, 
-    Eye, EyeOff, LayoutDashboard, ChevronLeft, ChevronRight
+import { Head, Link, usePage, router } from '@inertiajs/vue3';
+import { watch, computed, ref } from 'vue';
+import {
+    ArrowLeft, ShoppingCart, Globe, Eye, EyeOff,
+    LayoutDashboard, ChevronLeft, ChevronRight, Loader2
 } from 'lucide-vue-next';
-import { computed, ref } from 'vue';
-import StoreLayout from '@/Layouts/StoreLayout.vue'; 
+import StoreLayout from '@/Layouts/StoreLayout.vue';
 
 const props = defineProps({
     product: Object,
@@ -18,11 +17,7 @@ watch(() => props.product.id, () => {
 });
 
 const page = usePage();
-
-// 🎯 Dados de SEO
 const seoData = computed(() => props.product.seo || {});
-
-// 🖼️ Controle do Carrossel Manual
 const activeImageIndex = ref(0);
 
 const nextImage = () => {
@@ -37,14 +32,12 @@ const prevImage = () => {
     }
 };
 
-// 🛠️ Helper para URL da imagem
 const getImageUrl = (path) => {
     if (!path) return null;
     const cleanPath = path.startsWith('products/') ? path : `products/${path}`;
     return `/storage/${cleanPath}`;
 };
 
-// 🔐 Admin & Status
 const isAdmin = computed(() => page.props.auth?.user?.access_level === 1);
 const isUpdating = ref(false);
 
@@ -53,16 +46,17 @@ const toggleStatus = () => {
         isUpdating.value = true;
         router.patch(route('products.toggle', props.product.id), {}, {
             preserveScroll: true,
-            onFinish: () => isUpdating.value = false,
+            onFinish: () => {
+                isUpdating.value = false;
+            },
         });
     }
 };
 
 const formatCurrency = (value) => {
-    // 3. Use Number() de forma direta e limpa
-    return Number(value).toLocaleString('pt-BR', { 
-        style: 'currency', 
-        currency: 'BRL' 
+    return Number(value).toLocaleString('pt-BR', {
+        style: 'currency',
+        currency: 'BRL'
     });
 };
 </script>
@@ -73,10 +67,10 @@ const formatCurrency = (value) => {
         <meta name="description" :content="seoData.meta_description" />
         <meta name="keywords" :content="seoData.meta_keywords" />
         <link rel="slug" :href="seoData.slug || page.url" />
-        
-        <component 
-            v-if="seoData.schema_markup" 
-            is="script" 
+
+        <component
+            v-if="seoData.schema_markup"
+            is="script"
             type="application/ld+json"
             v-html="seoData.schema_markup"
         />
@@ -94,9 +88,9 @@ const formatCurrency = (value) => {
                         <p class="text-[9px] font-medium opacity-80 uppercase tracking-widest mt-1">SEO e Galeria ativos para conferência</p>
                     </div>
                 </div>
-                
+
                 <div v-if="isAdmin" class="flex items-center gap-4">
-                    <button 
+                    <button
                         @click="toggleStatus"
                         :disabled="isUpdating"
                         class="bg-white text-indigo-600 px-5 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2 shadow-lg hover:bg-indigo-50"
@@ -113,23 +107,22 @@ const formatCurrency = (value) => {
         <div class="min-h-screen bg-[#F9FAFB] pb-24">
             <div class="max-w-6xl mx-auto px-6 py-8">
                 <Link :href="route('products.index')" class="inline-flex items-center gap-2 text-slate-400 hover:text-indigo-600 text-[10px] font-black uppercase tracking-[0.2em] transition group">
-                    <ArrowLeft class="w-4 h-4 group-hover:-translate-x-1 transition-transform" /> 
+                    <ArrowLeft class="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
                     Voltar para Gestão
                 </Link>
             </div>
 
             <main class="max-w-6xl mx-auto px-6">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-20 items-start">
-                    
                     <div class="flex flex-col gap-6">
                         <div class="relative aspect-square bg-white rounded-[3rem] overflow-hidden flex items-center justify-center border border-gray-100 shadow-2xl shadow-gray-200/50 group">
                             <template v-if="product.images?.length > 0">
-                                <img 
+                                <img
                                     :key="activeImageIndex"
-                                    :src="getImageUrl(product.images[activeImageIndex].path)" 
+                                    :src="getImageUrl(product.images[activeImageIndex].path)"
                                     class="object-contain w-full h-full p-12 transition-all duration-500 animate-in fade-in zoom-in-95"
                                 />
-                                
+
                                 <template v-if="product.images.length > 1">
                                     <button @click="prevImage" class="absolute left-6 top-1/2 -translate-y-1/2 bg-white/90 backdrop-blur p-3 rounded-full shadow-xl hover:scale-110 transition active:scale-95">
                                         <ChevronLeft class="w-6 h-6 text-gray-900" />
@@ -150,8 +143,8 @@ const formatCurrency = (value) => {
                         </div>
 
                         <div v-if="product.images?.length > 1" class="flex gap-4 overflow-x-auto pb-2 scrollbar-hide">
-                            <button 
-                                v-for="(img, index) in product.images" 
+                            <button
+                                v-for="(img, index) in product.images"
                                 :key="img.id"
                                 @click="activeImageIndex = index"
                                 class="w-20 h-20 shrink-0 rounded-2xl border-2 overflow-hidden bg-white p-2 transition-all duration-300"
@@ -212,9 +205,11 @@ const formatCurrency = (value) => {
                         <div v-for="item in relatedProducts" :key="item.id" class="group">
                             <Link :href="route('products.preview', item.id)" class="block">
                                 <div class="aspect-square bg-white rounded-[2.5rem] border border-gray-100 overflow-hidden mb-5 flex items-center justify-center p-8 group-hover:shadow-2xl transition-all duration-500 group-hover:-translate-y-2">
-                                    <img v-if="item.images?.length > 0" 
-                                         :src="getImageUrl(item.images[0].path)" 
-                                         class="max-w-full max-h-full object-contain group-hover:scale-110 transition duration-500" />
+                                    <img
+                                        v-if="item.images?.length > 0"
+                                        :src="getImageUrl(item.images[0].path)"
+                                        class="max-w-full max-h-full object-contain group-hover:scale-110 transition duration-500"
+                                    />
                                     <Globe v-else class="w-12 h-12 text-gray-100" />
                                 </div>
                                 <p class="text-sm font-bold text-gray-800 truncate">{{ item.description }}</p>
