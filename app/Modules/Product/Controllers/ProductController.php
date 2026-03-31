@@ -26,7 +26,7 @@ class ProductController extends Controller
         $this->authorize('viewAny', Product::class);
 
         return $this->paginated(
-            $this->repository->getFiltered($request->only(['search', 'blocked'])),
+            $this->repository->getFiltered($request->only(['search', 'blocked', 'active'])),
             'Produtos carregados com sucesso.'
         );
     }

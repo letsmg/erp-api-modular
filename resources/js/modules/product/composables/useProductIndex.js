@@ -6,6 +6,7 @@ import { toggleProductFeatured, deleteProduct } from '@/modules/product/services
 export function useProductIndex(initialData = {}) {
     const search = ref(initialData.initialFilters?.search || '');
     const showOnlyBlocked = ref(String(initialData.initialFilters?.blocked || '0') === '1');
+    const showOnlyActive = ref(String(initialData.initialFilters?.active || '0') === '1');
     const products = ref(initialData.products || []);
     const meta = ref(initialData.meta || { current_page: 1, last_page: 1, per_page: 12, total: 0 });
     const loading = ref(false);
@@ -22,6 +23,7 @@ export function useProductIndex(initialData = {}) {
                     page,
                     search: search.value || undefined,
                     blocked: showOnlyBlocked.value ? 1 : 0,
+                    active: showOnlyActive.value ? 1 : 0,
                 },
                 {
                     preserveState: true,
@@ -46,6 +48,18 @@ export function useProductIndex(initialData = {}) {
     });
 
     watch(showOnlyBlocked, () => {
+        // Se marcar bloqueados, desmarcar ativos (são mutuamente exclusivos)
+        if (showOnlyBlocked.value) {
+            showOnlyActive.value = false;
+        }
+        debouncedLoad();
+    });
+
+    watch(showOnlyActive, () => {
+        // Se marcar ativos, desmarcar bloqueados (são mutuamente exclusivos)
+        if (showOnlyActive.value) {
+            showOnlyBlocked.value = false;
+        }
         debouncedLoad();
     });
 
@@ -122,6 +136,7 @@ export function useProductIndex(initialData = {}) {
     return {
         search,
         showOnlyBlocked,
+        showOnlyActive,
         products,
         meta,
         loading,

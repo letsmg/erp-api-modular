@@ -17,7 +17,14 @@ if (csrfToken) {
 }
 
 apiClient.interceptors.response.use(
-    (response) => response,
+    (response) => {
+        // Se for uma resposta de login bem-sucedida com redirect
+        if (response.data?.redirect) {
+            return response;
+        }
+        
+        return response;
+    },
     (error) => {
         if (error.response && [401, 419].includes(error.response.status)) {
             window.location.href = '/login';

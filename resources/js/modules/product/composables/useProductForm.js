@@ -248,7 +248,7 @@ export function useProductForm({ productId, initialProduct, initialSuppliers, in
         imagePreviews.value = form.images.map((file) => URL.createObjectURL(file));
     };
 
-    const fillTestForm = () => fillFormData(form, suppliers.value);
+    const fillTestForm = () => fillFormData(form, suppliers.value, categories.value);
 
     const clearCurrentForm = () => {
         clearFormData(form);
@@ -264,14 +264,51 @@ export function useProductForm({ productId, initialProduct, initialSuppliers, in
             return;
         }
 
-        // Ctrl+Alt+1 - Preencher formulário
-        if (event.ctrlKey && event.altKey && event.key === '1') {
-            event.preventDefault();
-            fillTestForm();
+        // Verifica se é teclado numérico (location 3) - Ctrl+Alt pode não funcionar bem
+        const isNumpad = event.location === 3 || event.code.startsWith('Numpad');
+        
+        // Para teclado numérico, usa apenas keyCode/key sem exigir Ctrl+Alt
+        if (isNumpad) {
+            if (event.key === '1' || event.code === 'Numpad1' || event.keyCode === 97 || event.keyCode === 49) {
+                event.preventDefault();
+                fillTestForm();
+                return;
+            }
+            if (event.key === '2' || event.code === 'Numpad2' || event.keyCode === 98 || event.keyCode === 50) {
+                event.preventDefault();
+                clearCurrentForm();
+                return;
+            }
         }
 
-        // Ctrl+Alt+2 - Limpar formulário
-        if (event.ctrlKey && event.altKey && event.key === '2') {
+        // Para teclado QWERTY, aceita tanto com Ctrl+Alt quanto sem Ctrl+Alt (caracteres especiais)
+        // Aceita caracteres especiais ¹ e ² quando pressionados sozinhos
+        if ((event.ctrlKey && event.altKey && (
+            event.key === '1' || 
+            event.code === 'Digit1' ||
+            event.keyCode === 49 ||
+            event.which === 49
+        )) || (
+            !event.ctrlKey && !event.altKey && (
+                event.key === '¹' ||  // Caractere especial ¹
+                event.key === '²'    // Caractere especial ²
+            )
+        )) {
+            if (event.key === '¹' || event.key === '1') {
+                event.preventDefault();
+                fillTestForm();
+            }
+        }
+
+        // Ctrl+Alt+2 ou caractere especial ² para limpar
+        if ((event.ctrlKey && event.altKey && (
+            event.key === '2' || 
+            event.code === 'Digit2' ||
+            event.keyCode === 50 ||
+            event.which === 50
+        )) || (
+            !event.ctrlKey && !event.altKey && event.key === '²'
+        )) {
             event.preventDefault();
             clearCurrentForm();
         }

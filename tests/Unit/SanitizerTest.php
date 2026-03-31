@@ -51,15 +51,14 @@ class SanitizerTest extends TestCase
             'text1' => '<em>Text</em> content',
         ];
 
-        $sanitized = SanitizerHelper::sanitizeSeoData($seoData);
+        $sanitized = SanitizerHelper::sanitize($seoData, ['schema_markup', 'google_tag_manager']);
 
         $this->assertEquals('Meta Title', $sanitized['meta_title']);
         $this->assertEquals('Description with HTML', $sanitized['meta_description']);
-        $this->assertEquals('Heading', $sanitized['h1']);
-        $this->assertEquals('Text content', $sanitized['text1']);
-        
         $this->assertEquals('<script type="application/ld+json">{"@context": "https://schema.org"}</script>', $sanitized['schema_markup']);
         $this->assertEquals('<!-- Google Tag Manager --><script>dataLayer = [];</script>', $sanitized['google_tag_manager']);
+        $this->assertEquals('Heading', $sanitized['h1']);
+        $this->assertEquals('Text content', $sanitized['text1']);
     }
 
     /** @test */

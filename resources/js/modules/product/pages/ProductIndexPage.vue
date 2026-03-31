@@ -25,6 +25,7 @@ const user = computed(() => page.props.auth.user);
 const {
     search,
     showOnlyBlocked,
+    showOnlyActive,
     products: productsData,
     meta: metaInfo,
     loading,
@@ -81,6 +82,18 @@ onMounted(() => {
                         <div class="flex items-center gap-1.5">
                             <Lock class="w-3.5 h-3.5 text-red-500" />
                             <span class="text-xs font-bold uppercase text-red-600 tracking-tight">Bloqueados</span>
+                        </div>
+                    </label>
+
+                    <label class="flex items-center gap-2 cursor-pointer group bg-white border border-emerald-100 px-4 py-3 rounded-2xl hover:bg-emerald-50 transition-all shadow-sm">
+                        <input
+                            v-model="showOnlyActive"
+                            type="checkbox"
+                            class="rounded border-gray-300 text-emerald-600 focus:ring-emerald-500 w-4 h-4"
+                        >
+                        <div class="flex items-center gap-1.5">
+                            <Eye class="w-3.5 h-3.5 text-emerald-500" />
+                            <span class="text-xs font-bold uppercase text-emerald-600 tracking-tight">Ativos</span>
                         </div>
                     </label>
 
@@ -185,7 +198,7 @@ onMounted(() => {
                                 <div class="flex flex-col items-center opacity-40">
                                     <PackageSearch class="w-16 h-16 mb-4 text-gray-300" />
                                     <p class="font-black uppercase text-xs tracking-widest text-gray-400">
-                                        {{ showOnlyBlocked ? 'Nenhum produto bloqueado' : 'Nenhum produto encontrado' }}
+                                        {{ showOnlyBlocked ? 'Nenhum produto bloqueado' : showOnlyActive ? 'Nenhum produto ativo' : 'Nenhum produto encontrado' }}
                                     </p>
                                 </div>
                             </td>

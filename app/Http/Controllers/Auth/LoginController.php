@@ -22,13 +22,33 @@ class LoginController extends Controller
         ]);
     }
 
-    public function login(LoginRequest $request): RedirectResponse
+    public function login(LoginRequest $request)
     {
         if ($this->service->login($request->validated(), $request->boolean('remember'))) {
             $request->session()->regenerate();
+            
+            // Se for requisição AJAX/API, retorna JSON
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Login realizado com sucesso.',
+                    'redirect' => route('dashboard')
+                ]);
+            }
+            
+            // Se for requisição web normal (Inertia), redireciona
             return redirect()->intended('/dashboard');
         }
 
+        // Se for requisição AJAX/API, retorna erro JSON
+        if ($request->expectsJson()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Credenciais invalidas ou conta bloqueada.',
+            ], 422);
+        }
+
+        // Se for requisição web normal, retorna com erros
         return back()->withErrors([
             'email' => 'Credenciais invalidas ou conta bloqueada.',
         ]);
