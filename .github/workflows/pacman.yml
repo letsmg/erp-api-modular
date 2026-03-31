@@ -16,8 +16,8 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 🐍 Snake
-      - name: Generate snake
+      # 🐍 Snake Animation
+      - name: Generate snake animation
         uses: Platane/snk@v3
         with:
           github_user_name: letsmg
@@ -25,28 +25,44 @@ jobs:
             snake.svg
             snake-dark.svg?palette=github-dark
 
-      # 👾 Pacman
-      - name: Setup Node
+      # 👾 Pacman Animation
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: '20'
 
       - name: Install pacman generator
-        run: npm install pacman-contribution-graph
+        run: npm install -g pacman-contribution-graph
 
-      - name: Generate pacman
+      - name: Generate pacman animation
         run: |
           npx pacman-contribution-graph \
-          --platform github \
-          --gameTheme github-dark \
-          --username letsmg \
-          --output pacman-contribution-graph.svg
+            --platform github \
+            --gameTheme github-dark \
+            --username letsmg \
+            --output pacman-contribution-graph.svg \
+            --width 800 \
+            --height 200
 
-      # 💾 Commit direto na main
+      # � Commit and push animations
       - name: Commit files
         run: |
-          git config --global user.name "github-actions"
-          git config --global user.email "github-actions@github.com"
-          git add snake.svg snake-dark.svg pacman-contribution-graph.svg
-          git commit -m "update contribution animations" || echo "no changes"
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          
+          # Add files if they exist
+          if [ -f "snake.svg" ]; then
+            git add snake.svg
+          fi
+          if [ -f "snake-dark.svg" ]; then
+            git add snake-dark.svg
+          fi
+          if [ -f "pacman-contribution-graph.svg" ]; then
+            git add pacman-contribution-graph.svg
+          fi
+          
+          # Commit if there are changes
+          git diff --staged --quiet || git commit -m "🎮 Update contribution animations [skip ci]"
+          
+          # Push changes
           git push
