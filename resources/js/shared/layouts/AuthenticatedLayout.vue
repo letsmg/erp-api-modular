@@ -22,7 +22,11 @@ const triggerToast = (message, type = 'success') => {
     toastType.value = type;
     showToast.value = true;
 
-    const duration = type === 'error' ? 6000 : 4000;
+    // Aumentar duração para erros, especialmente se houver múltiplos
+    const baseDuration = type === 'error' ? 6000 : 4000;
+    const errorCount = message.split('|').length;
+    const duration = type === 'error' && errorCount > 1 ? baseDuration + (errorCount * 2000) : baseDuration;
+    
     setTimeout(() => {
         showToast.value = false;
     }, duration);
@@ -36,8 +40,9 @@ const errors = computed(() => page.props.errors);
 watch(errors, (newErrors) => {
     const errorKeys = Object.keys(newErrors);
     if (errorKeys.length > 0) {
-        const firstErrorMessage = newErrors[errorKeys[0]];
-        triggerToast(firstErrorMessage, 'error');
+        // Mostrar apenas as mensagens de erro, sem o nome do campo, com quebra de linha
+        const errorMessages = errorKeys.map(key => newErrors[key]).join('\n');
+        triggerToast(errorMessages, 'error');
     }
 }, { deep: true });
 
@@ -208,7 +213,7 @@ watch(() => page.url, () => {
                         <p class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-0.5">
                             {{ toastType === 'success' ? 'Operação Concluída' : 'Atenção' }}
                         </p>
-                        <p class="text-sm font-bold text-slate-800 leading-tight">{{ toastMessage }}</p>
+                        <p class="text-sm font-bold text-slate-800 leading-tight whitespace-pre-line">{{ toastMessage }}</p>
                     </div>
                     <button @click="showToast = false" class="p-2 hover:bg-slate-100 rounded-xl transition-colors text-slate-400">
                         <X class="w-4 h-4" />

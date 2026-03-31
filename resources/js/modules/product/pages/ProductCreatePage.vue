@@ -77,7 +77,7 @@ const {
 
                     <div class="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div class="md:col-span-2">
-                            <label class="block text-[10px] font-black uppercase text-gray-400 mb-2">Nome Completo do Produto</label>
+                            <label class="block text-[10px] font-black uppercase text-gray-400 mb-2">DESCRIÇÃO DO PRODUTO</label>
                             <input v-model="form.description" type="text" class="w-full border-gray-100 bg-gray-50 rounded-2xl focus:ring-indigo-500 font-bold" required />
                             <p v-if="form.errors.description" class="text-red-500 text-xs mt-1">{{ form.errors.description }}</p>
                         </div>
@@ -90,12 +90,14 @@ const {
                             <p v-if="form.errors.supplier_id" class="text-red-500 text-xs mt-1">{{ form.errors.supplier_id }}</p>
                         </div>
                         <div>
-                            <label class="block text-[10px] font-black uppercase text-gray-400 mb-2">Codigo EAN / Barcode</label>
+                            <label class="block text-[10px] font-black uppercase text-gray-400 mb-2">CÓDIGO DE BARRAS (EAN)</label>
                             <input v-model="form.barcode" type="text" class="w-full border-gray-100 bg-gray-50 rounded-2xl font-bold" />
+                            <p v-if="form.errors.barcode" class="text-red-500 text-xs mt-1">{{ form.errors.barcode }}</p>
                         </div>
                         <div>
                             <label class="block text-[10px] font-black uppercase text-gray-400 mb-2">Marca</label>
                             <input v-model="form.brand" type="text" class="w-full border-gray-100 bg-gray-50 rounded-2xl font-bold" />
+                            <p v-if="form.errors.brand" class="text-red-500 text-xs mt-1">{{ form.errors.brand }}</p>
                         </div>
                         <div>
                             <label class="block text-[10px] font-black uppercase text-gray-400 mb-2">Categoria</label>
@@ -108,6 +110,7 @@ const {
                         <div>
                             <label class="block text-[10px] font-black uppercase text-gray-400 mb-2">Modelo</label>
                             <input v-model="form.model" type="text" class="w-full border-gray-100 bg-gray-50 rounded-2xl font-bold" />
+                            <p v-if="form.errors.model" class="text-red-500 text-xs mt-1">{{ form.errors.model }}</p>
                         </div>
                         <div>
                             <label class="block text-[10px] font-black uppercase text-gray-400 mb-2">Colecao</label>
@@ -122,10 +125,12 @@ const {
                             <select v-model="form.gender" class="w-full border-gray-100 bg-gray-50 rounded-2xl font-bold uppercase text-[10px]">
                                 <option>Masculino</option><option>Feminino</option><option>Unissex</option><option>Infantil</option>
                             </select>
+                            <p v-if="form.errors.gender" class="text-red-500 text-xs mt-1">{{ form.errors.gender }}</p>
                         </div>
                         <div>
                             <label class="block text-[10px] font-black uppercase text-gray-400 mb-2">Quantidade Inicial em Estoque</label>
                             <input v-model="form.stock_quantity" type="number" class="w-full border-gray-100 bg-gray-50 rounded-2xl font-black text-indigo-600" />
+                            <p v-if="form.errors.stock_quantity" class="text-red-500 text-xs mt-1">{{ form.errors.stock_quantity }}</p>
                         </div>
                     </div>
                 </div>
@@ -137,12 +142,14 @@ const {
                                 <h3 class="flex items-center text-xs font-black uppercase text-gray-400 mb-6 italic"><DollarSign class="w-4 h-4 mr-2" /> Precos de Venda</h3>
                                 <div class="grid grid-cols-2 gap-6">
                                     <div>
-                                        <label class="block text-[10px] font-black uppercase text-gray-400 mb-2">Preco de Custo (R$)</label>
+                                        <label class="block text-[10px] font-black uppercase text-gray-400 mb-2">Preço de Custo (R$)</label>
                                         <input v-model="form.cost_price" type="number" step="0.01" class="w-full border-gray-100 bg-gray-50 rounded-2xl font-black text-xl" />
+                                        <p v-if="form.errors.cost_price" class="text-red-500 text-xs mt-1">{{ form.errors.cost_price }}</p>
                                     </div>
                                     <div>
-                                        <label class="block text-[10px] font-black uppercase text-gray-400 mb-2">Preco de Venda (R$)</label>
+                                        <label class="block text-[10px] font-black uppercase text-gray-400 mb-2">Preço de Venda (R$)</label>
                                         <input v-model="form.sale_price" type="number" step="0.01" class="w-full border-gray-100 bg-gray-50 rounded-2xl font-black text-xl text-indigo-600" />
+                                        <p v-if="form.errors.sale_price" class="text-red-500 text-xs mt-1">{{ form.errors.sale_price }}</p>
                                     </div>
                                 </div>
                                 <div class="mt-8 p-6 bg-green-50 rounded-2xl border border-green-100 flex justify-between items-center">
@@ -160,10 +167,37 @@ const {
                                     </label>
                                 </div>
                                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                                    <div><label class="block text-[9px] font-black uppercase text-gray-400 mb-1">Peso (kg)</label><input v-model="form.weight" type="number" step="0.001" min="0" class="w-full border-gray-100 bg-gray-50 rounded-xl font-bold text-sm focus:ring-indigo-500 focus:border-indigo-500" placeholder="0.000" /></div>
-                                    <div><label class="block text-[9px] font-black uppercase text-gray-400 mb-1">Largura (cm)</label><input v-model="form.width" type="number" step="0.01" min="0" class="w-full border-gray-100 bg-gray-50 rounded-xl font-bold text-sm focus:ring-indigo-500 focus:border-indigo-500" placeholder="0.00" /></div>
-                                    <div><label class="block text-[9px] font-black uppercase text-gray-400 mb-1">Altura (cm)</label><input v-model="form.height" type="number" step="0.01" min="0" class="w-full border-gray-100 bg-gray-50 rounded-xl font-bold text-sm focus:ring-indigo-500 focus:border-indigo-500" placeholder="0.00" /></div>
-                                    <div><label class="block text-[9px] font-black uppercase text-gray-400 mb-1">Comp. (cm)</label><input v-model="form.length" type="number" step="0.01" min="0" class="w-full border-gray-100 bg-gray-50 rounded-xl font-bold text-sm focus:ring-indigo-500 focus:border-indigo-500" placeholder="0.00" /></div>
+                                    <div>
+                                        <label class="block text-[9px] font-black uppercase text-gray-400 mb-1">Peso (kg)</label>
+                                        <input v-model="form.weight" type="number" step="0.001" min="0"
+                                            class="w-full border-gray-100 bg-gray-50 rounded-xl font-bold text-sm focus:ring-indigo-500 focus:border-indigo-500" 
+                                            placeholder="0.000" />
+                                        <p v-if="form.errors.weight" class="text-red-500 text-xs mt-1">{{ form.errors.weight }}</p>
+                                    </div>
+
+                                    <div>
+                                        <label class="block text-[9px] font-black uppercase text-gray-400 mb-1">Largura (cm)</label>
+                                        <input v-model="form.width" type="number" step="0.01" min="0"
+                                            class="w-full border-gray-100 bg-gray-50 rounded-xl font-bold text-sm focus:ring-indigo-500 focus:border-indigo-500" 
+                                            placeholder="0.00" />
+                                        <p v-if="form.errors.width" class="text-red-500 text-xs mt-1">{{ form.errors.width }}</p>
+                                    </div>
+
+                                    <div>
+                                        <label class="block text-[9px] font-black uppercase text-gray-400 mb-1">Altura (cm)</label>
+                                        <input v-model="form.height" type="number" step="0.01" min="0"
+                                            class="w-full border-gray-100 bg-gray-50 rounded-xl font-bold text-sm focus:ring-indigo-500 focus:border-indigo-500" 
+                                            placeholder="0.00" />
+                                        <p v-if="form.errors.height" class="text-red-500 text-xs mt-1">{{ form.errors.height }}</p>
+                                    </div>
+
+                                    <div>
+                                        <label class="block text-[9px] font-black uppercase text-gray-400 mb-1">Comp. (cm)</label>
+                                        <input v-model="form.length" type="number" step="0.01" min="0"
+                                            class="w-full border-gray-100 bg-gray-50 rounded-xl font-bold text-sm focus:ring-indigo-500 focus:border-indigo-500" 
+                                            placeholder="0.00" />
+                                        <p v-if="form.errors.length" class="text-red-500 text-xs mt-1">{{ form.errors.length }}</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>

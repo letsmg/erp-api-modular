@@ -23,6 +23,11 @@ apiClient.interceptors.response.use(
             window.location.href = '/login';
         }
 
+        // Log 422 errors for debugging
+        if (error.response?.status === 422) {
+            console.log('Validation errors:', error.response.data);
+        }
+
         return Promise.reject(error);
     },
 );
@@ -31,13 +36,29 @@ export function getValidationErrors(error: any): Record<string, string> {
     const errors = error?.response?.data?.errors;
 
     if (!errors || typeof errors !== 'object') {
+        // Se não houver erros de validação, verificar mensagem geral
+        const message = error?.response?.data?.message;
+        if (message) {
+            console.log('General error message:', message);
+            return { _general: message };
+        }
         return {};
     }
 
-    return Object.entries(errors).reduce<Record<string, string>>((carry, [field, messages]) => {
-        carry[field] = Array.isArray(messages) ? String(messages[0] ?? '') : String(messages ?? '');
-        return carry;
-    }, {});
+    const formattedErrors: Record<string, string> = {};
+    
+    Object.entries(errors).forEach(([field, messages]) => {
+        const errorMessage = Array.isArray(messages) 
+            ? String(messages[0] ?? '') 
+            : String(messages ?? '');
+        
+        formattedErrors[field] = errorMessage;
+        
+        // Log individual field errors
+        console.log(`Field ${field}:`, errorMessage);
+    });
+
+    return formattedErrors;
 }
 
 export default apiClient;

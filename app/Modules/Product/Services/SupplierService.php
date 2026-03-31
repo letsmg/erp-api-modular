@@ -2,6 +2,7 @@
 
 namespace App\Modules\Product\Services;
 
+use App\Helpers\SanitizerHelper;
 use App\Modules\Product\Models\Supplier;
 
 class SupplierService
@@ -24,11 +25,13 @@ class SupplierService
 
     public function create(array $data): Supplier
     {
+        $data = SanitizerHelper::sanitize($data);
         return Supplier::create($data + ['is_active' => $data['is_active'] ?? true]);
     }
 
     public function update(Supplier $supplier, array $data): Supplier
     {
+        $data = SanitizerHelper::sanitize($data);
         $supplier->update($data);
 
         return $supplier->refresh();

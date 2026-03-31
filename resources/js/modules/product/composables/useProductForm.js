@@ -1,8 +1,10 @@
 import { computed, onMounted, onUnmounted, reactive, ref } from 'vue';
-import { router } from '@inertiajs/vue3';
+import { router, usePage } from '@inertiajs/vue3';
 import { getValidationErrors } from '@/lib/api/client';
 import { clearFormData, fillFormData } from '@/lib/utils';
 import { createProduct, fetchProduct, fetchProductFormOptions, updateProduct } from '@/modules/product/services/product-api';
+
+const page = usePage();
 
 function createBaseForm() {
     return {
@@ -292,7 +294,12 @@ export function useProductForm(options = {}) {
 
             router.visit(route('products.index'));
         } catch (error) {
-            form.errors = getValidationErrors(error);
+            const validationErrors = getValidationErrors(error);
+            form.errors = validationErrors;
+            
+            // Adicionar erros ao page.props.errors global para o layout exibir
+            page.props.errors = { ...page.props.errors, ...validationErrors };
+            
             window.scrollTo({ top: 0, behavior: 'smooth' });
         } finally {
             form.processing = false;

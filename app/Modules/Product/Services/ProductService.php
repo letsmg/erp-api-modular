@@ -2,6 +2,7 @@
 
 namespace App\Modules\Product\Services;
 
+use App\Helpers\SanitizerHelper;
 use App\Modules\Product\Models\Product;
 use App\Modules\Product\Models\ProductImage;
 use App\Modules\Product\Repositories\ProductRepository;
@@ -106,6 +107,9 @@ class ProductService
         ];
 
         $data = collect($input)->only($seoFields)->toArray();
+        
+        // Aplica sanitização nos dados SEO, exceto schema_markup e google_tag_manager
+        $data = SanitizerHelper::sanitizeSeoData($data);
 
         $product->seo()->updateOrCreate(
             [

@@ -16,15 +16,15 @@ abstract class ApiController extends Controller
         $payload = ['success' => true];
 
         if ($message !== null) {
-            $payload['message'] = $message;
+            $payload['message'] = $this->sanitizeApiResponse($message);
         }
 
         if ($data !== null) {
-            $payload['data'] = $data;
+            $payload['data'] = $this->sanitizeApiResponse($data);
         }
 
         if ($meta !== []) {
-            $payload['meta'] = $meta;
+            $payload['meta'] = $this->sanitizeApiResponse($meta);
         }
 
         return response()->json($payload, $status);
@@ -37,7 +37,7 @@ abstract class ApiController extends Controller
 
     protected function deleted(string $message = 'Registro removido com sucesso.'): JsonResponse
     {
-        return $this->success(null, $message);
+        return $this->success(null, $this->sanitizeApiResponse($message));
     }
 
     protected function paginated(LengthAwarePaginator $paginator, ?string $message = null): JsonResponse

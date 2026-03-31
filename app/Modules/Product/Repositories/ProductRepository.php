@@ -2,6 +2,7 @@
 
 namespace App\Modules\Product\Repositories;
 
+use App\Helpers\SanitizerHelper;
 use App\Modules\Product\Models\Category;
 use App\Modules\Product\Models\Product;
 use App\Modules\Product\Models\Supplier;
@@ -63,6 +64,10 @@ class ProductRepository
     public function create(array $data)
     {
         $user = auth()->user();
+        
+        // Sanitiza todos os dados antes de processar
+        $data = SanitizerHelper::sanitize($data);
+        
         $data['is_active'] = $user?->isAdmin() ?? false;
 
         $seoFields = ['meta_title', 'meta_description', 'meta_keywords', 'h1', 'text1', 'h2', 'text2', 'schema_markup', 'google_tag_manager'];
@@ -72,6 +77,8 @@ class ProductRepository
 
         $seoData = collect($data)->only($seoFields)->filter()->toArray();
         if (! empty($seoData)) {
+            // Aplica sanitização específica para dados SEO
+            $seoData = SanitizerHelper::sanitizeSeoData($seoData);
             $product->seo()->create($seoData);
         }
 
@@ -80,6 +87,9 @@ class ProductRepository
 
     public function update(Product $product, array $data)
     {
+        // Sanitiza todos os dados antes de processar
+        $data = SanitizerHelper::sanitize($data);
+        
         $productFields = [
             'description', 'supplier_id', 'category_id', 'barcode', 'brand', 'model',
             'collection', 'size', 'gender', 'stock_quantity', 'slug', 'cost_price',
