@@ -2,7 +2,7 @@
 
 namespace App\Modules\Client\Controllers;
 
-use App\Http\Controllers\ApiController;
+use App\Http\Controllers\Controller;
 use App\Modules\Client\Models\Client;
 use App\Modules\Client\Requests\StoreClientRequest;
 use App\Modules\Client\Requests\UpdateClientRequest;
@@ -10,7 +10,7 @@ use App\Modules\Client\Services\ClientService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
-class ClientController extends ApiController
+class ClientController extends Controller
 {
     public function __construct(private readonly ClientService $service) {}
 

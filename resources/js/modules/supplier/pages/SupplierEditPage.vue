@@ -1,5 +1,5 @@
 <script setup>
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import AuthenticatedLayout from '@/shared/layouts/AuthenticatedLayout.vue';
 import { Head, Link } from '@inertiajs/vue3';
 import { Save, ArrowLeft, Loader2, Building2, MapPin, Phone, Mail } from 'lucide-vue-next';
 import { useSupplierForm } from '@/modules/supplier/composables/useSupplierForm';

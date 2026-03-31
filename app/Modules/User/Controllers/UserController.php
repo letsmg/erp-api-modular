@@ -2,7 +2,7 @@
 
 namespace App\Modules\User\Controllers;
 
-use App\Http\Controllers\ApiController;
+use App\Http\Controllers\Controller;
 use App\Modules\User\Models\User;
 use App\Modules\User\Requests\StoreUserRequest;
 use App\Modules\User\Requests\UpdateUserRequest;
@@ -10,7 +10,7 @@ use App\Modules\User\Services\UserService;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\JsonResponse;
 
-class UserController extends ApiController
+class UserController extends Controller
 {
     use AuthorizesRequests;
 

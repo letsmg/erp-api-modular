@@ -16,17 +16,9 @@ class UserSeeder extends Seeder
             User::factory()->count(5)->create();
         }
 
-        // 2. O ADMIN (O ponto onde deu o erro)
-        // Usamos updateOrCreate para evitar o erro de "Duplicate Entry"
-        User::updateOrCreate(
-            ['email' => 'admin@teste.com'], // Busca por este campo
-            [
-                'name' => 'Admin',
-                'password' => Hash::make('Mudar@123'),
-                'access_level' => 1,
-                'is_active' => true,
-                'email_verified_at' => now(),
-            ]
-        );
+        // 2. O ADMIN - REMOVIDO para evitar erro de hash
+        // O admin será criado pelo SingleUserSeeder
+        // Se precisar do admin manualmente, usar:
+        // php artisan tinker --execute="User::create(['name' => 'Admin', 'email' => 'admin@teste.com', 'password' => bcrypt('Mudar@123'), 'access_level' => 1, 'is_active' => true, 'email_verified_at' => now()])"
     }
 }

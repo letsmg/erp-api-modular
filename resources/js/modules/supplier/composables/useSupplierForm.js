@@ -128,6 +128,8 @@ export function useSupplierForm(options = {}) {
         handleCEP,
         handlePhone1,
         handlePhone2,
+        filler,
+        clearer,
         submit,
     };
 }

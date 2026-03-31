@@ -136,25 +136,33 @@ function buildPayload(form, isEdit) {
     };
 }
 
-export function useProductForm(options = {}) {
-    const { productId = null, enableShortcuts = false } = options;
+export function useProductForm({ productId, initialProduct, initialSuppliers, initialCategories, enableShortcuts = false } = {}) {
     const form = reactive(createBaseForm());
+    
     form.data = () => {
-        const { errors, processing, data, clearErrors, ...payload } = form;
+        const { errors, processing, existing_images, new_images, removed_images, ...payload } = form;
         return payload;
     };
-    form.clearErrors = () => {
-        form.errors = {};
-    };
+    
     const activeTab = ref('geral');
     const imagePreviews = ref([]);
     const newImagePreviews = ref([]);
     const tagInput = ref('');
-    const suppliers = ref([]);
-    const categories = ref([]);
-    const loading = ref(true);
+    const suppliers = ref(initialSuppliers || []);
+    const categories = ref(initialCategories || []);
+    const loading = ref(false);
+
+    // Initialize form with product data if provided
+    if (initialProduct && Object.keys(initialProduct).length > 0) {
+        hydrateForm(form, initialProduct);
+    }
 
     const loadFormDependencies = async () => {
+        if (initialSuppliers && initialCategories) {
+            // Data already provided by controller
+            return;
+        }
+
         loading.value = true;
 
         try {
@@ -256,12 +264,14 @@ export function useProductForm(options = {}) {
             return;
         }
 
-        if (event.ctrlKey && event.shiftKey && event.key.toLowerCase() === 'p') {
+        // Ctrl+Alt+1 - Preencher formulário
+        if (event.ctrlKey && event.altKey && event.key === '1') {
             event.preventDefault();
             fillTestForm();
         }
 
-        if (event.ctrlKey && event.shiftKey && event.key.toLowerCase() === 'l') {
+        // Ctrl+Alt+2 - Limpar formulário
+        if (event.ctrlKey && event.altKey && event.key === '2') {
             event.preventDefault();
             clearCurrentForm();
         }
@@ -287,12 +297,26 @@ export function useProductForm(options = {}) {
             const payload = buildPayload(form, Boolean(productId));
 
             if (productId) {
-                await updateProduct(productId, payload);
+                await router.put(
+                    route('products.update', productId),
+                    payload,
+                    {
+                        onSuccess: () => {
+                            router.visit(route('products.index'));
+                        }
+                    }
+                );
             } else {
-                await createProduct(payload);
+                await router.post(
+                    route('products.store'),
+                    payload,
+                    {
+                        onSuccess: () => {
+                            router.visit(route('products.index'));
+                        }
+                    }
+                );
             }
-
-            router.visit(route('products.index'));
         } catch (error) {
             const validationErrors = getValidationErrors(error);
             form.errors = validationErrors;
@@ -338,6 +362,7 @@ export function useProductForm(options = {}) {
         onDragEnd,
         profitData,
         fillTestForm,
+        clearCurrentForm,
         submit,
     };
 }

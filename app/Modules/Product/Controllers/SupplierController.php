@@ -2,7 +2,7 @@
 
 namespace App\Modules\Product\Controllers;
 
-use App\Http\Controllers\ApiController;
+use App\Http\Controllers\Controller;
 use App\Modules\Product\Models\Supplier;
 use App\Modules\Product\Requests\StoreSupplierRequest;
 use App\Modules\Product\Requests\UpdateSupplierRequest;
@@ -10,7 +10,7 @@ use App\Modules\Product\Services\SupplierService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
-class SupplierController extends ApiController
+class SupplierController extends Controller
 {
     public function __construct(private readonly SupplierService $service) {}
 

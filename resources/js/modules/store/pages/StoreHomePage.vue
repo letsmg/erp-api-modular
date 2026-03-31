@@ -26,16 +26,120 @@ const { search, minPrice, maxPrice, brand, products, featuredProducts, brands, m
             <p class="text-slate-400 text-[10px] md:text-xs font-black mt-3 uppercase tracking-[0.4em]">{{ seoData.description }}</p>
         </header>
 
-        <section v-if="featuredProducts?.length" class="max-w-7xl mx-auto px-4 md:px-6 mt-12"><div class="relative group"><div id="hero-carousel" class="flex overflow-x-auto snap-x snap-mandatory scrollbar-hide gap-4 rounded-[2.5rem] md:rounded-[4rem] shadow-2xl"><div v-for="p in featuredProducts" :key="p.slug" class="min-w-full snap-center relative aspect-[16/9] md:aspect-[21/9] bg-slate-900 overflow-hidden"><img :src="p.images?.[0] ? '/storage/products/' + p.images[0].path : 'https://placehold.co/1200x500'" class="w-full h-full object-cover opacity-40 transition-transform duration-1000 group-hover:scale-110" /><div class="absolute inset-0 flex flex-col justify-center px-10 md:px-20 text-white bg-gradient-to-r from-slate-900 via-slate-900/20 to-transparent"><span class="bg-indigo-600 w-fit px-4 py-1.5 rounded-full text-[10px] font-black uppercase mb-6 tracking-[0.2em]">Destaque da Semana</span><h2 class="text-3xl md:text-6xl font-black mb-4 tracking-tighter leading-tight max-w-3xl uppercase italic">{{ p.description }}</h2><p class="text-2xl md:text-3xl text-indigo-400 mb-8 font-mono font-bold">R$ {{ p.sale_price }}</p><Link :href="route('store.product', p.slug)" class="bg-white text-slate-900 px-10 py-5 rounded-2xl font-black uppercase text-xs w-fit hover:bg-indigo-600 hover:text-white transition-all shadow-2xl hover:-translate-y-1">Explorar Produto</Link></div></div></div><button @click="scroll('hero-carousel', 'left')" class="absolute left-8 top-1/2 -translate-y-1/2 bg-white/10 hover:bg-white text-white hover:text-black p-5 rounded-full backdrop-blur-xl transition hidden md:block border border-white/20"><ChevronLeft class="w-6 h-6"/></button><button @click="scroll('hero-carousel', 'right')" class="absolute right-8 top-1/2 -translate-y-1/2 bg-white/10 hover:bg-white text-white hover:text-black p-5 rounded-full backdrop-blur-xl transition hidden md:block border border-white/20"><ChevronRight class="w-6 h-6"/></button></div></section>
+        <section v-if="featuredProducts?.length" class="max-w-7xl mx-auto px-4 md:px-6 mt-12">
+            <div class="relative group">
+                <div id="hero-carousel" class="flex overflow-x-auto snap-x snap-mandatory scrollbar-hide gap-4 rounded-[2.5rem] md:rounded-[4rem] shadow-2xl">
+                    <div v-for="p in featuredProducts" :key="p.slug" class="min-w-full snap-center relative aspect-[16/9] md:aspect-[21/9] bg-slate-900 overflow-hidden">
+                        <img :src="p.images?.[0] ? '/storage/products/' + p.images[0].path : 'https://placehold.co/1200x500'" class="w-full h-full object-cover opacity-40 transition-transform duration-1000 group-hover:scale-110" />
+                        <div class="absolute inset-0 flex flex-col justify-center px-10 md:px-20 text-white bg-gradient-to-r from-slate-900 via-slate-900/20 to-transparent">
+                            <span class="bg-indigo-600 w-fit px-4 py-1.5 rounded-full text-[10px] font-black uppercase mb-6 tracking-[0.2em]">Destaque da Semana</span>
+                            <h2 class="text-3xl md:text-6xl font-black mb-4 tracking-tighter leading-tight max-w-3xl uppercase italic">{{ p.description }}</h2>
+                            <p class="text-2xl md:text-3xl text-indigo-400 mb-8 font-mono font-bold">R$ {{ p.sale_price }}</p>
+                            <Link :href="route('store.product', p.slug)" class="bg-white text-slate-900 px-10 py-5 rounded-2xl font-black uppercase text-xs w-fit hover:bg-indigo-600 hover:text-white transition-all shadow-2xl hover:-translate-y-1">Explorar Produto</Link>
+                        </div>
+                    </div>
+                </div>
+                <button @click="scroll('hero-carousel', 'left')" class="absolute left-8 top-1/2 -translate-y-1/2 bg-white/10 hover:bg-white text-white hover:text-black p-5 rounded-full backdrop-blur-xl transition hidden md:block border border-white/20">
+                    <ChevronLeft class="w-6 h-6"/>
+                </button>
+                <button @click="scroll('hero-carousel', 'right')" class="absolute right-8 top-1/2 -translate-y-1/2 bg-white/10 hover:bg-white text-white hover:text-black p-5 rounded-full backdrop-blur-xl transition hidden md:block border border-white/20">
+                    <ChevronRight class="w-6 h-6"/>
+                </button>
+            </div>
+        </section>
+
+        <!-- Paginação posicionada dentro do escopo das 3 imagens -->
+        <div v-if="meta.last_page > 1" class="max-w-7xl mx-auto px-4 md:px-6 mt-8 mb-8">
+            <div class="p-4 bg-white/95 backdrop-blur-sm border border-gray-100 rounded-2xl shadow-lg sticky top-24 z-40 flex flex-wrap justify-center gap-2 max-w-md mx-auto">
+                <button class="px-3 py-2 text-xs font-bold rounded-lg transition-all bg-white text-gray-500 hover:bg-gray-100 disabled:opacity-50" 
+                        :disabled="meta.current_page === 1" 
+                        @click="loadHome(meta.current_page - 1)">
+                    Anterior
+                </button>
+                <button v-for="pageNumber in paginationPages" 
+                        :key="pageNumber" 
+                        class="px-3 py-2 text-xs font-bold rounded-lg transition-all" 
+                        :class="pageNumber === meta.current_page ? 'bg-black text-white' : 'bg-white text-gray-500 hover:bg-gray-100'" 
+                        @click="loadHome(pageNumber)">
+                    {{ pageNumber }}
+                </button>
+                <button class="px-3 py-2 text-xs font-bold rounded-lg transition-all bg-white text-gray-500 hover:bg-gray-100 disabled:opacity-50" 
+                        :disabled="meta.current_page === meta.last_page" 
+                        @click="loadHome(meta.current_page + 1)">
+                    Próxima
+                </button>
+            </div>
+        </div>
 
         <main class="max-w-7xl mx-auto px-4 md:px-6 py-16 flex flex-col md:flex-row gap-12">
-            <aside class="w-full md:w-72"><div class="bg-white p-8 rounded-[3rem] border border-slate-100 shadow-sm md:sticky md:top-32 space-y-10"><div class="space-y-6"><div class="group"><label class="text-[10px] font-black uppercase text-slate-900 mb-2 block ml-1 tracking-wider">Preco Minimo</label><input v-model="minPrice" type="number" placeholder="A partir de R$" class="w-full bg-slate-50 border-none rounded-2xl text-xs font-bold p-4 focus:ring-2 focus:ring-indigo-500 transition-all" /></div><div class="group"><label class="text-[10px] font-black uppercase text-slate-900 mb-2 block ml-1 tracking-wider">Preco Limite</label><input v-model="maxPrice" type="number" placeholder="Ate R$" class="w-full bg-slate-50 border-none rounded-2xl text-xs font-bold p-4 focus:ring-2 focus:ring-indigo-500 transition-all" /></div><div><label class="text-[10px] font-black uppercase text-slate-900 mb-2 block ml-1 tracking-wider">Marca</label><select v-model="brand" class="w-full bg-slate-50 border-none rounded-2xl text-xs font-bold p-4 focus:ring-2 focus:ring-indigo-500 transition-all"><option value="">Todas as Marcas</option><option v-for="brandItem in brands" :key="brandItem" :value="brandItem">{{ brandItem }}</option></select></div></div></div></aside>
-            <section class="flex-1"><div v-if="loading" class="text-center py-32 bg-white rounded-[4rem] border-4 border-dashed border-slate-50"><p class="text-slate-400 font-black uppercase tracking-[0.3em] text-sm italic">Carregando vitrine...</p></div><div v-else-if="products?.length" class="grid grid-cols-2 lg:grid-cols-3 gap-6 md:gap-10"><Link v-for="product in products" :key="product.slug" :href="route('store.product', product.slug)" class="group bg-white p-5 rounded-[2.5rem] md:rounded-[3.5rem] border border-white shadow-sm hover:shadow-2xl transition-all duration-700 block"><div class="relative aspect-[4/5] rounded-[2rem] md:rounded-[2.8rem] overflow-hidden bg-slate-100 mb-6"><img :src="product.images?.[0] ? '/storage/products/' + product.images[0].path : 'https://placehold.co/600x800'" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000" /><div class="absolute inset-0 bg-indigo-900/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center"><div class="bg-white p-4 rounded-full scale-50 group-hover:scale-100 transition-transform duration-500 shadow-2xl"><ShoppingBag class="w-6 h-6 text-slate-900" /></div></div></div><div class="px-3"><h3 class="text-xs md:text-sm font-black uppercase truncate text-slate-800 tracking-tight">{{ product.description }}</h3><div class="flex items-center justify-between mt-2"><p class="text-sm md:text-2xl font-black text-indigo-600 font-mono tracking-tighter">R$ {{ product.sale_price }}</p><span class="text-[8px] font-black text-slate-300 uppercase tracking-widest group-hover:text-indigo-600 transition-colors">Ver Mais</span></div></div></Link></div><div v-else class="text-center py-32 bg-white rounded-[4rem] border-4 border-dashed border-slate-50"><SearchX class="w-16 h-16 text-slate-200 mx-auto mb-6" /><p class="text-slate-400 font-black uppercase tracking-[0.3em] text-sm italic">Nenhum resultado para os filtros aplicados</p></div>
-                <div v-if="meta.last_page > 1" class="p-5 mt-8 bg-gray-50 border border-gray-100 rounded-2xl flex flex-wrap justify-center gap-2"><button class="px-4 py-2 text-xs font-bold rounded-lg transition-all bg-white text-gray-500 hover:bg-gray-100 disabled:opacity-50" :disabled="meta.current_page === 1" @click="loadHome(meta.current_page - 1)">Anterior</button><button v-for="pageNumber in paginationPages" :key="pageNumber" class="px-4 py-2 text-xs font-bold rounded-lg transition-all" :class="pageNumber === meta.current_page ? 'bg-black text-white' : 'bg-white text-gray-500 hover:bg-gray-100'" @click="loadHome(pageNumber)">{{ pageNumber }}</button><button class="px-4 py-2 text-xs font-bold rounded-lg transition-all bg-white text-gray-500 hover:bg-gray-100 disabled:opacity-50" :disabled="meta.current_page === meta.last_page" @click="loadHome(meta.current_page + 1)">Proxima</button></div>
+            <aside class="w-full md:w-72">
+                <div class="bg-white p-8 rounded-[3rem] border border-slate-100 shadow-sm md:sticky md:top-32 space-y-10">
+                    <div class="space-y-6">
+                        <div class="group">
+                            <label class="text-[10px] font-black uppercase text-slate-900 mb-2 block ml-1 tracking-wider">Preco Minimo</label>
+                            <input v-model="minPrice" type="number" placeholder="A partir de R$" class="w-full bg-slate-50 border-none rounded-2xl text-xs font-bold p-4 focus:ring-2 focus:ring-indigo-500 transition-all" />
+                        </div>
+                        <div class="group">
+                            <label class="text-[10px] font-black uppercase text-slate-900 mb-2 block ml-1 tracking-wider">Preco Limite</label>
+                            <input v-model="maxPrice" type="number" placeholder="Ate R$" class="w-full bg-slate-50 border-none rounded-2xl text-xs font-bold p-4 focus:ring-2 focus:ring-indigo-500 transition-all" />
+                        </div>
+                        <div>
+                            <label class="text-[10px] font-black uppercase text-slate-900 mb-2 block ml-1 tracking-wider">Marca</label>
+                            <select v-model="brand" class="w-full bg-slate-50 border-none rounded-2xl text-xs font-bold p-4 focus:ring-2 focus:ring-indigo-500 transition-all">
+                                <option value="">Todas as Marcas</option>
+                                <option v-for="brandItem in brands" :key="brandItem" :value="brandItem">{{ brandItem }}</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+            <section class="flex-1">
+                <div v-if="loading" class="text-center py-32 bg-white rounded-[4rem] border-4 border-dashed border-slate-50">
+                    <p class="text-slate-400 font-black uppercase tracking-[0.3em] text-sm italic">Carregando vitrine...</p>
+                </div>
+                <div v-else-if="products?.length" class="grid grid-cols-2 lg:grid-cols-3 gap-6 md:gap-10">
+                    <Link v-for="product in products" :key="product.slug" :href="route('store.product', product.slug)" class="group bg-white p-5 rounded-[2.5rem] md:rounded-[3.5rem] border border-white shadow-sm hover:shadow-2xl transition-all duration-700 block">
+                        <div class="relative aspect-[4/5] rounded-[2rem] md:rounded-[2.8rem] overflow-hidden bg-slate-100 mb-6">
+                            <img :src="product.images?.[0] ? '/storage/products/' + product.images[0].path : 'https://placehold.co/600x800'" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000" />
+                            <div class="absolute inset-0 bg-indigo-900/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center">
+                                <div class="bg-white p-4 rounded-full scale-50 group-hover:scale-100 transition-transform duration-500 shadow-2xl">
+                                    <ShoppingBag class="w-6 h-6 text-slate-900" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="px-3">
+                            <h3 class="text-xs md:text-sm font-black uppercase truncate text-slate-800 tracking-tight">{{ product.description }}</h3>
+                            <div class="flex items-center justify-between mt-2">
+                                <p class="text-sm md:text-2xl font-black text-indigo-600 font-mono tracking-tighter">R$ {{ product.sale_price }}</p>
+                                <span class="text-[8px] font-black text-slate-300 uppercase tracking-widest group-hover:text-indigo-600 transition-colors">Ver Mais</span>
+                            </div>
+                        </div>
+                    </Link>
+                </div>
+                <div v-else class="text-center py-32 bg-white rounded-[4rem] border-4 border-dashed border-slate-50">
+                    <SearchX class="w-16 h-16 text-slate-200 mx-auto mb-6" />
+                    <p class="text-slate-400 font-black uppercase tracking-[0.3em] text-sm italic">Nenhum resultado para os filtros aplicados</p>
+                </div>
             </section>
         </main>
 
-        <Transition enter-active-class="duration-700 ease-out" enter-from-class="opacity-0 translate-y-10" enter-to-class="opacity-100 translate-y-0"><div v-if="showTermsModal" class="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-slate-900/95 backdrop-blur-2xl"><div class="bg-white w-full max-w-xl rounded-[4rem] p-12 shadow-2xl relative overflow-hidden"><div class="absolute top-0 left-0 w-full h-2 bg-indigo-600"></div><div class="w-20 h-20 bg-indigo-50 text-indigo-600 rounded-3xl flex items-center justify-center mb-8"><ShieldCheck class="w-10 h-10" /></div><h2 class="text-3xl font-black text-slate-900 mb-6 uppercase italic tracking-tighter leading-none">Protecao de Dados & Auditoria</h2><p class="text-slate-500 text-sm mb-10 leading-relaxed font-medium">Para sua seguranca, registramos seu IP e atividades para fins de auditoria cibernetica. Ao prosseguir, voce concorda com nossos <a href="#" class="text-indigo-600 font-black underline decoration-2 underline-offset-4">termos de uso</a> e politica de privacidade.</p><label class="flex items-center gap-4 cursor-pointer mb-10 bg-slate-50 p-6 rounded-3xl border border-slate-100 hover:bg-indigo-50 transition-colors group"><input type="checkbox" v-model="termsAccepted" class="h-6 w-6 rounded-lg border-slate-300 text-indigo-600 focus:ring-indigo-500 transition-all" /><span class="text-[11px] font-black text-slate-700 uppercase tracking-tight group-hover:text-indigo-600">Compreendo e aceito as condicoes de monitoramento.</span></label><button @click="acceptTerms" :disabled="!termsAccepted" class="w-full py-6 rounded-2xl font-black uppercase tracking-[0.2em] text-xs transition-all shadow-xl" :class="termsAccepted ? 'bg-slate-900 text-white hover:bg-indigo-600 hover:-translate-y-1' : 'bg-slate-100 text-slate-300 cursor-not-allowed'">Confirmar Acesso</button></div></div></Transition>
+        <Transition enter-active-class="duration-700 ease-out" enter-from-class="opacity-0 translate-y-10" enter-to-class="opacity-100 translate-y-0">
+            <div v-if="showTermsModal" class="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-slate-900/95 backdrop-blur-2xl">
+                <div class="bg-white w-full max-w-xl rounded-[4rem] p-12 shadow-2xl relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-full h-2 bg-indigo-600"></div>
+                    <div class="w-20 h-20 bg-indigo-50 text-indigo-600 rounded-3xl flex items-center justify-center mb-8">
+                        <ShieldCheck class="w-10 h-10" />
+                    </div>
+                    <h2 class="text-3xl font-black text-slate-900 mb-6 uppercase italic tracking-tighter leading-none">Protecao de Dados & Auditoria</h2>
+                    <p class="text-slate-500 text-sm mb-10 leading-relaxed font-medium">Para sua seguranca, registramos seu IP e atividades para fins de auditoria cibernetica. Ao prosseguir, voce concorda com nossos <a href="#" class="text-indigo-600 font-black underline decoration-2 underline-offset-4">termos de uso</a> e politica de privacidade.</p>
+                    <label class="flex items-center gap-4 cursor-pointer mb-10 bg-slate-50 p-6 rounded-3xl border border-slate-100 hover:bg-indigo-50 transition-colors group">
+                        <input type="checkbox" v-model="termsAccepted" class="h-6 w-6 rounded-lg border-slate-300 text-indigo-600 focus:ring-indigo-500 transition-all" />
+                        <span class="text-[11px] font-black text-slate-700 uppercase tracking-tight group-hover:text-indigo-600">Compreendo e aceito as condicoes de monitoramento.</span>
+                    </label>
+                    <button @click="acceptTerms" :disabled="!termsAccepted" class="w-full py-6 rounded-2xl font-black uppercase tracking-[0.2em] text-xs transition-all shadow-xl" :class="termsAccepted ? 'bg-slate-900 text-white hover:bg-indigo-600 hover:-translate-y-1' : 'bg-slate-100 text-slate-300 cursor-not-allowed'">Confirmar Acesso</button>
+                </div>
+            </div>
+        </Transition>
     </StoreLayout>
 </template>
 

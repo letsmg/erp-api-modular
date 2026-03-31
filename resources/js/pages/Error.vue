@@ -1,5 +1,5 @@
 <script setup>
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import AuthenticatedLayout from '@/shared/layouts/AuthenticatedLayout.vue';
 import { Link } from '@inertiajs/vue3';
 import { AlertCircle, Home } from 'lucide-vue-next';
 

@@ -2,14 +2,14 @@
 
 namespace App\Modules\Auth\Controllers;
 
-use App\Http\Controllers\ApiController;
+use App\Http\Controllers\Controller;
 use App\Modules\Auth\Requests\ForgotPasswordRequest;
 use App\Modules\Auth\Requests\LoginRequest;
 use App\Modules\Auth\Services\AuthService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
-class AuthController extends ApiController
+class AuthController extends Controller
 {
     public function __construct(private readonly AuthService $service) {}
 

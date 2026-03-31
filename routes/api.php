@@ -42,7 +42,7 @@ Route::middleware(['auth:sanctum', ForceJsonResponse::class])
     });
 
 // Rotas web antigas (mantidas por compatibilidade)
-Route::middleware(['web', ForceJsonResponse::class])
+Route::middleware(['web'])
     ->name('api.')
     ->prefix('v1')
     ->group(function () {

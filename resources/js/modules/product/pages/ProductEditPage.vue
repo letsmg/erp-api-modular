@@ -1,5 +1,5 @@
 <script setup>
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import AuthenticatedLayout from '@/shared/layouts/AuthenticatedLayout.vue';
 import { Head, Link } from '@inertiajs/vue3';
 import draggable from 'vuedraggable';
 import { Save, ArrowLeft, DollarSign, Camera, X, Code, Search, FileText, Truck } from 'lucide-vue-next';
@@ -10,6 +10,18 @@ const props = defineProps({
         type: Number,
         required: true,
     },
+    product: {
+        type: Object,
+        default: () => ({}),
+    },
+    suppliers: {
+        type: Array,
+        default: () => [],
+    },
+    categories: {
+        type: Array,
+        default: () => [],
+    },
 });
 
 const {
@@ -17,8 +29,6 @@ const {
     activeTab,
     newImagePreviews,
     tagInput,
-    suppliers,
-    categories,
     loading,
     addTag,
     removeTag,
@@ -27,7 +37,12 @@ const {
     removeNewImage,
     profitData,
     submit,
-} = useProductForm({ productId: props.productId });
+} = useProductForm({ 
+    productId: props.productId,
+    initialProduct: props.product,
+    initialSuppliers: props.suppliers,
+    initialCategories: props.categories,
+});
 
 const dragOptions = {
     animation: 200,

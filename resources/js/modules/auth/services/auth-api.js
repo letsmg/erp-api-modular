@@ -1,17 +1,17 @@
 import apiClient from '@/lib/api/client';
 
 export function login(payload) {
-    return apiClient.post(route('api.auth.login'), payload);
+    return apiClient.post(route('login.post'), {
+        email: payload.email,
+        password: payload.password,
+        remember: payload.remember,
+    });
 }
 
 export function forgotPassword(payload) {
-    return apiClient.post(route('api.password.email'), payload);
+    return apiClient.post(route('password.email.web'), payload);
 }
 
 export function logout() {
-    return apiClient.post(route('api.logout'));
-}
-
-export function me() {
-    return apiClient.get(route('api.auth.me'));
+    return apiClient.post(route('logout'));
 }

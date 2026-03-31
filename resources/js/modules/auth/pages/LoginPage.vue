@@ -1,5 +1,5 @@
 <script setup>
-import { Head, Link } from '@inertiajs/vue3';
+import { Head, Link, router } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import { Eye, EyeOff, LogIn, ShieldCheck, Globe, Monitor, ArrowLeft } from 'lucide-vue-next';
 import { getValidationErrors } from '@/lib/api/client';
@@ -34,7 +34,7 @@ const submit = async () => {
             remember: form.value.remember,
         });
 
-        window.location.href = route('dashboard');
+        router.visit(route('dashboard'));
     } catch (error) {
         form.value.errors = getValidationErrors(error);
     } finally {

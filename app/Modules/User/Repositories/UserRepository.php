@@ -12,6 +12,22 @@ class UserRepository
         return User::orderBy('name')->get();
     }
 
+    public function getPaginated(array $filters = [])
+    {
+        $query = User::orderBy('name');
+
+        if (!empty($filters['search'])) {
+            $search = trim($filters['search']);
+            $query->where(function ($q) use ($search) {
+                $searchTerm = "%{$search}%";
+                $q->where('name', 'like', $searchTerm)
+                    ->orWhere('email', 'like', $searchTerm);
+            });
+        }
+
+        return $query->paginate(12)->withQueryString();
+    }
+
     public function getNonAdmin()
     {
         return User::where('access_level', 0)

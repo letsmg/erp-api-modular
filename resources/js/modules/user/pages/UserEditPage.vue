@@ -1,5 +1,5 @@
 <script setup>
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import AuthenticatedLayout from '@/shared/layouts/AuthenticatedLayout.vue';
 import { Head, Link } from '@inertiajs/vue3';
 import { Save, ArrowLeft, Shield, Mail, Lock, User, Eye, EyeOff, UserCheck, XCircle } from 'lucide-vue-next';
 import { useUserForm } from '@/modules/user/composables/useUserForm';

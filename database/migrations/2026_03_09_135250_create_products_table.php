@@ -7,8 +7,8 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void {
 
-        // Comando para habilitar a extensão
-        DB::statement('CREATE EXTENSION IF NOT EXISTS unaccent');
+        // Comando para habilitar a extensão (apenas PostgreSQL)
+        // DB::statement('CREATE EXTENSION IF NOT EXISTS unaccent');
 
         Schema::create('products', function (Blueprint $table) {
             $table->id();
@@ -54,7 +54,7 @@ return new class extends Migration {
             $table->index('is_active');
             $table->index('is_featured');
             $table->index('created_at');
-            $table->fullText(['description', 'brand', 'model']);
+            // $table->fullText(['description', 'brand', 'model']); // SQLite não suporta fullText
             $table->index(['is_active', 'sale_price']); // Índice composto para a vitrine
             $table->index('promo_price');
         });
@@ -62,7 +62,7 @@ return new class extends Migration {
         
     }
     public function down(): void { 
-        DB::statement('DROP EXTENSION IF EXISTS unaccent');
+        // DB::statement('DROP EXTENSION IF EXISTS unaccent'); // SQLite não suporta
 
         Schema::dropIfExists('products');     
     }

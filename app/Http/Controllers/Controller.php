@@ -68,4 +68,44 @@ abstract class Controller
             'data' => $data
         ], $status);
     }
+    
+    /**
+     * Retorna resposta JSON de sucesso com paginação
+     */
+    protected function success($data = null, string $message = null, int $status = 200): JsonResponse
+    {
+        if ($data !== null) {
+            $data = $this->sanitizeApiResponse($data);
+        }
+        
+        return response()->json([
+            'success' => true,
+            'message' => $message,
+            'data' => $data
+        ], $status);
+    }
+    
+    /**
+     * Retorna resposta JSON paginada
+     */
+    protected function paginated($paginator, string $message = null, int $status = 200): JsonResponse
+    {
+        $data = [
+            'data' => $paginator->items(),
+            'current_page' => $paginator->currentPage(),
+            'last_page' => $paginator->lastPage(),
+            'per_page' => $paginator->perPage(),
+            'total' => $paginator->total(),
+        ];
+        
+        if ($message !== null) {
+            return response()->json([
+                'success' => true,
+                'message' => $message,
+                'data' => $data
+            ], $status);
+        }
+        
+        return response()->json($data, $status);
+    }
 }

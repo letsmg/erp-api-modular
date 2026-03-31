@@ -8,7 +8,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 
-class AuthController extends \App\Http\Controllers\ApiController
+class AuthController extends \App\Http\Controllers\Controller
 {
     /**
      * Login do usuário e geração de token
@@ -30,7 +30,11 @@ class AuthController extends \App\Http\Controllers\ApiController
         }
 
         if (!$user->is_active) {
-            return $this->error(null, 'Sua conta está inativa.', 403);
+            return response()->json([
+                'success' => false,
+                'message' => 'Sua conta está inativa.',
+                'data' => null
+            ], 403);
         }
 
         // Revoga tokens anteriores do mesmo dispositivo
@@ -38,11 +42,15 @@ class AuthController extends \App\Http\Controllers\ApiController
 
         $token = $user->createToken($request->device_name);
 
-        return $this->success([
-            'token' => $token->plainTextToken,
-            'user' => $user,
-            'expires_at' => $token->accessToken->expires_at,
-        ], 'Login realizado com sucesso.');
+        return response()->json([
+            'success' => true,
+            'message' => 'Login realizado com sucesso.',
+            'data' => [
+                'token' => $token->plainTextToken,
+                'user' => $user,
+                'expires_at' => $token->accessToken->expires_at,
+            ]
+        ]);
     }
 
     /**
@@ -53,7 +61,11 @@ class AuthController extends \App\Http\Controllers\ApiController
         // Verifica se usuário está autenticado
         $user = $request->user();
         if (!$user) {
-            return $this->error(null, 'Usuário não autenticado.', 401);
+            return response()->json([
+                'success' => false,
+                'message' => 'Usuário não autenticado.',
+                'data' => null
+            ], 401);
         }
 
         // Revoga o token atual
@@ -62,7 +74,11 @@ class AuthController extends \App\Http\Controllers\ApiController
             $token->delete();
         }
 
-        return $this->success(null, 'Logout realizado com sucesso.');
+        return response()->json([
+            'success' => true,
+            'message' => 'Logout realizado com sucesso.',
+            'data' => null
+        ]);
     }
 
     /**
@@ -72,7 +88,11 @@ class AuthController extends \App\Http\Controllers\ApiController
     {
         $request->user()->tokens()->delete();
 
-        return $this->success(null, 'Logout realizado em todos os dispositivos.');
+        return response()->json([
+            'success' => true,
+            'message' => 'Logout realizado em todos os dispositivos.',
+            'data' => null
+        ]);
     }
 
     /**
@@ -80,7 +100,11 @@ class AuthController extends \App\Http\Controllers\ApiController
      */
     public function me(Request $request): JsonResponse
     {
-        return $this->success($request->user(), 'Dados do usuário.');
+        return response()->json([
+            'success' => true,
+            'message' => 'Dados do usuário.',
+            'data' => $request->user()
+        ]);
     }
 
     /**
@@ -90,7 +114,11 @@ class AuthController extends \App\Http\Controllers\ApiController
     {
         $tokens = $request->user()->tokens()->get(['id', 'name', 'created_at', 'last_used_at', 'expires_at']);
 
-        return $this->success($tokens, 'Tokens ativos.');
+        return response()->json([
+            'success' => true,
+            'message' => 'Tokens ativos.',
+            'data' => $tokens
+        ]);
     }
 
     /**
@@ -101,6 +129,10 @@ class AuthController extends \App\Http\Controllers\ApiController
         $token = $request->user()->tokens()->findOrFail($tokenId);
         $token->delete();
 
-        return $this->success(null, 'Token revogado com sucesso.');
+        return response()->json([
+            'success' => true,
+            'message' => 'Token revogado com sucesso.',
+            'data' => null
+        ]);
     }
 }

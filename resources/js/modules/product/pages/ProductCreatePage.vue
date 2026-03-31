@@ -1,5 +1,5 @@
 <script setup>
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import AuthenticatedLayout from '@/shared/layouts/AuthenticatedLayout.vue';
 import { Head, Link } from '@inertiajs/vue3';
 import draggable from 'vuedraggable';
 import { Save, ArrowLeft, DollarSign, Camera, X, Move, Search, Code, FileText, Truck, Sparkles } from 'lucide-vue-next';
@@ -21,6 +21,7 @@ const {
     profitData,
     submit,
     fillTestForm,
+    clearCurrentForm,
 } = useProductForm({ enableShortcuts: true });
 </script>
 
@@ -40,9 +41,6 @@ const {
                     </Link>
                     <div class="flex items-center gap-4">
                         <h2 class="text-3xl font-black text-gray-800 tracking-tighter uppercase">Novo Produto</h2>
-                        <button type="button" class="hidden md:flex items-center gap-1 text-[9px] font-bold text-indigo-400 bg-indigo-50 px-2 py-1 rounded-full uppercase tracking-widest" @click="fillTestForm">
-                            <Sparkles class="w-3 h-3" /> CTRL + SHIFT + P
-                        </button>
                     </div>
                 </div>
 
@@ -53,13 +51,42 @@ const {
                 </div>
             </div>
 
+            <!-- Atalhos -->
+            <div class="mb-6 flex justify-center">
+                <div class="inline-flex items-center gap-4 bg-slate-50 px-6 py-3 rounded-2xl border border-gray-200 shadow-sm">
+                    <div class="flex items-center gap-2">
+                        <Sparkles class="w-4 h-4 text-indigo-500" />
+                        <span class="text-[11px] font-bold text-indigo-600">CTRL+ALT+1</span>
+                        <span class="text-[11px] text-gray-600">Popular</span>
+                    </div>
+                    <div class="w-px h-4 bg-gray-300"></div>
+                    <div class="flex items-center gap-2">
+                        <X class="w-4 h-4 text-red-500" />
+                        <span class="text-[11px] font-bold text-red-600">CTRL+ALT+2</span>
+                        <span class="text-[11px] text-gray-600">Limpar</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botões de Ação -->
+            <div class="mb-6 flex justify-center gap-4">
+                <button type="button" @click="fillTestForm" class="bg-slate-600 hover:bg-slate-700 active:scale-95 active:shadow-lg text-white px-6 py-3 rounded-xl font-bold text-sm uppercase tracking-wider shadow-lg hover:shadow-xl transition-all duration-200 flex items-center gap-2 transform cursor-pointer">
+                    <Sparkles class="w-4 h-4" />
+                    Popular Formulário
+                </button>
+                <button type="button" @click="clearCurrentForm" class="bg-slate-600 hover:bg-slate-700 active:scale-95 active:shadow-lg text-white px-6 py-3 rounded-xl font-bold text-sm uppercase tracking-wider shadow-lg hover:shadow-xl transition-all duration-200 flex items-center gap-2 transform cursor-pointer">
+                    <X class="w-4 h-4" />
+                    Limpar Formulário
+                </button>
+            </div>
+
             <form @submit.prevent="submit" class="space-y-6">
                 <div v-show="activeTab === 'geral'" class="animate-in fade-in slide-in-from-bottom-2 duration-500 space-y-6">
                     <div class="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm">
                         <label class="block text-[10px] font-black uppercase text-gray-400 mb-4 tracking-widest">Fotos do Produto (Arraste para ordenar)</label>
                         <draggable v-model="form.images" item-key="name" class="grid grid-cols-2 md:grid-cols-6 gap-4" ghost-class="opacity-50" @end="onDragEnd">
                             <template #item="{ index }">
-                                <div class="relative group aspect-square rounded-2xl overflow-hidden border border-gray-100 bg-gray-50 cursor-move shadow-sm">
+                                <div class="relative group aspect-square rounded-2xl overflow-hidden border border-gray-100 bg-slate-50 cursor-move shadow-sm">
                                     <img :src="imagePreviews[index]" class="w-full h-full object-cover" />
                                     <div class="absolute inset-0 bg-indigo-600/20 opacity-0 group-hover:opacity-100 transition flex items-center justify-center"><Move class="text-white w-6 h-6 opacity-50" /></div>
                                     <button type="button" @click="removeImage(index)" class="absolute top-2 right-2 bg-white text-red-500 p-1.5 rounded-full shadow-lg hover:bg-red-50 transition"><X class="w-3 h-3" /></button>
@@ -67,7 +94,7 @@ const {
                                 </div>
                             </template>
                             <template #footer>
-                                <label v-if="form.images.length < 6" class="aspect-square border-2 border-dashed border-gray-100 rounded-2xl flex flex-col items-center justify-center cursor-pointer hover:bg-gray-50 transition group">
+                                <label v-if="form.images.length < 6" class="aspect-square border-2 border-dashed border-gray-100 rounded-2xl flex flex-col items-center justify-center cursor-pointer hover:bg-slate-50 transition group">
                                     <Camera class="w-6 h-6 text-gray-300 group-hover:text-indigo-500 transition" />
                                     <input type="file" class="hidden" multiple accept="image/*" @change="handleImageUpload" />
                                 </label>
@@ -78,12 +105,12 @@ const {
                     <div class="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div class="md:col-span-2">
                             <label class="block text-[10px] font-black uppercase text-gray-400 mb-2">DESCRIÇÃO DO PRODUTO</label>
-                            <input v-model="form.description" type="text" class="w-full border-gray-100 bg-gray-50 rounded-2xl focus:ring-indigo-500 font-bold" required />
+                            <input v-model="form.description" type="text" class="w-full border-gray-100 bg-slate-50 rounded-2xl focus:ring-indigo-500 font-bold" required />
                             <p v-if="form.errors.description" class="text-red-500 text-xs mt-1">{{ form.errors.description }}</p>
                         </div>
                         <div>
                             <label class="block text-[10px] font-black uppercase text-gray-400 mb-2">Fornecedor Origem</label>
-                            <select v-model="form.supplier_id" class="w-full border-gray-100 bg-gray-50 rounded-2xl focus:ring-indigo-500 text-sm font-bold" required>
+                            <select v-model="form.supplier_id" class="w-full border-gray-100 bg-slate-50 rounded-2xl focus:ring-indigo-500 text-sm font-bold" required>
                                 <option :value="''">Selecione o Fornecedor...</option>
                                 <option v-for="supplier in suppliers" :key="supplier.id" :value="supplier.id">{{ supplier.company_name }}</option>
                             </select>
@@ -91,17 +118,17 @@ const {
                         </div>
                         <div>
                             <label class="block text-[10px] font-black uppercase text-gray-400 mb-2">CÓDIGO DE BARRAS (EAN)</label>
-                            <input v-model="form.barcode" type="text" class="w-full border-gray-100 bg-gray-50 rounded-2xl font-bold" />
+                            <input v-model="form.barcode" type="text" class="w-full border-gray-100 bg-slate-50 rounded-2xl font-bold" />
                             <p v-if="form.errors.barcode" class="text-red-500 text-xs mt-1">{{ form.errors.barcode }}</p>
                         </div>
                         <div>
                             <label class="block text-[10px] font-black uppercase text-gray-400 mb-2">Marca</label>
-                            <input v-model="form.brand" type="text" class="w-full border-gray-100 bg-gray-50 rounded-2xl font-bold" />
+                            <input v-model="form.brand" type="text" class="w-full border-gray-100 bg-slate-50 rounded-2xl font-bold" />
                             <p v-if="form.errors.brand" class="text-red-500 text-xs mt-1">{{ form.errors.brand }}</p>
                         </div>
                         <div>
                             <label class="block text-[10px] font-black uppercase text-gray-400 mb-2">Categoria</label>
-                            <select v-model="form.category_id" class="w-full border-gray-100 bg-gray-50 rounded-2xl text-sm font-bold focus:ring-indigo-500">
+                            <select v-model="form.category_id" class="w-full border-gray-100 bg-slate-50 rounded-2xl text-sm font-bold focus:ring-indigo-500">
                                 <option :value="''">Selecione uma categoria...</option>
                                 <option v-for="category in categories" :key="category.id" :value="category.id">{{ category.name }}</option>
                             </select>
@@ -109,27 +136,27 @@ const {
                         </div>
                         <div>
                             <label class="block text-[10px] font-black uppercase text-gray-400 mb-2">Modelo</label>
-                            <input v-model="form.model" type="text" class="w-full border-gray-100 bg-gray-50 rounded-2xl font-bold" />
+                            <input v-model="form.model" type="text" class="w-full border-gray-100 bg-slate-50 rounded-2xl font-bold" />
                             <p v-if="form.errors.model" class="text-red-500 text-xs mt-1">{{ form.errors.model }}</p>
                         </div>
                         <div>
                             <label class="block text-[10px] font-black uppercase text-gray-400 mb-2">Colecao</label>
-                            <input v-model="form.collection" type="text" class="w-full border-gray-100 bg-gray-50 rounded-2xl font-bold" />
+                            <input v-model="form.collection" type="text" class="w-full border-gray-100 bg-slate-50 rounded-2xl font-bold" />
                         </div>
                         <div>
                             <label class="block text-[10px] font-black uppercase text-gray-400 mb-2">Tamanho / Grade</label>
-                            <input v-model="form.size" type="text" class="w-full border-gray-100 bg-gray-50 rounded-2xl font-bold" />
+                            <input v-model="form.size" type="text" class="w-full border-gray-100 bg-slate-50 rounded-2xl font-bold" />
                         </div>
                         <div>
                             <label class="block text-[10px] font-black uppercase text-gray-400 mb-2">Genero Publico</label>
-                            <select v-model="form.gender" class="w-full border-gray-100 bg-gray-50 rounded-2xl font-bold uppercase text-[10px]">
+                            <select v-model="form.gender" class="w-full border-gray-100 bg-slate-50 rounded-2xl font-bold uppercase text-[10px]">
                                 <option>Masculino</option><option>Feminino</option><option>Unissex</option><option>Infantil</option>
                             </select>
                             <p v-if="form.errors.gender" class="text-red-500 text-xs mt-1">{{ form.errors.gender }}</p>
                         </div>
                         <div>
                             <label class="block text-[10px] font-black uppercase text-gray-400 mb-2">Quantidade Inicial em Estoque</label>
-                            <input v-model="form.stock_quantity" type="number" class="w-full border-gray-100 bg-gray-50 rounded-2xl font-black text-indigo-600" />
+                            <input v-model="form.stock_quantity" type="number" class="w-full border-gray-100 bg-slate-50 rounded-2xl font-black text-indigo-600" />
                             <p v-if="form.errors.stock_quantity" class="text-red-500 text-xs mt-1">{{ form.errors.stock_quantity }}</p>
                         </div>
                     </div>
@@ -143,12 +170,12 @@ const {
                                 <div class="grid grid-cols-2 gap-6">
                                     <div>
                                         <label class="block text-[10px] font-black uppercase text-gray-400 mb-2">Preço de Custo (R$)</label>
-                                        <input v-model="form.cost_price" type="number" step="0.01" class="w-full border-gray-100 bg-gray-50 rounded-2xl font-black text-xl" />
+                                        <input v-model="form.cost_price" type="number" step="0.01" class="w-full border-gray-100 bg-slate-50 rounded-2xl font-black text-xl" />
                                         <p v-if="form.errors.cost_price" class="text-red-500 text-xs mt-1">{{ form.errors.cost_price }}</p>
                                     </div>
                                     <div>
                                         <label class="block text-[10px] font-black uppercase text-gray-400 mb-2">Preço de Venda (R$)</label>
-                                        <input v-model="form.sale_price" type="number" step="0.01" class="w-full border-gray-100 bg-gray-50 rounded-2xl font-black text-xl text-indigo-600" />
+                                        <input v-model="form.sale_price" type="number" step="0.01" class="w-full border-gray-100 bg-slate-50 rounded-2xl font-black text-xl text-indigo-600" />
                                         <p v-if="form.errors.sale_price" class="text-red-500 text-xs mt-1">{{ form.errors.sale_price }}</p>
                                     </div>
                                 </div>
@@ -170,7 +197,7 @@ const {
                                     <div>
                                         <label class="block text-[9px] font-black uppercase text-gray-400 mb-1">Peso (kg)</label>
                                         <input v-model="form.weight" type="number" step="0.001" min="0"
-                                            class="w-full border-gray-100 bg-gray-50 rounded-xl font-bold text-sm focus:ring-indigo-500 focus:border-indigo-500" 
+                                            class="w-full border-gray-100 bg-slate-50 rounded-xl font-bold text-sm focus:ring-indigo-500 focus:border-indigo-500" 
                                             placeholder="0.000" />
                                         <p v-if="form.errors.weight" class="text-red-500 text-xs mt-1">{{ form.errors.weight }}</p>
                                     </div>
@@ -178,7 +205,7 @@ const {
                                     <div>
                                         <label class="block text-[9px] font-black uppercase text-gray-400 mb-1">Largura (cm)</label>
                                         <input v-model="form.width" type="number" step="0.01" min="0"
-                                            class="w-full border-gray-100 bg-gray-50 rounded-xl font-bold text-sm focus:ring-indigo-500 focus:border-indigo-500" 
+                                            class="w-full border-gray-100 bg-slate-50 rounded-xl font-bold text-sm focus:ring-indigo-500 focus:border-indigo-500" 
                                             placeholder="0.00" />
                                         <p v-if="form.errors.width" class="text-red-500 text-xs mt-1">{{ form.errors.width }}</p>
                                     </div>
@@ -186,7 +213,7 @@ const {
                                     <div>
                                         <label class="block text-[9px] font-black uppercase text-gray-400 mb-1">Altura (cm)</label>
                                         <input v-model="form.height" type="number" step="0.01" min="0"
-                                            class="w-full border-gray-100 bg-gray-50 rounded-xl font-bold text-sm focus:ring-indigo-500 focus:border-indigo-500" 
+                                            class="w-full border-gray-100 bg-slate-50 rounded-xl font-bold text-sm focus:ring-indigo-500 focus:border-indigo-500" 
                                             placeholder="0.00" />
                                         <p v-if="form.errors.height" class="text-red-500 text-xs mt-1">{{ form.errors.height }}</p>
                                     </div>
@@ -194,7 +221,7 @@ const {
                                     <div>
                                         <label class="block text-[9px] font-black uppercase text-gray-400 mb-1">Comp. (cm)</label>
                                         <input v-model="form.length" type="number" step="0.01" min="0"
-                                            class="w-full border-gray-100 bg-gray-50 rounded-xl font-bold text-sm focus:ring-indigo-500 focus:border-indigo-500" 
+                                            class="w-full border-gray-100 bg-slate-50 rounded-xl font-bold text-sm focus:ring-indigo-500 focus:border-indigo-500" 
                                             placeholder="0.00" />
                                         <p v-if="form.errors.length" class="text-red-500 text-xs mt-1">{{ form.errors.length }}</p>
                                     </div>
@@ -216,41 +243,41 @@ const {
                 <div v-show="activeTab === 'seo'" class="animate-in fade-in slide-in-from-bottom-2 duration-500 space-y-6">
                     <div class="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm space-y-6">
                         <div class="flex items-center gap-3"><Code class="w-5 h-5 text-indigo-600" /><h3 class="text-xs font-black uppercase tracking-widest text-gray-500">Rastreamento e Tags</h3></div>
-                        <div><label class="block text-[10px] font-black uppercase text-gray-400 mb-2">Google Tag Manager Script</label><textarea v-model="form.google_tag_manager" rows="3" class="w-full border-gray-100 bg-gray-50 rounded-2xl text-[11px] font-mono"></textarea></div>
-                        <div class="grid grid-cols-2 gap-4"><div><label class="block text-[10px] font-black uppercase text-gray-400 mb-2">URL Canonica (Canonical)</label><input v-model="form.slug" type="text" class="w-full border-gray-100 bg-gray-50 rounded-2xl font-bold" /></div></div>
+                        <div><label class="block text-[10px] font-black uppercase text-gray-400 mb-2">Google Tag Manager Script</label><textarea v-model="form.google_tag_manager" rows="3" class="w-full border-gray-100 bg-slate-50 rounded-2xl text-[11px] font-mono"></textarea></div>
+                        <div class="grid grid-cols-2 gap-4"><div><label class="block text-[10px] font-black uppercase text-gray-400 mb-2">URL Canonica (Canonical)</label><input v-model="form.slug" type="text" class="w-full border-gray-100 bg-slate-50 rounded-2xl font-bold" /></div></div>
                     </div>
 
                     <div class="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm space-y-6">
                         <div class="flex items-center gap-3"><Search class="w-5 h-5 text-amber-600" /><h3 class="text-xs font-black uppercase tracking-widest text-gray-500">SEO Meta Tags</h3></div>
-                        <div><label class="block text-[10px] font-black uppercase text-gray-400 mb-2">Titulo da Pagina (SEO Title)</label><input v-model="form.meta_title" type="text" class="w-full border-gray-100 bg-gray-50 rounded-2xl font-bold" /></div>
+                        <div><label class="block text-[10px] font-black uppercase text-gray-400 mb-2">Titulo da Pagina (SEO Title)</label><input v-model="form.meta_title" type="text" class="w-full border-gray-100 bg-slate-50 rounded-2xl font-bold" /></div>
                         <div>
                             <label class="block text-[10px] font-black uppercase text-gray-400 mb-2">Palavras-Chave (Pressione Enter para adicionar)</label>
-                            <div class="flex flex-wrap gap-2 p-3 border border-gray-100 bg-gray-50 rounded-2xl min-h-[50px]">
+                            <div class="flex flex-wrap gap-2 p-3 border border-gray-100 bg-slate-50 rounded-2xl min-h-[50px]">
                                 <div v-for="(tag, index) in form.meta_keywords" :key="index" class="flex items-center bg-indigo-600 text-white text-[10px] font-black uppercase px-3 py-1.5 rounded-xl shadow-sm">
                                     {{ tag }} <button type="button" @click="removeTag(index)" class="ml-2 hover:bg-indigo-700 rounded-full p-0.5"><X class="w-3 h-3" /></button>
                                 </div>
                                 <input v-model="tagInput" @keydown.enter.prevent="addTag" type="text" class="flex-1 bg-transparent border-none focus:ring-0 text-sm font-bold p-0" />
                             </div>
                         </div>
-                        <div><label class="block text-[10px] font-black uppercase text-gray-400 mb-2">Meta Descricao (Snippet do Google)</label><textarea v-model="form.meta_description" rows="2" class="w-full border-gray-100 bg-gray-50 rounded-2xl font-bold"></textarea></div>
+                        <div><label class="block text-[10px] font-black uppercase text-gray-400 mb-2">Meta Descricao (Snippet do Google)</label><textarea v-model="form.meta_description" rows="2" class="w-full border-gray-100 bg-slate-50 rounded-2xl font-bold"></textarea></div>
                     </div>
 
                     <div class="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm space-y-6">
                         <div class="flex items-center gap-3"><FileText class="w-5 h-5 text-green-600" /><h3 class="text-xs font-black uppercase tracking-widest text-gray-500">Conteudo On-Page</h3></div>
                         <div class="grid grid-cols-2 gap-4">
-                            <div><label class="block text-[10px] font-black uppercase text-gray-400 mb-2">Titulo - Nome Produto (H1)</label><input v-model="form.h1" type="text" class="w-full border-gray-100 bg-gray-50 rounded-2xl font-bold" /></div>
-                            <div><label class="block text-[10px] font-black uppercase text-gray-400 mb-2">Descricao Curta de Apresentacao (Text 1)</label><textarea v-model="form.text1" rows="3" class="w-full border-gray-100 bg-gray-50 rounded-2xl font-bold"></textarea></div>
+                            <div><label class="block text-[10px] font-black uppercase text-gray-400 mb-2">Titulo - Nome Produto (H1)</label><input v-model="form.h1" type="text" class="w-full border-gray-100 bg-slate-50 rounded-2xl font-bold" /></div>
+                            <div><label class="block text-[10px] font-black uppercase text-gray-400 mb-2">Descricao Curta de Apresentacao (Text 1)</label><textarea v-model="form.text1" rows="3" class="w-full border-gray-100 bg-slate-50 rounded-2xl font-bold"></textarea></div>
                         </div>
                         <div class="grid grid-cols-2 gap-4">
-                            <div><label class="block text-[10px] font-black uppercase text-gray-400 mb-2">Subtitulo (H2)</label><input v-model="form.h2" type="text" class="w-full border-gray-100 bg-gray-50 rounded-2xl font-bold" /></div>
-                            <div><label class="block text-[10px] font-black uppercase text-gray-400 mb-2">Descricao Secundaria / Detalhes (Text 2)</label><textarea v-model="form.text2" rows="3" class="w-full border-gray-100 bg-gray-50 rounded-2xl font-bold"></textarea></div>
+                            <div><label class="block text-[10px] font-black uppercase text-gray-400 mb-2">Subtitulo (H2)</label><input v-model="form.h2" type="text" class="w-full border-gray-100 bg-slate-50 rounded-2xl font-bold" /></div>
+                            <div><label class="block text-[10px] font-black uppercase text-gray-400 mb-2">Descricao Secundaria / Detalhes (Text 2)</label><textarea v-model="form.text2" rows="3" class="w-full border-gray-100 bg-slate-50 rounded-2xl font-bold"></textarea></div>
                         </div>
-                        <div><label class="block text-[10px] font-black uppercase text-gray-400 mb-2">Dados Estruturados (Schema JSON-LD)</label><textarea v-model="form.schema_markup" rows="2" class="w-full border-gray-100 bg-gray-50 rounded-2xl font-mono text-[10px]"></textarea></div>
+                        <div><label class="block text-[10px] font-black uppercase text-gray-400 mb-2">Dados Estruturados (Schema JSON-LD)</label><textarea v-model="form.schema_markup" rows="2" class="w-full border-gray-100 bg-slate-50 rounded-2xl font-mono text-[10px]"></textarea></div>
                     </div>
                 </div>
 
                 <div class="flex items-center justify-end gap-6 border-t border-gray-100 pt-8">
-                    <button type="submit" :disabled="form.processing" class="bg-black text-white px-12 py-5 rounded-3xl font-black uppercase text-[10px] tracking-[0.3em] shadow-2xl hover:bg-indigo-600 transition-all flex items-center gap-3 disabled:opacity-50">
+                    <button type="submit" :disabled="form.processing" class="bg-emerald-600 hover:bg-emerald-700 active:scale-95 active:shadow-lg text-white px-12 py-5 rounded-3xl font-black uppercase text-[10px] tracking-[0.3em] shadow-2xl hover:bg-emerald-700 transition-all duration-200 flex items-center gap-3 disabled:opacity-50 disabled:scale-100 transform cursor-pointer">
                         <Save v-if="!form.processing" class="w-4 h-4" />
                         <span v-else class="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin"></span>
                         {{ form.processing ? 'Processando' : 'Salvar Produto' }}
