@@ -54,4 +54,27 @@ abstract class ApiController extends Controller
             ]
         );
     }
+
+    protected function error(
+        mixed $data = null,
+        ?string $message = null,
+        int $status = 400,
+        array $meta = []
+    ): JsonResponse {
+        $payload = ['success' => false];
+
+        if ($message !== null) {
+            $payload['message'] = $this->sanitizeApiResponse($message);
+        }
+
+        if ($data !== null) {
+            $payload['data'] = $this->sanitizeApiResponse($data);
+        }
+
+        if ($meta !== []) {
+            $payload['meta'] = $this->sanitizeApiResponse($meta);
+        }
+
+        return response()->json($payload, $status);
+    }
 }
