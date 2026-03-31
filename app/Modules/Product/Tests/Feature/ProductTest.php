@@ -9,6 +9,7 @@ use App\Modules\Product\Models\Supplier;
 use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
 
 class ProductTest extends TestCase
@@ -17,18 +18,24 @@ class ProductTest extends TestCase
 
     private function createUser(int $level): User
     {
-        return User::factory()->create(['access_level' => $level]);
+        return User::factory()->create([
+            'access_level' => $level,
+            'password' => Hash::make('password')
+        ]);
     }
 
     public function test_only_staff_can_access_products_index(): void
     {
         $admin = $this->createUser(1);
         $operator = $this->createUser(0);
-        $guest = User::factory()->create(['access_level' => AccessLevel::CLIENT]);
+        $guest = User::factory()->create([
+            'access_level' => AccessLevel::CLIENT,
+            'password' => Hash::make('password')
+        ]);
 
-        $this->actingAs($admin)->getJson(route('api.products.index'))->assertOk();
-        $this->actingAs($operator)->getJson(route('api.products.index'))->assertOk();
-        $this->actingAs($guest)->getJson(route('api.products.index'))->assertForbidden();
+        $this->actingAs($admin)->get(route('products.index'))->assertOk();
+        $this->actingAs($operator)->get(route('products.index'))->assertOk();
+        $this->actingAs($guest)->get(route('products.index'))->assertForbidden();
     }
 
     public function test_only_admin_can_toggle_featured_status(): void
@@ -38,13 +45,12 @@ class ProductTest extends TestCase
         $product = Product::factory()->create(['is_featured' => false]);
 
         $this->actingAs($operator)
-            ->patchJson(route('api.products.toggle-featured', $product))
+            ->patch(route('products.toggle-featured', $product))
             ->assertForbidden();
 
         $this->actingAs($admin)
-            ->patchJson(route('api.products.toggle-featured', $product))
-            ->assertOk()
-            ->assertJsonPath('data.is_featured', true);
+            ->patch(route('products.toggle-featured', $product))
+            ->assertRedirect();
     }
 
     public function test_level_0_can_only_create_inactive_products(): void
@@ -79,9 +85,13 @@ class ProductTest extends TestCase
         ];
 
         $this->actingAs($operator)
-            ->postJson(route('api.products.store'), $data)
-            ->assertCreated()
-            ->assertJsonPath('data.is_active', false);
+            ->post(route('products.store'), $data)
+            ->assertRedirect();
+
+        $this->assertDatabaseHas('products', [
+            'description' => 'Produto API Teste',
+            'is_active' => false
+        ]);
     }
 
     public function test_level_0_cannot_activate_product_during_update(): void
@@ -116,8 +126,8 @@ class ProductTest extends TestCase
         ];
 
         $this->actingAs($operator)
-            ->putJson(route('api.products.update', $product), $payload)
-            ->assertOk();
+            ->put(route('products.update', $product), $payload)
+            ->assertRedirect();
 
         $this->assertFalse($product->refresh()->is_active);
         $this->assertSame('Descricao Alterada', $product->description);
@@ -130,12 +140,12 @@ class ProductTest extends TestCase
         $product = Product::factory()->create();
 
         $this->actingAs($operator)
-            ->deleteJson(route('api.products.destroy', $product))
+            ->delete(route('products.destroy', $product))
             ->assertForbidden();
 
         $this->actingAs($admin)
-            ->deleteJson(route('api.products.destroy', $product))
-            ->assertOk();
+            ->delete(route('products.destroy', $product))
+            ->assertRedirect();
 
         $this->assertDatabaseMissing('products', ['id' => $product->id]);
     }

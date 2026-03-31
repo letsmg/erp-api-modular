@@ -4,6 +4,7 @@ namespace App\Modules\User\Tests\Feature;
 
 use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
 
 class UserPermissionTest extends TestCase
@@ -17,7 +18,10 @@ class UserPermissionTest extends TestCase
 
     public function test_admin_can_list_users(): void
     {
-        $admin = User::factory()->create(['access_level' => 1]);
+        $admin = User::factory()->create([
+            'access_level' => 1,
+            'password' => Hash::make('password')
+        ]);
 
         $this->actingAs($admin)
             ->getJson(route('api.users.index'))
@@ -27,9 +31,18 @@ class UserPermissionTest extends TestCase
 
     public function test_operator_only_sees_non_admin_users(): void
     {
-        $user = User::factory()->create(['access_level' => 0]);
-        User::factory()->create(['access_level' => 0]);
-        User::factory()->create(['access_level' => 1]);
+        $user = User::factory()->create([
+            'access_level' => 0,
+            'password' => Hash::make('password')
+        ]);
+        User::factory()->create([
+            'access_level' => 0,
+            'password' => Hash::make('password')
+        ]);
+        User::factory()->create([
+            'access_level' => 1,
+            'password' => Hash::make('password')
+        ]);
 
         $response = $this->actingAs($user)->getJson(route('api.users.index'));
 
@@ -39,7 +52,10 @@ class UserPermissionTest extends TestCase
 
     public function test_admin_can_create_user(): void
     {
-        $admin = User::factory()->create(['access_level' => 1]);
+        $admin = User::factory()->create([
+            'access_level' => 1,
+            'password' => Hash::make('password')
+        ]);
 
         $payload = [
             'name' => 'Clone',
@@ -59,8 +75,14 @@ class UserPermissionTest extends TestCase
 
     public function test_operator_cannot_delete_users(): void
     {
-        $user = User::factory()->create(['access_level' => 0]);
-        $target = User::factory()->create(['access_level' => 1]);
+        $user = User::factory()->create([
+            'access_level' => 0,
+            'password' => Hash::make('password')
+        ]);
+        $target = User::factory()->create([
+            'access_level' => 1,
+            'password' => Hash::make('password')
+        ]);
 
         $this->actingAs($user)
             ->deleteJson(route('api.users.destroy', $target))

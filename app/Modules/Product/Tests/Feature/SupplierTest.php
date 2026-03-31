@@ -5,6 +5,7 @@ namespace App\Modules\Product\Tests\Feature;
 use App\Modules\Product\Models\Supplier;
 use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
 
 class SupplierTest extends TestCase
@@ -18,7 +19,9 @@ class SupplierTest extends TestCase
 
     public function test_authenticated_user_can_list_suppliers(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create([
+            'password' => Hash::make('password')
+        ]);
         Supplier::factory()->count(2)->create();
 
         $this->actingAs($user)
@@ -29,7 +32,9 @@ class SupplierTest extends TestCase
 
     public function test_authenticated_user_can_create_supplier(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create([
+            'password' => Hash::make('password')
+        ]);
 
         $payload = [
             'company_name' => 'Fornecedor de Teste LTDA',
@@ -54,7 +59,9 @@ class SupplierTest extends TestCase
 
     public function test_authenticated_user_can_update_supplier(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create([
+            'password' => Hash::make('password')
+        ]);
         $supplier = Supplier::factory()->create(['company_name' => 'Antigo Nome']);
 
         $payload = [
@@ -80,7 +87,9 @@ class SupplierTest extends TestCase
 
     public function test_authenticated_user_can_delete_supplier(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create([
+            'password' => Hash::make('password')
+        ]);
         $supplier = Supplier::factory()->create();
 
         $this->actingAs($user)

@@ -5,6 +5,7 @@ namespace App\Modules\Client\Tests\Feature;
 use App\Modules\Client\Models\Client;
 use App\Modules\User\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
 
 class ClientTest extends TestCase
@@ -13,7 +14,9 @@ class ClientTest extends TestCase
 
     public function test_authenticated_user_can_create_client_with_address(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create([
+            'password' => Hash::make('password')
+        ]);
 
         $payload = [
             'name' => 'Cliente Teste',

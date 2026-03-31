@@ -50,7 +50,17 @@ class AuthController extends \App\Http\Controllers\ApiController
      */
     public function logout(Request $request): JsonResponse
     {
-        $request->user()->currentAccessToken()->delete();
+        // Verifica se usuário está autenticado
+        $user = $request->user();
+        if (!$user) {
+            return $this->error(null, 'Usuário não autenticado.', 401);
+        }
+
+        // Revoga o token atual
+        $token = $user->currentAccessToken();
+        if ($token) {
+            $token->delete();
+        }
 
         return $this->success(null, 'Logout realizado com sucesso.');
     }
