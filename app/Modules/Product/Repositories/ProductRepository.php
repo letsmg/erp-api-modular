@@ -20,6 +20,10 @@ class ProductRepository
             $query->where('is_active', false);
         }
 
+        if (isset($filters['active']) && $filters['active'] == 1) {
+            $query->where('is_active', true);
+        }
+
         if (! empty($filters['search'])) {
             $search = trim($filters['search']);
 

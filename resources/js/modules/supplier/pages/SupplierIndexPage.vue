@@ -1,5 +1,5 @@
 <script setup>
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import AuthenticatedLayout from '@/shared/layouts/AuthenticatedLayout.vue';
 import { Head, Link } from '@inertiajs/vue3';
 import { Truck, Plus, Trash2, Phone, MapPin, UserCheck, Power } from 'lucide-vue-next';
 import { useSupplierIndex } from '@/modules/supplier/composables/useSupplierIndex';
@@ -23,11 +23,11 @@ const handleToggleStatus = async (supplier) => {
 
         <div class="sm:flex sm:items-center sm:justify-between mb-8">
             <div>
-                <h2 class="text-2xl font-bold text-gray-900 tracking-tight">Fornecedores</h2>
+                <h2 class="text-3xl font-black text-gray-900 tracking-tighter uppercase">Fornecedores</h2>
                 <p class="mt-1 text-sm text-gray-500">Gestao de parceiros e origens de suprimentos.</p>
             </div>
             <div class="mt-4 sm:mt-0">
-                <Link :href="route('suppliers.create')" class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-lg font-bold text-xs text-white uppercase tracking-widest hover:bg-indigo-700 transition shadow-md">
+                <Link :href="route('suppliers.create')" class="inline-flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 active:scale-95 active:shadow-lg border border-transparent rounded-lg font-bold text-xs text-white uppercase tracking-widest transition-all duration-200 shadow-md shadow-indigo-500/20 hover:shadow-lg cursor-pointer">
                     <Plus class="w-4 h-4 mr-2" /> Novo Fornecedor
                 </Link>
             </div>

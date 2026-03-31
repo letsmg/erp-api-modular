@@ -20,8 +20,8 @@ class SanitizeInput
         if (in_array($request->method(), ['POST', 'PUT', 'PATCH'])) {
             $input = $request->all();
             
-            // Detecta se há campos que devem preservar HTML (SEO)
-            $htmlFields = ['schema_markup', 'google_tag_manager', 'meta_description', 'meta_title', 'h1', 'text1', 'h2', 'text2'];
+            // Detecta se há campos que devem preservar HTML (APENAS schema_markup e google_tag_manager)
+            $htmlFields = ['schema_markup', 'google_tag_manager'];
             $hasHtmlFields = false;
             
             foreach ($htmlFields as $field) {
@@ -31,10 +31,11 @@ class SanitizeInput
                 }
             }
             
-            // Se houver campos HTML, usa sanitização específica para SEO
+            // Se houver campos HTML, usa sanitização específica com exceções
             if ($hasHtmlFields) {
-                $sanitized = SanitizerHelper::sanitizeSeoData($input);
+                $sanitized = SanitizerHelper::sanitize($input, $htmlFields);
             } else {
+                // Sanitização completa para todos os outros campos
                 $sanitized = SanitizerHelper::sanitize($input);
             }
             

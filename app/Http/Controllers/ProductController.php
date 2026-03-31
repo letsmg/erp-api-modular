@@ -24,8 +24,19 @@ class ProductController extends Controller
     {
         $this->authorize('viewAny', Product::class);
 
+        $filters = $request->all(['search', 'blocked']);
+        
+        $products = $this->repository->getFiltered($filters);
+
         return Inertia::render('Products/Index', [
-            'initialFilters' => $request->all(['search', 'blocked']),
+            'initialFilters' => $filters,
+            'products' => $products->items(),
+            'meta' => [
+                'current_page' => $products->currentPage(),
+                'last_page' => $products->lastPage(),
+                'per_page' => $products->perPage(),
+                'total' => $products->total(),
+            ],
         ]);
     }
 
@@ -46,8 +57,13 @@ class ProductController extends Controller
     {
         $this->authorize('update', $product);
 
+        $product->load(['supplier', 'category', 'images', 'seo']);
+
         return Inertia::render('Products/Edit', [
             'productId' => $product->id,
+            'product' => $product,
+            'suppliers' => $this->repository->getActiveSuppliers(),
+            'categories' => $this->repository->getActiveCategories(),
         ]);
     }
 
@@ -63,14 +79,24 @@ class ProductController extends Controller
     {
         $this->authorize('toggle', $product);
         $product->update(['is_active' => ! $product->is_active]);
+        
         return back()->with('message', 'Status de ativacao atualizado!');
     }
 
     public function toggleFeatured(Product $product)
     {
         $this->authorize('toggle', $product);
-        $this->repository->toggleFeatured($product);
-        return back()->with('message', 'Status de destaque atualizado!');
+        $updatedProduct = $this->repository->toggleFeatured($product);
+        
+        return request()->inertia()
+            ? back()->with([
+                'message' => 'Status de destaque atualizado!',
+                'product' => $updatedProduct,
+            ])
+            : response()->json([
+                'message' => 'Status de destaque atualizado!',
+                'data' => $updatedProduct,
+            ]);
     }
 
     public function destroy(Product $product)
@@ -82,7 +108,9 @@ class ProductController extends Controller
 
     public function preview(Product $product)
     {
+        $this->authorize('view', $product);
         $product->load(['supplier', 'images']);
+        
         return Inertia::render('Products/Preview', ['product' => $product]);
     }
 }

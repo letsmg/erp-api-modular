@@ -136,25 +136,33 @@ function buildPayload(form, isEdit) {
     };
 }
 
-export function useProductForm(options = {}) {
-    const { productId = null, enableShortcuts = false } = options;
+export function useProductForm({ productId, initialProduct, initialSuppliers, initialCategories, enableShortcuts = false } = {}) {
     const form = reactive(createBaseForm());
+    
     form.data = () => {
-        const { errors, processing, data, clearErrors, ...payload } = form;
+        const { errors, processing, existing_images, new_images, removed_images, ...payload } = form;
         return payload;
     };
-    form.clearErrors = () => {
-        form.errors = {};
-    };
+    
     const activeTab = ref('geral');
     const imagePreviews = ref([]);
     const newImagePreviews = ref([]);
     const tagInput = ref('');
-    const suppliers = ref([]);
-    const categories = ref([]);
-    const loading = ref(true);
+    const suppliers = ref(initialSuppliers || []);
+    const categories = ref(initialCategories || []);
+    const loading = ref(false);
+
+    // Initialize form with product data if provided
+    if (initialProduct && Object.keys(initialProduct).length > 0) {
+        hydrateForm(form, initialProduct);
+    }
 
     const loadFormDependencies = async () => {
+        if (initialSuppliers && initialCategories) {
+            // Data already provided by controller
+            return;
+        }
+
         loading.value = true;
 
         try {
@@ -240,7 +248,7 @@ export function useProductForm(options = {}) {
         imagePreviews.value = form.images.map((file) => URL.createObjectURL(file));
     };
 
-    const fillTestForm = () => fillFormData(form, suppliers.value);
+    const fillTestForm = () => fillFormData(form, suppliers.value, categories.value);
 
     const clearCurrentForm = () => {
         clearFormData(form);
@@ -256,12 +264,51 @@ export function useProductForm(options = {}) {
             return;
         }
 
-        if (event.ctrlKey && event.shiftKey && event.key.toLowerCase() === 'p') {
-            event.preventDefault();
-            fillTestForm();
+        // Verifica se é teclado numérico (location 3) - Ctrl+Alt pode não funcionar bem
+        const isNumpad = event.location === 3 || event.code.startsWith('Numpad');
+        
+        // Para teclado numérico, usa apenas keyCode/key sem exigir Ctrl+Alt
+        if (isNumpad) {
+            if (event.key === '1' || event.code === 'Numpad1' || event.keyCode === 97 || event.keyCode === 49) {
+                event.preventDefault();
+                fillTestForm();
+                return;
+            }
+            if (event.key === '2' || event.code === 'Numpad2' || event.keyCode === 98 || event.keyCode === 50) {
+                event.preventDefault();
+                clearCurrentForm();
+                return;
+            }
         }
 
-        if (event.ctrlKey && event.shiftKey && event.key.toLowerCase() === 'l') {
+        // Para teclado QWERTY, aceita tanto com Ctrl+Alt quanto sem Ctrl+Alt (caracteres especiais)
+        // Aceita caracteres especiais ¹ e ² quando pressionados sozinhos
+        if ((event.ctrlKey && event.altKey && (
+            event.key === '1' || 
+            event.code === 'Digit1' ||
+            event.keyCode === 49 ||
+            event.which === 49
+        )) || (
+            !event.ctrlKey && !event.altKey && (
+                event.key === '¹' ||  // Caractere especial ¹
+                event.key === '²'    // Caractere especial ²
+            )
+        )) {
+            if (event.key === '¹' || event.key === '1') {
+                event.preventDefault();
+                fillTestForm();
+            }
+        }
+
+        // Ctrl+Alt+2 ou caractere especial ² para limpar
+        if ((event.ctrlKey && event.altKey && (
+            event.key === '2' || 
+            event.code === 'Digit2' ||
+            event.keyCode === 50 ||
+            event.which === 50
+        )) || (
+            !event.ctrlKey && !event.altKey && event.key === '²'
+        )) {
             event.preventDefault();
             clearCurrentForm();
         }
@@ -287,12 +334,26 @@ export function useProductForm(options = {}) {
             const payload = buildPayload(form, Boolean(productId));
 
             if (productId) {
-                await updateProduct(productId, payload);
+                await router.put(
+                    route('products.update', productId),
+                    payload,
+                    {
+                        onSuccess: () => {
+                            router.visit(route('products.index'));
+                        }
+                    }
+                );
             } else {
-                await createProduct(payload);
+                await router.post(
+                    route('products.store'),
+                    payload,
+                    {
+                        onSuccess: () => {
+                            router.visit(route('products.index'));
+                        }
+                    }
+                );
             }
-
-            router.visit(route('products.index'));
         } catch (error) {
             const validationErrors = getValidationErrors(error);
             form.errors = validationErrors;
@@ -338,6 +399,7 @@ export function useProductForm(options = {}) {
         onDragEnd,
         profitData,
         fillTestForm,
+        clearCurrentForm,
         submit,
     };
 }

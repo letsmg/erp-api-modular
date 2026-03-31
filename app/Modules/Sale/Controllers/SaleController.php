@@ -2,7 +2,7 @@
 
 namespace App\Modules\Sale\Controllers;
 
-use App\Http\Controllers\ApiController;
+use App\Http\Controllers\Controller;
 use App\Modules\Sale\Models\Sale;
 use App\Modules\Sale\Requests\StoreSaleRequest;
 use App\Modules\Sale\Requests\UpdateSaleRequest;
@@ -10,7 +10,7 @@ use App\Modules\Sale\Services\SaleService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
-class SaleController extends ApiController
+class SaleController extends Controller
 {
     public function __construct(private readonly SaleService $service) {}
 

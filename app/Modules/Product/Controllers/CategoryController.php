@@ -2,14 +2,14 @@
 
 namespace App\Modules\Product\Controllers;
 
-use App\Http\Controllers\ApiController;
+use App\Http\Controllers\Controller;
 use App\Modules\Product\Models\Category;
 use App\Modules\Product\Requests\StoreCategoryRequest;
 use App\Modules\Product\Requests\UpdateCategoryRequest;
 use App\Modules\Product\Services\CategoryService;
 use Illuminate\Http\JsonResponse;
 
-class CategoryController extends ApiController
+class CategoryController extends Controller
 {
     public function __construct(private readonly CategoryService $service) {}
 

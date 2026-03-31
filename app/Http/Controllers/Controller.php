@@ -68,4 +68,108 @@ abstract class Controller
             'data' => $data
         ], $status);
     }
+    
+    /**
+     * Retorna resposta JSON de sucesso com paginação
+     */
+    protected function success($data = null, string $message = null, int $status = 200): JsonResponse
+    {
+        if ($data !== null) {
+            $data = $this->sanitizeApiResponse($data);
+        }
+        
+        return response()->json([
+            'success' => true,
+            'message' => $message,
+            'data' => $data
+        ], $status);
+    }
+    
+    /**
+     * Retorna resposta JSON paginada
+     */
+    protected function paginated($paginator, string $message = null, int $status = 200): JsonResponse
+    {
+        $data = [
+            'data' => $paginator->items(),
+            'current_page' => $paginator->currentPage(),
+            'last_page' => $paginator->lastPage(),
+            'per_page' => $paginator->perPage(),
+            'total' => $paginator->total(),
+        ];
+        
+        if ($message !== null) {
+            return response()->json([
+                'success' => true,
+                'message' => $message,
+                'data' => $data
+            ], $status);
+        }
+        
+        return response()->json($data, $status);
+    }
+    
+    /**
+     * Retorna resposta JSON de recurso criado (status 201)
+     */
+    protected function created($data = null, string $message = null): JsonResponse
+    {
+        if ($data !== null) {
+            $data = $this->sanitizeApiResponse($data);
+        }
+        
+        return response()->json([
+            'success' => true,
+            'message' => $message,
+            'data' => $data
+        ], 201);
+    }
+    
+    /**
+     * Retorna resposta JSON de erro
+     */
+    protected function error(string $message = null, int $status = 400): JsonResponse
+    {
+        return response()->json([
+            'success' => false,
+            'message' => $message,
+            'data' => null
+        ], $status);
+    }
+    
+    /**
+     * Retorna resposta JSON de não encontrado (status 404)
+     */
+    protected function notFound(string $message = 'Resource not found'): JsonResponse
+    {
+        return response()->json([
+            'success' => false,
+            'message' => $message,
+            'data' => null
+        ], 404);
+    }
+    
+    /**
+     * Retorna resposta JSON de não autorizado (status 401)
+     */
+    protected function unauthorized(string $message = 'Unauthorized'): JsonResponse
+    {
+        return response()->json([
+            'success' => false,
+            'message' => $message,
+            'data' => null
+        ], 401);
+    }
+    
+    /**
+     * Retorna resposta JSON de proibido (status 403)
+     */
+    protected function forbidden(string $message = 'Forbidden'): JsonResponse
+    {
+        return response()->json([
+            'success' => false,
+            'message' => $message,
+            'data' => null
+        ], 403);
+    }
 }

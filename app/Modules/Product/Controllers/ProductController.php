@@ -2,7 +2,7 @@
 
 namespace App\Modules\Product\Controllers;
 
-use App\Http\Controllers\ApiController;
+use App\Http\Controllers\Controller;
 use App\Modules\Product\Models\Product;
 use App\Modules\Product\Repositories\ProductRepository;
 use App\Modules\Product\Requests\StoreProductRequest;
@@ -12,7 +12,7 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
-class ProductController extends ApiController
+class ProductController extends Controller
 {
     use AuthorizesRequests;
 
@@ -26,7 +26,7 @@ class ProductController extends ApiController
         $this->authorize('viewAny', Product::class);
 
         return $this->paginated(
-            $this->repository->getFiltered($request->only(['search', 'blocked'])),
+            $this->repository->getFiltered($request->only(['search', 'blocked', 'active'])),
             'Produtos carregados com sucesso.'
         );
     }

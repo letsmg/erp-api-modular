@@ -47,9 +47,16 @@ watch(errors, (newErrors) => {
 }, { deep: true });
 
 const handleKeyDown = (e) => {
-    if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 'p') {
+    // Ctrl+Alt+1 - Preencher formulário
+    if (e.ctrlKey && e.altKey && e.key === '1') {
         e.preventDefault();
         window.dispatchEvent(new CustomEvent('magic-fill'));
+    }
+    
+    // Ctrl+Alt+2 - Limpar formulário
+    if (e.ctrlKey && e.altKey && e.key === '2') {
+        e.preventDefault();
+        window.dispatchEvent(new CustomEvent('magic-clear'));
     }
 };
 

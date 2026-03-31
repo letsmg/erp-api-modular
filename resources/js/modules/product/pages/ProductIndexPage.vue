@@ -1,5 +1,5 @@
 <script setup>
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import AuthenticatedLayout from '@/shared/layouts/AuthenticatedLayout.vue';
 import { PackagePlus, Edit, Trash2, PackageSearch, Eye, EyeOff, Lock, Search, Star } from 'lucide-vue-next';
 import { Link, Head, usePage } from '@inertiajs/vue3';
 import { computed, onMounted } from 'vue';
@@ -10,6 +10,14 @@ const props = defineProps({
         type: Object,
         default: () => ({}),
     },
+    products: {
+        type: Array,
+        default: () => [],
+    },
+    meta: {
+        type: Object,
+        default: () => ({ current_page: 1, last_page: 1, per_page: 12, total: 0 }),
+    },
 });
 
 const page = usePage();
@@ -17,8 +25,9 @@ const user = computed(() => page.props.auth.user);
 const {
     search,
     showOnlyBlocked,
-    products,
-    meta,
+    showOnlyActive,
+    products: productsData,
+    meta: metaInfo,
     loading,
     deletingId,
     togglingFeaturedId,
@@ -27,9 +36,9 @@ const {
     loadProducts,
     handleToggleFeatured,
     handleDelete,
-} = useProductIndex(props.initialFilters);
+} = useProductIndex(props);
 
-const filteredProducts = computed(() => products.value || []);
+const filteredProducts = computed(() => productsData.value || []);
 
 const destroy = async (id) => {
     if (confirm('Deseja realmente excluir este produto?')) {
@@ -38,7 +47,7 @@ const destroy = async (id) => {
 };
 
 onMounted(() => {
-    loadProducts();
+    // Dados já carregados via props do controller
 });
 </script>
 
@@ -76,9 +85,21 @@ onMounted(() => {
                         </div>
                     </label>
 
+                    <label class="flex items-center gap-2 cursor-pointer group bg-white border border-emerald-100 px-4 py-3 rounded-2xl hover:bg-emerald-50 transition-all shadow-sm">
+                        <input
+                            v-model="showOnlyActive"
+                            type="checkbox"
+                            class="rounded border-gray-300 text-emerald-600 focus:ring-emerald-500 w-4 h-4"
+                        >
+                        <div class="flex items-center gap-1.5">
+                            <Eye class="w-3.5 h-3.5 text-emerald-500" />
+                            <span class="text-xs font-bold uppercase text-emerald-600 tracking-tight">Ativos</span>
+                        </div>
+                    </label>
+
                     <Link
                         :href="route('products.create')"
-                        class="bg-black text-white px-6 py-3 rounded-2xl flex items-center gap-2 hover:bg-indigo-600 transition-all shadow-lg font-bold uppercase text-xs tracking-widest"
+                        class="bg-indigo-600 hover:bg-indigo-700 active:scale-95 active:shadow-lg text-white px-6 py-3 rounded-2xl flex items-center gap-2 transition-all duration-200 shadow-lg shadow-indigo-500/20 hover:shadow-xl font-bold uppercase text-xs tracking-widest cursor-pointer"
                     >
                         <PackagePlus class="w-5 h-5" />
                         Novo Produto
@@ -177,7 +198,7 @@ onMounted(() => {
                                 <div class="flex flex-col items-center opacity-40">
                                     <PackageSearch class="w-16 h-16 mb-4 text-gray-300" />
                                     <p class="font-black uppercase text-xs tracking-widest text-gray-400">
-                                        {{ showOnlyBlocked ? 'Nenhum produto bloqueado' : 'Nenhum produto encontrado' }}
+                                        {{ showOnlyBlocked ? 'Nenhum produto bloqueado' : showOnlyActive ? 'Nenhum produto ativo' : 'Nenhum produto encontrado' }}
                                     </p>
                                 </div>
                             </td>
@@ -185,11 +206,11 @@ onMounted(() => {
                     </tbody>
                 </table>
 
-                <div v-if="meta.last_page > 1" class="p-5 bg-gray-50 border-t border-gray-100 flex flex-wrap justify-center gap-2">
+                <div v-if="metaInfo.last_page > 1" class="p-5 bg-gray-50 border-t border-gray-100 flex flex-wrap justify-center gap-2">
                     <button
                         class="px-4 py-2 text-xs font-bold rounded-lg transition-all bg-white text-gray-500 hover:bg-gray-100 disabled:opacity-50"
-                        :disabled="meta.current_page === 1"
-                        @click="loadProducts(meta.current_page - 1)"
+                        :disabled="metaInfo.current_page === 1"
+                        @click="loadProducts(metaInfo.current_page - 1)"
                     >
                         Anterior
                     </button>
@@ -198,7 +219,7 @@ onMounted(() => {
                         v-for="pageNumber in paginationPages"
                         :key="pageNumber"
                         class="px-4 py-2 text-xs font-bold rounded-lg transition-all"
-                        :class="pageNumber === meta.current_page ? 'bg-black text-white' : 'bg-white text-gray-500 hover:bg-gray-100'"
+                        :class="pageNumber === metaInfo.current_page ? 'bg-black text-white' : 'bg-white text-gray-500 hover:bg-gray-100'"
                         @click="loadProducts(pageNumber)"
                     >
                         {{ pageNumber }}
@@ -206,8 +227,8 @@ onMounted(() => {
 
                     <button
                         class="px-4 py-2 text-xs font-bold rounded-lg transition-all bg-white text-gray-500 hover:bg-gray-100 disabled:opacity-50"
-                        :disabled="meta.current_page === meta.last_page"
-                        @click="loadProducts(meta.current_page + 1)"
+                        :disabled="metaInfo.current_page === metaInfo.last_page"
+                        @click="loadProducts(metaInfo.current_page + 1)"
                     >
                         Proxima
                     </button>

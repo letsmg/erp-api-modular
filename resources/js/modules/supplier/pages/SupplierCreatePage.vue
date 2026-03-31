@@ -1,10 +1,10 @@
 <script setup>
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import AuthenticatedLayout from '@/shared/layouts/AuthenticatedLayout.vue';
 import { Head, Link } from '@inertiajs/vue3';
-import { Save, ArrowLeft, Building2, Phone, MapPin, Hash, Globe, User, XCircle, Mail, Map } from 'lucide-vue-next';
+import { Save, ArrowLeft, Building2, Phone, MapPin, Hash, Globe, User, XCircle, Mail, Map, Sparkles, X } from 'lucide-vue-next';
 import { useSupplierForm } from '@/modules/supplier/composables/useSupplierForm';
 
-const { form, states, loading, submit, handleCNPJ, handleCEP } = useSupplierForm({ enableShortcuts: true });
+const { form, states, loading, submit, handleCNPJ, handleCEP, filler, clearer } = useSupplierForm({ enableShortcuts: true });
 </script>
 
 <template>
@@ -12,9 +12,35 @@ const { form, states, loading, submit, handleCNPJ, handleCEP } = useSupplierForm
         <Head title="Novo Fornecedor" />
         <div v-if="loading" class="max-w-4xl mx-auto py-20 text-center text-sm font-bold uppercase tracking-widest text-gray-400">Carregando...</div>
         <div v-else class="max-w-4xl mx-auto pb-10">
-            <div class="mb-6 flex items-center justify-between">
-                <Link :href="route('suppliers.index')" class="text-sm font-bold text-indigo-600 hover:text-indigo-800 flex items-center transition"><ArrowLeft class="w-4 h-4 mr-1" /> Voltar</Link>
-                <h2 class="text-xl font-bold text-gray-800 tracking-tight">Cadastrar Novo Fornecedor</h2>
+            <div class="mb-6"><Link :href="route('suppliers.index')" class="text-sm font-bold text-indigo-600 hover:text-indigo-800 flex items-center transition"><ArrowLeft class="w-4 h-4 mr-1" /> Voltar</Link><h2 class="text-3xl font-black text-gray-800 tracking-tighter uppercase">Cadastrar Novo Fornecedor</h2></div>
+            
+            <!-- Atalhos -->
+            <div class="mb-6 flex justify-center">
+                <div class="inline-flex items-center gap-4 bg-slate-50 px-6 py-3 rounded-2xl border border-gray-200 shadow-sm">
+                    <div class="flex items-center gap-2">
+                        <Sparkles class="w-4 h-4 text-indigo-500" />
+                        <span class="text-[11px] font-bold text-indigo-600">CTRL+ALT+1</span>
+                        <span class="text-[11px] text-gray-600">Popular</span>
+                    </div>
+                    <div class="w-px h-4 bg-gray-300"></div>
+                    <div class="flex items-center gap-2">
+                        <X class="w-4 h-4 text-red-500" />
+                        <span class="text-[11px] font-bold text-red-600">CTRL+ALT+2</span>
+                        <span class="text-[11px] text-gray-600">Limpar</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botões de Ação -->
+            <div class="mb-6 flex justify-center gap-4">
+                <button type="button" @click="filler" class="bg-slate-600 hover:bg-slate-700 active:scale-95 active:shadow-lg text-white px-6 py-3 rounded-xl font-bold text-sm uppercase tracking-wider shadow-lg hover:shadow-xl transition-all duration-200 flex items-center gap-2 transform cursor-pointer">
+                    <Sparkles class="w-4 h-4" />
+                    Popular Formulário
+                </button>
+                <button type="button" @click="clearer" class="bg-slate-600 hover:bg-slate-700 active:scale-95 active:shadow-lg text-white px-6 py-3 rounded-xl font-bold text-sm uppercase tracking-wider shadow-lg hover:shadow-xl transition-all duration-200 flex items-center gap-2 transform cursor-pointer">
+                    <X class="w-4 h-4" />
+                    Limpar Formulário
+                </button>
             </div>
 
             <Transition enter-active-class="transform ease-out duration-300 transition" enter-from-class="-translate-y-2 opacity-0" enter-to-class="translate-y-0 opacity-100">
@@ -62,7 +88,7 @@ const { form, states, loading, submit, handleCNPJ, handleCEP } = useSupplierForm
                     </div>
                 </div>
 
-                <div class="flex items-center justify-between"><div class="italic text-[10px] text-gray-400 uppercase tracking-tighter">Atalhos: <span class="font-bold text-indigo-400 mx-1 underline">CTRL+SHIFT+P</span> Popular | <span class="font-bold text-red-400 mx-1 underline">CTRL+SHIFT+L</span> Limpar</div><button type="submit" :disabled="form.processing" class="bg-indigo-600 text-white px-12 py-4 rounded-xl font-bold flex items-center gap-2 hover:bg-indigo-700 transition shadow-xl shadow-indigo-500/20 disabled:opacity-50"><Save class="w-5 h-5" /> {{ form.processing ? 'Cadastrando...' : 'Finalizar Cadastro' }}</button></div>
+                <div class="flex items-center justify-between"><div class="italic text-[10px] text-gray-400 uppercase tracking-tighter">Atalhos: <span class="font-bold text-indigo-400 mx-1 underline">CTRL+ALT+1</span> Popular | <span class="font-bold text-red-400 mx-1 underline">CTRL+ALT+2</span> Limpar</div><button type="submit" :disabled="form.processing" class="bg-emerald-600 hover:bg-emerald-700 active:scale-95 active:shadow-lg text-white px-12 py-4 rounded-xl font-bold flex items-center gap-2 transition-all duration-200 shadow-xl shadow-emerald-500/20 hover:shadow-xl disabled:opacity-50 disabled:scale-100 transform cursor-pointer"><Save class="w-5 h-5" /> {{ form.processing ? 'Cadastrando...' : 'Finalizar Cadastro' }}</button></div>
             </form>
         </div>
     </AuthenticatedLayout>

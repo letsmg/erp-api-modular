@@ -1,264 +1,472 @@
-# ERP API Modular
+<img src="https://raw.githubusercontent.com/letsmg/erp_api_modular/main/pacman-contribution-graph.svg" />
 
-> ERP em Laravel 12 organizado por módulos com arquitetura Inertia.js + Vue 3 para desenvolvimento rápido e escalável.
+# 🌌 ERP Vue Laravel — Smart Business Management
 
-## 🏗️ Arquitetura
+> Sistema moderno de gestão empresarial (ERP) construído com **Laravel + Vue**, focado em **performance, segurança e experiência do desenvolvedor (DX)**.
 
-O sistema utiliza uma abordagem moderna com **Inertia.js** eliminando a necessidade de APIs REST separadas:
+![Laravel](https://img.shields.io/badge/Laravel-11-FF2D20?style=for-the-badge\&logo=laravel)
+![Vue.js](https://img.shields.io/badge/Vue.js-3-4FC08D?style=for-the-badge\&logo=vue.js)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1?style=for-the-badge\&logo=postgresql)
+![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-3.4-38B2AC?style=for-the-badge\&logo=tailwind-css)
 
-### Módulos Principais
+---
 
-Os domínios ficam em `app/Modules`:
+## 👨‍💻 Autor
 
-- `Auth` - Autenticação e gerenciamento de sessão
-- `Product` - Produtos, categorias, fornecedores e SEO
-- `User` - Usuários e permissões  
-- `Client` - Clientes e endereços
-- `Sale` - Vendas e relatórios
+**Luiz Eduardo**  
+🔗 https://github.com/letsmg
 
-### Estrutura dos Módulos
+---
 
-Cada módulo segue o padrão Laravel:
+# 🌎 Language / Idioma
 
-```
-app/Modules/[ModuleName]/
-├── Controllers/     # Controladores HTTP
-├── Models/         # Modelos Eloquent
-├── Requests/       # Validações de formulários
-├── Services/       # Regras de negócio
-├── Repositories/   # Camada de acesso a dados
-├── Policies/       # Autorização
-├── Routes/         # Definição de rotas
-└── Tests/          # Testes automatizados
-```
+* 🇧🇷 [Ver em Português](#-português)
+* 🇺🇸 [Read in English](#-english)
 
-## 🚀 Tecnologias
+---
+
+# 🇧🇷 Português
+
+# 📦 Visão Geral
+
+ERP Api Modular é um ERP moderno projetado para entregar:
+
+* ⚡ Alta performance
+* 🔒 Segurança robusta
+* 🧠 Excelente experiência para desenvolvedores
+* 🧩 Arquitetura monolítica organizada em camadas
+* 🚀 Desenvolvimento rápido usando Inertia.js
+
+O projeto foca em **simplicidade sem perder escalabilidade**.
+
+---
+
+# 🧰 Tecnologias
 
 | Camada      | Tecnologia              |
 | ----------- | ----------------------- |
-| Backend     | Laravel 12 (PHP 8.3+)   |
+| Backend     | Laravel 11 (PHP 8.2+)   |
 | Frontend    | Vue 3 (Composition API) |
+| Build Tool  | Vite                    |
 | Comunicação | Inertia.js              |
 | Estilização | Tailwind CSS            |
-| Banco       | PostgreSQL              |
-| Build Tool  | Vite                    |
+| Icons       | Lucide Vue              |
 
-## ⚡ Instalação
+---
 
-### 1. Clonar repositório
+# ⚡ Experiência do Desenvolvedor (DX)
+
+Para acelerar desenvolvimento e testes, o sistema possui utilitários globais de formulário.
+Para realizar testes localmente verifique a config no arquivo phpunit.xml
+
+## Atalhos de Teclado
+
+| Atalho           | Ação                                    |
+| ---------------- | --------------------------------------- |
+| CTRL + SHIFT + P | Preenche formulário com dados fictícios |
+| CTRL + SHIFT + L | Limpa campos e erros de validação       |
+
+TIP
+Esses atalhos utilizam **Custom Events** disparados dentro do `AuthenticatedLayout.vue`, mantendo a lógica das páginas limpa.
+
+---
+
+# 🚀 Instalação
+
+## 1. Clonar o repositório
 
 ```bash
 git clone https://github.com/letsmg/erp-api-modular.git
 cd erp-api-modular
 ```
 
-### 2. Instalar dependências
+---
+
+## 2. Instalar dependências
+
+### PHP
 
 ```bash
-# PHP
 composer install
-
-# Node.js
-npm install
 ```
 
-### 3. Configurar ambiente
+### JavaScript
+
+```bash
+npm install
+npm run dev
+```
+
+---
+
+## 3. Configurar ambiente
 
 ```bash
 cp .env.example .env
 ```
 
-Configure o banco de dados:
+Configure o banco:
 
-```env
+```
 DB_CONNECTION=pgsql
 DB_HOST=127.0.0.1
 DB_PORT=5432
 DB_DATABASE=erp_api_modular
 DB_USERNAME=postgres
-DB_PASSWORD=sua_senha
+DB_PASSWORD=123456
 ```
 
-### 4. Rodar migrações
+NOTE
+Certifique-se de que as extensões **pdo_pgsql** e **pgsql** estão ativas no `php.ini`.
+
+---
+
+## 4. Rodar migrações
 
 ```bash
 php artisan migrate --seed
 ```
 
-### 5. Iniciar desenvolvimento
+Isso criará a estrutura do banco e o **usuário administrador inicial**.
+
+---
+
+# ⚙️ Arquitetura
+
+## Abordagem: Inertia.js vs API REST
+
+Este projeto utiliza uma arquitetura baseada em **Inertia.js**, evitando a necessidade de uma API REST separada.
+
+### Motivações da escolha
+
+* Elimina a duplicação de lógica entre frontend e backend
+* Reduz complexidade de autenticação (CSRF nativo)
+* Permite desenvolvimento mais rápido
+* Compartilhamento direto de estado entre backend e frontend
+
+---
+
+## Escalabilidade para API
+
+A arquitetura foi pensada para permitir evolução futura para API REST sem retrabalho significativo:
+
+* Regras de negócio centralizadas em **Services**
+* Controllers podem ser adaptados para retornar JSON
+* Autenticação pode ser feita via **Laravel Sanctum**
+* Alto reaproveitamento de código
+
+---
+
+# 🔒 Segurança e Performance
+
+## Autenticação
+
+* Hash utilizando Argon2id
+* Memory cost: 64MB
+* Threads: 2
+
+Configuração focada em maior resistência a ataques de força bruta.
+
+---
+
+## Banco de Dados
+
+* Utilização de PostgreSQL
+* Uso de paginação com filtros
+* Estrutura preparada para indexação em campos críticos
+
+---
+
+# 🔍 SEO
+
+A entidade de produtos possui suporte completo a SEO:
+
+- `slug`
+- `meta_title`
+- `meta_description`
+- `meta_keywords`
+- `canonical_url`
+- `h1`
+- `text1`
+- `h2`
+- `text2`
+- `schema_markup`
+- `google_tag_manager`
+- `ads`
+
+Com geração automática de URLs amigáveis e estrutura preparada para otimização avançada em mecanismos de busca, incluindo controle de conteúdo, metadados e integrações externas.
+
+---
+
+# ⚡ Experiência do Usuário
+
+Funcionalidades implementadas:
+
+* Busca em tempo real com debounce
+* Filtros dinâmicos no módulo de fornecedores
+* Interface reativa via Inertia.js
+
+---
+
+# 🤖 Moderação de Imagens (Opcional)
+
+Suporte à integração com Google Cloud Vision para análise automática de imagens durante o upload.
+
+* Detecção de conteúdo impróprio
+* Bloqueio automático de uploads inválidos
+
+---
+
+# 📦 Módulos do Sistema
+
+## Implementados
+
+* CRUD de Usuários com controle de acesso
+* CRUD de Fornecedores
+* CRUD de Produtos
+* Paginação com filtros
+* Upload e ordenação de imagens (drag and drop)
+* SEO básico
+* Relatórios de produtos
+* Testes com PHPUnit
+
+## Em desenvolvimento
+
+* CRUD de Clientes
+* CRUD de Vendas
+* Relatório de Curva ABC
+* Geração de Sintegra
+
+---
+
+# 🇺🇸 English
+
+# 📦 Overview
+
+ERP Vue Laravel is a modern ERP designed to deliver:
+
+* ⚡ High performance
+* 🔒 Robust security
+* 🧠 Excellent developer experience
+* 🧩 Monolithic architecture organized in layers
+* 🚀 Rapid development using Inertia.js
+
+The project focuses on **simplicity without sacrificing scalability**.
+
+---
+
+# 🧰 Tech Stack
+
+| Layer         | Technology              |
+| ------------- | ----------------------- |
+| Backend       | Laravel 11 (PHP 8.2+)   |
+| Frontend      | Vue 3 (Composition API) |
+| Build Tool    | Vite                    |
+| Communication | Inertia.js              |
+| Styling       | Tailwind CSS            |
+| Icons         | Lucide Vue              |
+
+---
+
+# ⚡ Developer Experience (DX)
+
+To accelerate development and testing, the system includes global form utilities.
+To perform tests locally, check the configuration in the phpunit.xml file.
+
+## Keyboard Shortcuts
+
+| Shortcut         | Action                                  |
+| ---------------- | --------------------------------------- |
+| CTRL + SHIFT + P | Populate form with fake data            |
+| CTRL + SHIFT + L | Clear form fields and validation errors |
+
+NOTE
+These shortcuts use **Custom Events** triggered inside `AuthenticatedLayout.vue`, keeping page logic clean.
+
+---
+
+# 🚀 Installation
+
+## 1. Clone repository
 
 ```bash
-# Backend
-php artisan serve
+git clone https://github.com/letsmg/erp-api-modular.git
+cd erp-api-modular
+```
 
-# Frontend (em outro terminal)
+---
+
+## 2. Install dependencies
+
+### PHP
+
+```bash
+composer install
+```
+
+### JavaScript
+
+```bash
+npm install
 npm run dev
 ```
 
-## 🔐 Segurança
+---
 
-### Autenticação
-- **Hash Argon2id** com configuração segura
-- **Proteção CSRF** nativa do Laravel
-- **Sessões** gerenciadas no banco de dados
-- **Sanitização** automática de inputs
-
-### Permissões
-- Sistema baseado em **níveis de acesso**
-- **Policies** para autorização granular
-- **Middleware** de proteção de rotas
-
-## 📦 Módulos Implementados
-
-### ✅ Auth
-- Login e logout
-- Recuperação de senha
-- Verificação de usuário autenticado
-
-### ✅ Product
-- CRUD completo de produtos
-- Gestão de categorias
-- Gestão de fornecedores
-- SEO avançado (meta tags, schema markup)
-- Upload e ordenação de imagens
-- **Filtros**: Busca, bloqueados, ativos
-
-### ✅ User
-- CRUD de usuários
-- Controle de níveis de acesso
-- Reset de senha
-- Ativação/desativação
-
-### 🚧 Client (Em desenvolvimento)
-- CRUD de clientes
-- Gestão de endereços vinculados
-
-### 🚧 Sale (Em desenvolvimento)
-- CRUD de vendas
-- Relatórios de produtos
-- Curva ABC
-- Geração de Sintegra
-
-## 🧪 Testes
-
-### Executar testes
+## 3. Configure environment
 
 ```bash
-# Todos os testes
-php artisan test
-
-# Apenas testes de um módulo
-php artisan test --filter ProductTest
-
-# Com coverage
-php artisan test --coverage
+cp .env.example .env
 ```
 
-### Estrutura dos testes
+Database example:
 
 ```
-app/Modules/*/Tests/
-├── Feature/    # Testes de funcionalidades
-└── Unit/       # Testes unitários
+DB_CONNECTION=pgsql
+DB_HOST=127.0.0.1
+DB_PORT=5432
+DB_DATABASE=erp_api_modular
+DB_USERNAME=postgres
+DB_PASSWORD=123456
 ```
 
-## 🎯 Funcionalidades Destaque
+NOTE
+Make sure **pdo_pgsql** and **pgsql** extensions are enabled in `php.ini`.
 
-### 📱 Interface Responsiva
-- Design mobile-first
-- Componentes reutilizáveis
-- Transições suaves
+---
 
-### 🔍 Busca Avançada
-- Busca por descrição, marca, modelo
-- Filtro por preço
-- Paginação com filtros persistentes
-
-### 🖼️ Gestão de Imagens
-- Upload via drag-and-drop
-- Ordenação visual
-- Otimização automática
-
-### 📊 Relatórios
-- Relatório de produtos
-- Filtros dinâmicos
-- Exportação de dados
-
-## 🔧 Desenvolvimento
-
-### Atalhos de Teclado
-
-| Atalho           | Ação                                    |
-| ---------------- | --------------------------------------- |
-| CTRL + SHIFT + P | Preenche formulário com dados de teste |
-| CTRL + SHIFT + L | Limpa campos e erros de validação   |
-
-### Estrutura de Assets
-
-```
-resources/js/
-├── modules/         # Módulos Vue organizados por domínio
-├── shared/          # Componentes e layouts compartilhados
-├── lib/             # Utilitários e configurações
-└── app.js           # Ponto de entrada da aplicação
-```
-
-## 🚀 Deploy
-
-### Produção
+## 4. Run migrations
 
 ```bash
-# Otimizar assets
-npm run build
-
-# Otimizar autoloader
-composer install --optimize-autoloader
-
-# Cache de configuração
-php artisan config:cache
-
-# Cache de rotas
-php artisan route:cache
-
-# Cache de views
-php artisan view:cache
+php artisan migrate --seed
 ```
 
-## 📝 Contribuição
+This will create the database structure and generate the **initial admin user**.
 
-### Fluxo de trabalho
+---
 
-1. **Fork** o repositório
-2. **Branch** com nome descritivo: `feature/nova-funcionalidade`
-3. **Commit** com mensagens claras
-4. **Push** para o branch
-5. **Pull Request** detalhada
+# ⚙️ Architecture
 
-### Padrão de commits
+## Approach: Inertia.js vs REST API
 
-```
-feat: adiciona nova funcionalidade
-fix: corrige bug específico
-docs: atualiza documentação
-refactor: melhora código sem mudar funcionalidade
-test: adiciona ou corrige testes
-```
+This project uses an architecture based on **Inertia.js**, avoiding the need for a separate REST API.
 
-## 📄 Licença
+### Why this approach?
 
-MIT License - veja o arquivo [LICENSE](LICENSE) para detalhes.
+* Eliminates duplicated logic between frontend and backend
+* Reduces authentication complexity (native CSRF protection)
+* Enables faster development
+* Allows direct state sharing between backend and frontend
 
-## 🤝 Suporte
+---
 
-- **Issues**: [GitHub Issues](https://github.com/letsmg/erp-api-modular/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/letsmg/erp-api-modular/discussions)
+## API Scalability
+
+The architecture is designed to support future API exposure with minimal refactoring:
+
+* Business logic centralized in **Services**
+* Controllers can be adapted to return JSON responses
+* Authentication can be handled via Laravel Sanctum
+* High code reuse
+
+---
+
+# 🔒 Security and Performance
+
+## Authentication
+
+* Argon2id hashing
+* Memory cost: 64MB
+* Threads: 2
+
+Configuration focused on resistance against brute-force attacks.
+
+---
+
+## Database
+
+* Uses PostgreSQL
+* Filter-based pagination
+* Structure prepared for indexing on critical fields
+
+---
+
+# 🔍 SEO
+
+The product entity provides full SEO support:
+
+- `slug`
+- `meta_title`
+- `meta_description`
+- `meta_keywords`
+- `canonical_url`
+- `h1`
+- `text1`
+- `h2`
+- `text2`
+- `schema_markup`
+- `google_tag_manager`
+- `ads`
+
+Includes automatic generation of SEO-friendly URLs and a structure designed for advanced search engine optimization, covering content management, metadata, and external integrations.
+
+---
+
+# ⚡ User Experience
+
+Implemented features:
+
+* Real-time search with debounce
+* Dynamic filters in supplier module
+* Reactive interface powered by Inertia.js
+
+---
+
+# 🤖 Image Moderation (Optional)
+
+Supports integration with Google Cloud Vision for automatic image analysis during uploads.
+
+* Detects inappropriate content
+* Automatically blocks invalid uploads
+
+---
+
+# 📦 System Modules
+
+## Implemented
+
+* User CRUD with role-based access control
+* Supplier CRUD
+* Product CRUD
+* Filtered pagination
+* Drag-and-drop image ordering
+* Basic SEO
+* Product reports
+* Tests with PHPUnit
+
+## In Progress
+
+* Customer CRUD
+* Sales CRUD
+* ABC Curve report
+* Sintegra generation
+
+---
+
+# 📄 License
+
+MIT License
 
 ---
 
 <p align="center">
-  <strong>ERP API Modular — Tecnologia para Gestão Inteligente</strong>
+<strong>ERP Api Modular — Technology for Smart Business</strong>
 </p>
 
 <p align="center">
-  © 2026 — Construído com escalabilidade em mente
+© 2026 — Built with scalability in mind
 </p>
+
+<img src="https://raw.githubusercontent.com/letsmg/erp_api_modular/main/snake-dark.svg?palette=github-dark" />
+
+Copyright (c) 2026 Luiz Eduardo

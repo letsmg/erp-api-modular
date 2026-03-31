@@ -52,7 +52,7 @@ export const maskCEP = (value: string): string => {
 
 // --- FUNÇÕES DE TESTE ---
 
-export const fillFormData = (form: any, suppliers: any[] = []) => {
+export const fillFormData = (form: any, suppliers: any[] = [], categories: any[] = []) => {
     if (!form) return;
 
     const ufs = ['SP', 'RJ', 'MG', 'PR', 'SC', 'RS', 'BA', 'GO', 'CE', 'PE'];
@@ -64,7 +64,9 @@ export const fillFormData = (form: any, suppliers: any[] = []) => {
             return `${nomes[Math.floor(Math.random()*nomes.length)]} ${sobrenomes[Math.floor(Math.random()*sobrenomes.length)]}`;
         },
         company_name: () => "Empresa Teste " + Math.random().toString(36).substring(7).toUpperCase(),
-        email: () => `teste_${Math.random().toString(36).substring(5)}@vue laravel.com`,        
+        email: () => `teste_${Math.random().toString(36).substring(5)}@vuelaravel.com`,
+        password: () => "Mudar@123",
+        password_confirmation: () => "Mudar@123",        
         cnpj: () => "42.123.456/0001-99",
         state_registration: () => "ISENTO",
         zip_code: () => "01001-000",
@@ -95,6 +97,14 @@ export const fillFormData = (form: any, suppliers: any[] = []) => {
         },
         is_featured: () => Math.random() > 0.5,
         supplier_id: () => (suppliers && suppliers.length > 0) ? suppliers[0].id : '',
+        category_id: () => (categories && categories.length > 0) ? categories[0].id : null,
+        
+        // Dimensões
+        weight: () => 0.350,
+        width: () => 30.00,
+        height: () => 12.00,
+        length: () => 28.00,
+        free_shipping: () => false,
 
         // --- SEO E MARKETING (CORREÇÃO DE ARRAY AQUI) ---
         meta_title: () => "Tênis Nike Air Max 2026 - Oferta Especial",

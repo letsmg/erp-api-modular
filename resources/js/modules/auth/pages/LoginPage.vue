@@ -1,5 +1,5 @@
 <script setup>
-import { Head, Link } from '@inertiajs/vue3';
+import { Head, Link, router } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import { Eye, EyeOff, LogIn, ShieldCheck, Globe, Monitor, ArrowLeft } from 'lucide-vue-next';
 import { getValidationErrors } from '@/lib/api/client';
@@ -28,13 +28,19 @@ const submit = async () => {
     form.value.errors = {};
 
     try {
-        await login({
+        const response = await login({
             email: form.value.email,
             password: form.value.password,
             remember: form.value.remember,
         });
 
-        window.location.href = route('dashboard');
+        // Verifica se o servidor retornou um redirecionamento
+        if (response.data.redirect) {
+            window.location.href = response.data.redirect;
+        } else {
+            // Fallback: redireciona para o dashboard
+            router.visit(route('dashboard'));
+        }
     } catch (error) {
         form.value.errors = getValidationErrors(error);
     } finally {

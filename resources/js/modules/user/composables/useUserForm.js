@@ -103,6 +103,8 @@ export function useUserForm(options = {}) {
         showPassword,
         formTitle,
         submit,
+        filler,
+        clearer,
     };
 }
 

@@ -8,24 +8,12 @@ class SanitizerHelper
      * Sanitiza um array de dados removendo tags HTML e padrões perigosos
      * 
      * @param array $data Dados a serem sanitizados
-     * @param array $except Campos que não devem ser sanitizados
+     * @param array $except Campos que não devem ser sanitizados (ex: ['schema_markup', 'google_tag_manager'])
      * @return array Dados sanitizados
      */
     public static function sanitize(array $data, array $except = []): array
     {
         return self::sanitizeArray($data, $except);
-    }
-
-    /**
-     * Sanitiza dados específicos de SEO, preservando campos HTML
-     * 
-     * @param array $data Dados SEO a serem sanitizados
-     * @return array Dados SEO sanitizados
-     */
-    public static function sanitizeSeoData(array $data): array
-    {
-        $seoExceptions = ['schema_markup', 'google_tag_manager'];
-        return self::sanitizeArray($data, $seoExceptions);
     }
 
     /**

@@ -1,5 +1,5 @@
 <script setup>
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import AuthenticatedLayout from '@/shared/layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
 import { FileText, Printer, FileSearch, Truck } from 'lucide-vue-next';
 import { useProductReport } from '@/modules/report/services/useProductReport';

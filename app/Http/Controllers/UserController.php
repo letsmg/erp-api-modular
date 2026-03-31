@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Modules\User\Models\User;
 use App\Modules\User\Requests\StoreUserRequest;
 use App\Modules\User\Requests\UpdateUserRequest;
+use App\Modules\User\Repositories\UserRepository;
 use App\Modules\User\Services\UserService;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Inertia\Inertia;
@@ -13,12 +14,28 @@ class UserController extends Controller
 {
     use AuthorizesRequests;
 
-    public function __construct(private readonly UserService $service) {}
+    public function __construct(
+        private readonly UserService $service,
+        private readonly UserRepository $repository
+    ) {}
 
     public function index()
     {
         $this->authorize('viewAny', User::class);
-        return Inertia::render('Users/Index');
+        
+        $filters = request()->all(['search']);
+        $users = $this->repository->getPaginated($filters);
+        
+        return Inertia::render('Users/Index', [
+            'initialFilters' => $filters,
+            'users' => $users->items(),
+            'meta' => [
+                'current_page' => $users->currentPage(),
+                'last_page' => $users->lastPage(),
+                'per_page' => $users->perPage(),
+                'total' => $users->total(),
+            ],
+        ]);
     }
 
     public function create()
@@ -50,8 +67,17 @@ class UserController extends Controller
     public function toggleStatus(User $user)
     {
         $this->authorize('toggleStatus', $user);
-        $this->service->toggleStatus($user, auth()->user());
-        return back()->with('message', 'Status atualizado!');
+        $updatedUser = $this->service->toggleStatus($user, auth()->user());
+        
+        return request()->inertia()
+            ? back()->with([
+                'message' => 'Status atualizado!',
+                'user' => $updatedUser,
+            ])
+            : response()->json([
+                'message' => 'Status atualizado!',
+                'data' => $updatedUser,
+            ]);
     }
 
     public function resetPassword(User $user)

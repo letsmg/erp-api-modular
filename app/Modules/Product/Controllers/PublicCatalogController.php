@@ -2,13 +2,13 @@
 
 namespace App\Modules\Product\Controllers;
 
-use App\Http\Controllers\ApiController;
+use App\Http\Controllers\Controller;
 use App\Modules\Product\Models\Product;
 use App\Modules\Product\Repositories\StorefrontRepository;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
-class PublicCatalogController extends ApiController
+class PublicCatalogController extends Controller
 {
     public function __construct(private readonly StorefrontRepository $repository) {}
 
