@@ -16,8 +16,8 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 🐍 Snake Animation
-      - name: Generate snake animation
+      # 🐍 Snake
+      - name: Generate snake
         uses: Platane/snk@v3
         with:
           github_user_name: letsmg
