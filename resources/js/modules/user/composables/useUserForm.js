@@ -2,7 +2,6 @@ import { computed, onMounted, onUnmounted, reactive, ref } from 'vue';
 import { router } from '@inertiajs/vue3';
 import { clearFormData, fillFormData } from '@/lib/utils';
 import { getValidationErrors } from '@/lib/api/client';
-import { createUser, fetchUser, updateUser } from '@/modules/user/services/user-api';
 
 function createBaseForm() {
     return {
@@ -54,12 +53,26 @@ export function useUserForm(options = {}) {
             }
 
             if (userId) {
-                await updateUser(userId, payload);
+                await router.put(
+                    route('users.update', userId),
+                    payload,
+                    {
+                        onSuccess: () => {
+                            router.visit(route('users.index'));
+                        }
+                    }
+                );
             } else {
-                await createUser(payload);
+                await router.post(
+                    route('users.store'),
+                    payload,
+                    {
+                        onSuccess: () => {
+                            router.visit(route('users.index'));
+                        }
+                    }
+                );
             }
-
-            router.visit(route('users.index'));
         } catch (error) {
             form.errors = getValidationErrors(error);
         } finally {
@@ -77,6 +90,8 @@ export function useUserForm(options = {}) {
 
     onMounted(async () => {
         if (userId) {
+            // Para edição, precisamos buscar os dados via API
+            const { fetchUser } = await import('@/modules/user/services/user-api');
             const response = await fetchUser(userId);
             applyUser(form, response.data.data);
             loading.value = false;

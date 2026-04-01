@@ -48,7 +48,24 @@ class UserController extends Controller
     {
         $this->authorize('create', User::class);
         $this->service->create($request->validated());
-        return redirect()->route('users.index')->with('message', 'Usuario criado com sucesso!');
+        
+        // Verifica se é requisição Inertia (headers específicos ou accept header)
+        $isInertia = $request->header('x-inertia') || 
+                    $request->header('x-inertia-version') ||
+                    $request->hasHeader('X-Inertia') ||
+                    str_contains($request->header('accept', ''), 'text/html');
+        
+        // Se for requisição Inertia, redireciona com flash message
+        if ($isInertia) {
+            return redirect()->route('users.index')->with('message', 'Usuario criado com sucesso!');
+        }
+        
+        // Se for requisição API, retorna JSON
+        return response()->json([
+            'success' => true,
+            'message' => 'Usuario criado com sucesso!',
+            'data' => null
+        ], 201);
     }
 
     public function show(User $user)
@@ -78,12 +95,13 @@ class UserController extends Controller
         $this->authorize('update', $user);
         $this->service->update($user, $request->validated());
         
-        // Verifica se é requisição Inertia (headers específicos)
+        // Verifica se é requisição Inertia (headers específicos ou accept header)
         $isInertia = $request->header('x-inertia') || 
                     $request->header('x-inertia-version') ||
-                    $request->hasHeader('X-Inertia');
+                    $request->hasHeader('X-Inertia') ||
+                    str_contains($request->header('accept', ''), 'text/html');
         
-        // Se for requisição Inertia, redireciona
+        // Se for requisição Inertia, redireciona com flash message
         if ($isInertia) {
             return redirect()->route('users.index')->with('message', 'Usuario atualizado!');
         }
