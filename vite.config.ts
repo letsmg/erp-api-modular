@@ -199,6 +199,11 @@ function createVirtualPagesPlugin() {
 }
 
 export default defineConfig({
+    server: {
+        port: 5173,
+        host: '127.0.0.1', // Força IPv4
+        strictPort: true
+    },
     plugins: [
         laravel({
             input: ['resources/js/app.ts'],

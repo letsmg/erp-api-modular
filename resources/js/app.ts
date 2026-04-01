@@ -6,7 +6,7 @@ import { ZiggyVue } from '../../vendor/tightenco/ziggy';
 import '../css/app.css';
 import '@/lib/api/client';
 
-const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
+const appName = import.meta.env.VITE_APP_NAME || 'ERP Api Modular';
 
 createInertiaApp({
     title: (title) => (title ? `${title} - ${appName}` : appName),

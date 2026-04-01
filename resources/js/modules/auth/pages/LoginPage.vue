@@ -4,12 +4,9 @@ import { ref } from 'vue';
 import { Eye, EyeOff, LogIn, ShieldCheck, Globe, Monitor, ArrowLeft } from 'lucide-vue-next';
 import { getValidationErrors } from '@/lib/api/client';
 import { login } from '@/modules/auth/services/auth-api';
+import GuestLayout from '@/shared/layouts/GuestLayout.vue';
 
 const props = defineProps({
-    errors: {
-        type: Object,
-        default: () => ({}),
-    },
     userIp: String,
 });
 
@@ -18,7 +15,7 @@ const form = ref({
     password: 'Mudar@123',
     remember: false,
     processing: false,
-    errors: props.errors || {},
+    errors: {},
 });
 
 const showPassword = ref(false);
@@ -26,33 +23,25 @@ const showPassword = ref(false);
 const submit = async () => {
     form.value.processing = true;
     form.value.errors = {};
-
+    
     try {
-        const response = await login({
-            email: form.value.email,
-            password: form.value.password,
-            remember: form.value.remember,
-        });
-
-        // Verifica se o servidor retornou um redirecionamento
-        if (response.data.redirect) {
-            window.location.href = response.data.redirect;
-        } else {
-            // Fallback: redireciona para o dashboard
-            router.visit(route('dashboard'));
-        }
+        await login(form.value);
+        router.visit(route('dashboard'));
     } catch (error) {
-        form.value.errors = getValidationErrors(error);
+        const validationErrors = getValidationErrors(error);
+        if (validationErrors) {
+            form.value.errors = validationErrors;
+        }
     } finally {
         form.value.processing = false;
-        form.value.password = '';
     }
 };
 </script>
 
 <template>
-    <Head title="Login" />
-    <div class="min-h-screen flex items-center justify-center bg-slate-900 px-4 font-sans text-gray-900">
+    <GuestLayout>
+        <Head title="Login - ERP API Modular" />
+        
         <div class="max-w-md w-full bg-white rounded-xl shadow-lg p-8">
             <div class="mb-6 flex justify-center">
                 <Link href="/" class="inline-flex items-center text-xs font-bold text-gray-400 hover:text-pink-600 transition group">
@@ -81,6 +70,7 @@ const submit = async () => {
                             <component :is="showPassword ? EyeOff : Eye" class="h-5 w-5" />
                         </button>
                     </div>
+                    <div v-if="form.errors.password" class="text-red-500 text-xs mt-1 font-medium">{{ form.errors.password }}</div>
                 </div>
 
                 <div class="flex items-center justify-between">
@@ -127,5 +117,5 @@ const submit = async () => {
                 </div>
             </div>
         </div>
-    </div>
+    </GuestLayout>
 </template>
