@@ -51,6 +51,22 @@ class UserController extends Controller
         return redirect()->route('users.index')->with('message', 'Usuario criado com sucesso!');
     }
 
+    public function show(User $user)
+    {
+        $this->authorize('view', $user);
+        
+        // Se for requisição Inertia, renderiza a página
+        if (request()->inertia()) {
+            return Inertia::render('Users/Show', ['user' => $user]);
+        }
+        
+        // Se for requisição API, retorna JSON
+        return response()->json([
+            'success' => true,
+            'data' => $user
+        ]);
+    }
+
     public function edit(User $user)
     {
         $this->authorize('update', $user);
