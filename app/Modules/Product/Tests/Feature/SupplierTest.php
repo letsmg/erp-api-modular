@@ -28,10 +28,10 @@ class SupplierTest extends TestCase
             ->getJson(route('api.suppliers.index'))
             ->assertOk();
 
-        // Verifica se há 2 itens no array data
-        $data = $response->json('data');
-        $this->assertIsArray($data);
-        $this->assertCount(2, $data);
+        // Os fornecedores estão em data.data (resposta -> data -> data dos fornecedores)
+        $suppliers = $response->json('data.data');
+        $this->assertIsArray($suppliers);
+        $this->assertCount(2, $suppliers);
     }
 
     public function test_authenticated_user_can_create_supplier(): void
