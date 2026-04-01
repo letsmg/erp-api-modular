@@ -1,9 +1,5 @@
 <img src="https://raw.githubusercontent.com/letsmg/erp_api_modular/main/pacman-contribution-graph.svg" alt="Contribution Graph" style="width: 100%; max-width: 800px; height: auto;"/>
 
-<img src="https://raw.githubusercontent.com/letsmg/erp_api_modular/main/snake.svg" alt="Snake Contribution Graph" />
-
-<img src="https://raw.githubusercontent.com/letsmg/erp_api_modular/main/snake-dark.svg?palette=github-dark" alt="Snake Dark Contribution Graph" />
-
 # ERP API Modular
 
 > ERP em Laravel 12 organizado por módulos com arquitetura Inertia.js + Vue 3 para desenvolvimento rápido e escalável.
@@ -268,3 +264,5 @@ MIT License - veja o arquivo [LICENSE](LICENSE) para detalhes.
 <p align="center">
   © 2026 — Construído com escalabilidade em mente
 </p>
+
+<img src="https://raw.githubusercontent.com/letsmg/erp_api_modular/main/snake-dark.svg?palette=github-dark" alt="Snake Dark Contribution Graph" />
