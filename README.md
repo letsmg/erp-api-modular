@@ -1,4 +1,4 @@
-<img src="https://raw.githubusercontent.com/letsmg/erp_api_modular/main/pacman-contribution-graph.svg" alt="Contribution Graph" />
+<img src="https://raw.githubusercontent.com/letsmg/erp_api_modular/main/pacman-contribution-graph.svg" />
 
 # ERP API Modular
 
