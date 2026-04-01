@@ -40,4 +40,16 @@ class SupplierController extends Controller
 
         return $this->deleted('Fornecedor removido com sucesso.');
     }
+
+    /**
+     * Retorna resposta JSON de recurso excluído (status 204)
+     */
+    protected function deleted(string $message = 'Resource deleted successfully'): JsonResponse
+    {
+        return response()->json([
+            'success' => true,
+            'message' => $message,
+            'data' => null
+        ], 204);
+    }
 }

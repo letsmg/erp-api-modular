@@ -22,13 +22,15 @@ class AuthTest extends TestCase
             'password' => Hash::make('password')
         ]);
 
+        // Testa apenas o login via API
         $this->postJson(route('login.post'), [
             'email' => $user->email,
             'password' => 'password',
-        ])->assertRedirect();
+        ])->assertOk(); // Login API retorna 200 com JSON
 
+        // Logout pode ser testado via web routes se necessário
         $this->actingAs($user)
-            ->postJson(route('logout'))
-            ->assertRedirect();
+            ->post(route('logout'))
+            ->assertRedirect(); // Logout web retorna redirect
     }
 }

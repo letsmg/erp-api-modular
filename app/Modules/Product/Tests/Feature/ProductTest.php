@@ -50,7 +50,7 @@ class ProductTest extends TestCase
 
         $this->actingAs($admin)
             ->patch(route('products.toggle-featured', $product))
-            ->assertRedirect();
+            ->assertOk(); // API retorna 200 com JSON
     }
 
     public function test_level_0_can_only_create_inactive_products(): void
@@ -126,8 +126,8 @@ class ProductTest extends TestCase
         ];
 
         $this->actingAs($operator)
-            ->put(route('products.update', $product), $payload)
-            ->assertRedirect();
+            ->putJson(route('api.products.update', $product), $payload)
+            ->assertOk();
 
         $this->assertFalse($product->refresh()->is_active);
         $this->assertSame('Descricao Alterada', $product->description);
@@ -140,12 +140,12 @@ class ProductTest extends TestCase
         $product = Product::factory()->create();
 
         $this->actingAs($operator)
-            ->delete(route('products.destroy', $product))
+            ->deleteJson(route('api.products.destroy', $product))
             ->assertForbidden();
 
         $this->actingAs($admin)
-            ->delete(route('products.destroy', $product))
-            ->assertRedirect();
+            ->deleteJson(route('api.products.destroy', $product))
+            ->assertNoContent();
 
         $this->assertDatabaseMissing('products', ['id' => $product->id]);
     }

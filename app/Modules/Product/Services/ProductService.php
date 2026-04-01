@@ -109,7 +109,7 @@ class ProductService
         $data = collect($input)->only($seoFields)->toArray();
         
         // Aplica sanitização nos dados SEO, exceto schema_markup e google_tag_manager
-        $data = SanitizerHelper::sanitizeSeoData($data);
+        $data = SanitizerHelper::sanitize($data, ['schema_markup', 'google_tag_manager']);
 
         $product->seo()->updateOrCreate(
             [

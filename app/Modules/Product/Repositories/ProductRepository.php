@@ -82,7 +82,7 @@ class ProductRepository
         $seoData = collect($data)->only($seoFields)->filter()->toArray();
         if (! empty($seoData)) {
             // Aplica sanitização específica para dados SEO
-            $seoData = SanitizerHelper::sanitizeSeoData($seoData);
+            $seoData = SanitizerHelper::sanitize($seoData, ['schema_markup', 'google_tag_manager']);
             $product->seo()->create($seoData);
         }
 

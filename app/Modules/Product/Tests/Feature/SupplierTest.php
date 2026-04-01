@@ -24,10 +24,14 @@ class SupplierTest extends TestCase
         ]);
         Supplier::factory()->count(2)->create();
 
-        $this->actingAs($user)
+        $response = $this->actingAs($user)
             ->getJson(route('api.suppliers.index'))
-            ->assertOk()
-            ->assertJsonCount(2, 'data');
+            ->assertOk();
+
+        // Verifica se há 2 itens no array data
+        $data = $response->json('data');
+        $this->assertIsArray($data);
+        $this->assertCount(2, $data);
     }
 
     public function test_authenticated_user_can_create_supplier(): void
@@ -94,7 +98,7 @@ class SupplierTest extends TestCase
 
         $this->actingAs($user)
             ->deleteJson(route('api.suppliers.destroy', $supplier))
-            ->assertOk();
+            ->assertNoContent(); // 204 No Content é o status correto para delete
 
         $this->assertModelMissing($supplier);
     }

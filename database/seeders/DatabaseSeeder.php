@@ -15,6 +15,11 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        // Em ambiente de teste, não executar seeders para evitar conflitos
+        if (app()->environment('testing')) {
+            return;
+        }
+
         // User::factory(10)->create();
 
         // User::factory()->create([
