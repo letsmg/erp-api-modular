@@ -1,0 +1,3 @@
+@echo off
+echo Starting ERP API Modular on port 8001...
+php artisan serve --port=8001 --host=0.0.0.0

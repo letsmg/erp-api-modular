@@ -27,7 +27,7 @@ const handleToggleStatus = async (supplier) => {
                 <p class="mt-1 text-sm text-gray-500">Gestao de parceiros e origens de suprimentos.</p>
             </div>
             <div class="mt-4 sm:mt-0">
-                <Link :href="route('suppliers.create')" class="inline-flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 active:scale-95 active:shadow-lg border border-transparent rounded-lg font-bold text-xs text-white uppercase tracking-widest transition-all duration-200 shadow-md shadow-indigo-500/20 hover:shadow-lg cursor-pointer">
+                <Link :href="route('suppliers.create')" class="inline-flex items-center px-4 py-2 bg-pink-600 hover:bg-pink-700 active:scale-95 active:shadow-lg border border-transparent rounded-lg font-bold text-xs text-white uppercase tracking-widest transition-all duration-200 shadow-md shadow-pink-500/20 hover:shadow-lg cursor-pointer">
                     <Plus class="w-4 h-4 mr-2" /> Novo Fornecedor
                 </Link>
             </div>
@@ -39,7 +39,7 @@ const handleToggleStatus = async (supplier) => {
             <div v-for="supplier in suppliers" :key="supplier.id" :class="['bg-white rounded-xl shadow-sm border overflow-hidden hover:shadow-md transition-all duration-300 group relative', supplier.is_active ? 'border-gray-100' : 'border-gray-200 opacity-80 bg-gray-50']">
                 <div class="p-6">
                     <div class="flex justify-between items-start mb-4">
-                        <div :class="['p-2 rounded-lg transition-colors', supplier.is_active ? 'bg-indigo-50 text-indigo-600' : 'bg-gray-200 text-gray-500']">
+                        <div :class="['p-2 rounded-lg transition-colors', supplier.is_active ? 'bg-pink-50 text-pink-600' : 'bg-gray-200 text-gray-500']">
                             <Truck class="w-6 h-6" />
                         </div>
 
@@ -65,15 +65,15 @@ const handleToggleStatus = async (supplier) => {
                     </div>
 
                     <div class="mt-6 space-y-3">
-                        <div class="flex items-start text-sm text-gray-600"><MapPin class="w-4 h-4 mr-2 text-indigo-500 flex-shrink-0 mt-0.5" /><span class="truncate">{{ supplier.city }} - {{ supplier.neighborhood }}</span></div>
+                        <div class="flex items-start text-sm text-gray-600"><MapPin class="w-4 h-4 mr-2 text-pink-500 flex-shrink-0 mt-0.5" /><span class="truncate">{{ supplier.city }} - {{ supplier.neighborhood }}</span></div>
                         <div class="flex items-center text-sm text-gray-600"><UserCheck class="w-4 h-4 mr-2 text-green-500 flex-shrink-0" /><span class="font-medium">{{ supplier.contact_name_1 }}</span></div>
-                        <div class="flex items-center text-sm text-gray-600 bg-gray-50 p-2 rounded-lg border border-gray-100"><Phone class="w-4 h-4 mr-2 text-gray-400" /><span class="font-bold text-indigo-600">{{ supplier.phone_1 }}</span></div>
+                        <div class="flex items-center text-sm text-gray-600 bg-gray-50 p-2 rounded-lg border border-gray-100"><Phone class="w-4 h-4 mr-2 text-gray-400" /><span class="font-bold text-pink-600">{{ supplier.phone_1 }}</span></div>
                     </div>
                 </div>
 
                 <div class="bg-gray-50/50 px-6 py-3 border-t border-gray-100 flex justify-between items-center group-hover:bg-gray-50 transition-colors">
                     <span class="text-[10px] font-bold text-gray-400 uppercase">CEP: {{ supplier.zip_code }}</span>
-                    <Link :href="route('suppliers.edit', supplier.id)" class="text-xs font-bold text-indigo-600 hover:text-indigo-800 uppercase tracking-widest">Editar Dados</Link>
+                    <Link :href="route('suppliers.edit', supplier.id)" class="text-xs font-bold text-pink-600 hover:text-pink-800 uppercase tracking-widest">Editar Dados</Link>
                 </div>
             </div>
         </div>

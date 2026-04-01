@@ -12,14 +12,14 @@ const { form, loading, showPassword, submit, filler, clearer } = useUserForm({ e
         <Head title="Novo Usuario" />
         <div v-if="loading" class="max-w-3xl mx-auto py-20 text-center text-sm font-bold uppercase tracking-widest text-gray-400">Carregando...</div>
         <div v-else class="max-w-3xl mx-auto pb-12">
-            <div class="mb-6"><Link :href="route('users.index')" class="text-sm font-bold text-indigo-600 hover:text-indigo-800 flex items-center transition"><ArrowLeft class="w-4 h-4 mr-1" /> Voltar</Link><h2 class="text-3xl font-black text-gray-800 tracking-tighter uppercase">Cadastrar Novo Usuario</h2></div>
+            <div class="mb-6"><Link :href="route('users.index')" class="text-sm font-bold text-pink-600 hover:text-pink-800 flex items-center transition"><ArrowLeft class="w-4 h-4 mr-1" /> Voltar</Link><h2 class="text-3xl font-black text-gray-800 tracking-tighter uppercase">Cadastrar Novo Usuario</h2></div>
             
             <!-- Atalhos -->
             <div class="mb-6 flex justify-center">
                 <div class="inline-flex items-center gap-4 bg-slate-50 px-6 py-3 rounded-2xl border border-gray-200 shadow-sm">
                     <div class="flex items-center gap-2">
-                        <Sparkles class="w-4 h-4 text-indigo-500" />
-                        <span class="text-[11px] font-bold text-indigo-600">CTRL+ALT+1</span>
+                        <Sparkles class="w-4 h-4 text-pink-500" />
+                        <span class="text-[11px] font-bold text-pink-600">CTRL+ALT+1</span>
                         <span class="text-[11px] text-gray-600">Popular</span>
                     </div>
                     <div class="w-px h-4 bg-gray-300"></div>

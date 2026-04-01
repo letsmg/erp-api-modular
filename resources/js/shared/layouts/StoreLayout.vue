@@ -24,7 +24,7 @@ const emit = defineEmits(['update:searchTerm']);
         <nav class="sticky top-0 z-50 bg-slate-900 shadow-2xl">
             <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
                 <Link href="/" class="text-2xl font-black tracking-tighter uppercase text-white">
-                    Erp<span class="text-indigo-500">API Modular</span>
+                    Erp<span class="text-pink-500">API Modular</span>
                 </Link>
 
                 <div class="hidden md:flex flex-1 max-w-md mx-10 relative">
@@ -34,15 +34,15 @@ const emit = defineEmits(['update:searchTerm']);
                         @input="$emit('update:searchTerm', $event.target.value)"
                         type="text"
                         placeholder="Buscar na loja..."
-                        class="w-full bg-slate-800 border-transparent rounded-2xl pl-11 pr-4 py-3 text-sm text-white placeholder-slate-500 focus:bg-slate-700 focus:ring-2 focus:ring-indigo-500 transition-all outline-none"
+                        class="w-full bg-slate-800 border-transparent rounded-2xl pl-11 pr-4 py-3 text-sm text-white placeholder-slate-500 focus:bg-slate-700 focus:ring-2 focus:ring-pink-500 transition-all outline-none"
                     />
                 </div>
 
                 <div class="flex items-center gap-6">
                     <Link :href="route('login')" class="text-xs font-bold uppercase tracking-widest text-slate-300 hover:text-white transition">Entrar</Link>
-                    <button class="bg-indigo-600 text-white p-3 rounded-2xl hover:bg-indigo-500 transition shadow-lg relative">
+                    <button class="bg-pink-600 text-white p-3 rounded-2xl hover:bg-pink-500 transition shadow-lg relative">
                         <ShoppingBag class="w-5 h-5" />
-                        <span class="absolute -top-1 -right-1 bg-white text-indigo-900 text-[10px] w-5 h-5 rounded-full flex items-center justify-center font-bold">0</span>
+                        <span class="absolute -top-1 -right-1 bg-white text-pink-900 text-[10px] w-5 h-5 rounded-full flex items-center justify-center font-bold">0</span>
                     </button>
                 </div>
             </div>

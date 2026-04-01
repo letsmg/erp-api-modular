@@ -16,7 +16,7 @@ defineProps({ status: Number });
             <p class="text-gray-600 mb-6">
                 Desculpe, a página que você está procurando não existe ou foi movida.
             </p>
-            <Link href="/" class="bg-blue-600 text-white px-6 py-2 rounded-lg flex items-center gap-2 hover:bg-blue-700">
+            <Link href="/" class="bg-pink-600 text-white px-6 py-2 rounded-lg flex items-center gap-2 hover:bg-pink-700">
                 <Home class="w-5 h-5" />
                 Voltar para o Início
             </Link>
