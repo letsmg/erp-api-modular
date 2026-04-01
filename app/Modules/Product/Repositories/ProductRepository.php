@@ -43,7 +43,8 @@ class ProductRepository
 
             $query->orderByRaw('COALESCE(promo_price, sale_price) DESC');
         } else {
-            $query->latest();
+            // Garantir ordenação sempre por created_at DESC (mais recente primeiro)
+            $query->orderBy('created_at', 'desc');
         }
 
         return $query->paginate(12)->withQueryString();
