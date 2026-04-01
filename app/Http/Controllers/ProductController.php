@@ -44,7 +44,14 @@ class ProductController extends Controller
     {
         $this->authorize('create', Product::class);
 
-        return Inertia::render('Products/Create');
+        // Carregar fornecedores e categorias para o formulário
+        $suppliers = \App\Modules\Product\Models\Supplier::where('is_active', true)->get();
+        $categories = \App\Modules\Product\Models\Category::where('is_active', true)->get();
+
+        return Inertia::render('Products/Create', [
+            'initialSuppliers' => $suppliers,
+            'initialCategories' => $categories,
+        ]);
     }
 
     public function store(StoreProductRequest $request)

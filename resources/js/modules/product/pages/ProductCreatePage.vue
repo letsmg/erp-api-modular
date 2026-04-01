@@ -5,6 +5,17 @@ import draggable from 'vuedraggable';
 import { Save, ArrowLeft, DollarSign, Camera, X, Move, Search, Code, FileText, Truck, Sparkles } from 'lucide-vue-next';
 import { useProductForm } from '@/modules/product/composables/useProductForm';
 
+const props = defineProps({
+    initialSuppliers: {
+        type: Array,
+        default: () => [],
+    },
+    initialCategories: {
+        type: Array,
+        default: () => [],
+    },
+});
+
 const {
     form,
     activeTab,
@@ -22,7 +33,11 @@ const {
     submit,
     fillTestForm,
     clearCurrentForm,
-} = useProductForm({ enableShortcuts: true });
+} = useProductForm({ 
+    initialSuppliers: props.initialSuppliers,
+    initialCategories: props.initialCategories,
+    enableShortcuts: true 
+});
 </script>
 
 <template>

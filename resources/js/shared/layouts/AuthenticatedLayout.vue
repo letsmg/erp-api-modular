@@ -22,8 +22,8 @@ const triggerToast = (message, type = 'success') => {
     toastType.value = type;
     showToast.value = true;
 
-    // Aumentar duração para erros, especialmente se houver múltiplos
-    const baseDuration = type === 'error' ? 6000 : 4000;
+    // Aumentar duração para dar mais tempo de leitura
+    const baseDuration = type === 'error' ? 8000 : 6000; // 6s para sucesso, 8s para erro
     const errorCount = message.split('|').length;
     const duration = type === 'error' && errorCount > 1 ? baseDuration + (errorCount * 2000) : baseDuration;
     

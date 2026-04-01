@@ -2,7 +2,7 @@
 import AuthenticatedLayout from '@/shared/layouts/AuthenticatedLayout.vue';
 import { Head, Link } from '@inertiajs/vue3';
 import draggable from 'vuedraggable';
-import { Save, ArrowLeft, DollarSign, Camera, X, Code, Search, FileText, Truck } from 'lucide-vue-next';
+import { Save, ArrowLeft, DollarSign, Camera, X, Code, Search, FileText, Truck, PackagePlus } from 'lucide-vue-next';
 import { useProductForm } from '@/modules/product/composables/useProductForm';
 
 const props = defineProps({
@@ -61,17 +61,22 @@ const dragOptions = {
 
         <div v-else class="max-w-5xl mx-auto pb-20">
             <div class="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4 pt-10">
-                <div>
+                <div class="flex items-center gap-4">
                     <Link :href="route('products.index')" class="flex items-center text-[10px] font-black uppercase text-gray-400 hover:text-indigo-600 transition mb-2 tracking-widest">
                         <ArrowLeft class="w-3 h-3 mr-1" /> Voltar ao estoque
                     </Link>
                     <h2 class="text-3xl font-black text-gray-800 tracking-tighter uppercase">Editar Produto</h2>
                 </div>
 
-                <div class="flex bg-gray-100 p-1 rounded-xl border border-gray-200 shadow-inner">
-                    <button type="button" @click="activeTab = 'geral'" :class="['px-4 py-2 text-[10px] font-black uppercase rounded-lg transition-all', activeTab === 'geral' ? 'bg-white text-indigo-600 shadow-sm' : 'text-gray-500 hover:text-gray-700']">Geral</button>
-                    <button type="button" @click="activeTab = 'precos'" :class="['px-4 py-2 text-[10px] font-black uppercase rounded-lg transition-all', activeTab === 'precos' ? 'bg-white text-indigo-600 shadow-sm' : 'text-gray-500 hover:text-gray-700']">Financeiro</button>
-                    <button type="button" @click="activeTab = 'seo'" :class="['px-4 py-2 text-[10px] font-black uppercase rounded-lg transition-all', activeTab === 'seo' ? 'bg-white text-indigo-600 shadow-sm' : 'text-gray-500 hover:text-gray-700']">Marketing & SEO</button>
+                <div class="flex items-center gap-3">
+                    <Link :href="route('products.create')" class="bg-indigo-600 hover:bg-indigo-700 active:scale-95 active:shadow-lg text-white px-4 py-2 rounded-xl flex items-center gap-2 transition-all duration-200 shadow-lg shadow-indigo-500/20 hover:shadow-xl font-bold uppercase text-xs tracking-widest cursor-pointer">
+                        <PackagePlus class="w-4 h-4" /> Novo Produto
+                    </Link>
+                    <div class="flex bg-gray-100 p-1 rounded-xl border border-gray-200 shadow-inner">
+                        <button type="button" @click="activeTab = 'geral'" :class="['px-4 py-2 text-[10px] font-black uppercase rounded-lg transition-all', activeTab === 'geral' ? 'bg-white text-indigo-600 shadow-sm' : 'text-gray-500 hover:text-gray-700']">Geral</button>
+                        <button type="button" @click="activeTab = 'precos'" :class="['px-4 py-2 text-[10px] font-black uppercase rounded-lg transition-all', activeTab === 'precos' ? 'bg-white text-indigo-600 shadow-sm' : 'text-gray-500 hover:text-gray-700']">Financeiro</button>
+                        <button type="button" @click="activeTab = 'seo'" :class="['px-4 py-2 text-[10px] font-black uppercase rounded-lg transition-all', activeTab === 'seo' ? 'bg-white text-indigo-600 shadow-sm' : 'text-gray-500 hover:text-gray-700']">Marketing & SEO</button>
+                    </div>
                 </div>
             </div>
 
