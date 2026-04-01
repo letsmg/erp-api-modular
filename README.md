@@ -1,4 +1,4 @@
-<img src="https://raw.githubusercontent.com/letsmg/erp_api_modular/main/pacman-contribution-graph.svg" alt="Contribution Graph" style="width: 100%; max-width: 800px; height: auto;"/>
+<img src="https://raw.githubusercontent.com/letsmg/erp_api_modular/main/pacman-contribution-graph.svg" alt="Contribution Graph" />
 
 # ERP API Modular
 
@@ -265,4 +265,4 @@ MIT License - veja o arquivo [LICENSE](LICENSE) para detalhes.
   © 2026 — Construído com escalabilidade em mente
 </p>
 
-<img src="https://raw.githubusercontent.com/letsmg/erp_api_modular/main/snake-dark.svg?palette=github-dark" alt="Snake Dark Contribution Graph" />
+<img src="https://raw.githubusercontent.com/letsmg/erp_api_modular/main/snake-dark.svg?palette=github-dark" />
