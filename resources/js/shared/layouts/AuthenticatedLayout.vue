@@ -92,7 +92,7 @@ watch(() => page.url, () => {
             isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
         ]">
             <div class="p-6 border-b border-red-900/50 flex justify-between items-center">
-                <span class="font-black text-xl tracking-tighter">ERP<span class="text-red-400">PRO</span></span>
+                <span class="font-black text-xl tracking-tighter">ERP<span class="text-red-400">API</span></span>
                 <button @click="isMobileMenuOpen = false" class="md:hidden p-1 hover:bg-red-900 rounded-lg transition-colors">
                     <X class="w-6 h-6" />
                 </button>

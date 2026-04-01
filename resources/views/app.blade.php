@@ -31,7 +31,7 @@
         @endif
     @endif
 
-    <title inertia>{{ config('app.name', 'ERP Vue Laravel') }}</title>
+    <title inertia>{{ config('app.name', 'ERP API Modular') }}</title>
 
     @routes
     @inertiaHead

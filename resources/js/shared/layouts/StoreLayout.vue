@@ -24,7 +24,7 @@ const emit = defineEmits(['update:searchTerm']);
         <nav class="sticky top-0 z-50 bg-slate-900 shadow-2xl">
             <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
                 <Link href="/" class="text-2xl font-black tracking-tighter uppercase text-white">
-                    Erp<span class="text-indigo-500">Vue Laravel</span>
+                    Erp<span class="text-indigo-500">API Modular</span>
                 </Link>
 
                 <div class="hidden md:flex flex-1 max-w-md mx-10 relative">
@@ -51,7 +51,7 @@ const emit = defineEmits(['update:searchTerm']);
         <slot />
 
         <footer class="max-w-7xl mx-auto px-6 mt-20 text-center text-slate-400 text-xs font-bold uppercase tracking-widest border-t border-slate-300 pt-10">
-            &copy; 2026 Erp Vue Laravel - SaaS Edition
+            &copy; 2026 Erp API Modular - SaaS Edition
         </footer>
     </div>
 </template>

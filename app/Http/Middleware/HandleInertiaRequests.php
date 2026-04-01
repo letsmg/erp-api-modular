@@ -28,10 +28,10 @@ class HandleInertiaRequests extends Middleware
             ],
             'store_seo' => cache()->remember('store_seo', 3600, function () {
                 return [
-                    'title' => 'ERP Vue Laravel',
+                    'title' => 'ERP API Modular',
                     'description' => 'ERP modular com frontend Vue e backend Laravel.',
-                    'keywords' => 'erp, laravel, vuejs',
-                    'h1' => 'ERP Vue Laravel',
+                    'keywords' => 'erp, laravel, vuejs, api, modular',
+                    'h1' => 'ERP API Modular',
                 ];
             }),
         ]);

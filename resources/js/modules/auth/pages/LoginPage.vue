@@ -62,7 +62,7 @@ const submit = async () => {
             </div>
 
             <div class="text-center mb-8">
-                <h2 class="text-3xl font-extrabold text-gray-900 tracking-tight">ERP Vue Laravel</h2>
+                <h2 class="text-3xl font-extrabold text-gray-900 tracking-tight">ERP API Modular</h2>
                 <p class="text-sm text-gray-500 mt-2">Identificacao de acesso protegida</p>
             </div>
 
