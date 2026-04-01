@@ -95,15 +95,15 @@ const submit = async () => {
                     </span>
                 </div>
 
-                <div class="space-y-4 bg-pink-50 p-4 rounded-xl border border-pink-100">
+                <div class="space-y-4 bg-green-50 p-4 rounded-xl border border-green-100">
                     <div class="flex items-start space-x-3">
-                        <ShieldCheck class="w-6 h-6 text-pink-600 mt-0.5 flex-shrink-0" />
+                        <ShieldCheck class="w-6 h-6 text-green-600 mt-0.5 flex-shrink-0" />
                         <div class="space-y-3">
-                            <p class="text-[11px] text-pink-900 leading-snug">
+                            <p class="text-[11px] text-green-900 leading-snug">
                                 <strong class="uppercase">Identificacao Ativa:</strong><br>
                                 Seu IP foi registrado. O acesso e restrito a conexoes brasileiras para auditoria e seguranca.
                             </p>
-                            <p class="text-[10px] text-pink-700 leading-snug italic border-t border-pink-200 pt-2">
+                            <p class="text-[10px] text-green-700 leading-snug italic border-t border-green-200 pt-2">
                                 <strong class="uppercase">Active Identification:</strong><br>
                                 Your IP address has been logged. Access is restricted to Brazilian connections for security auditing purposes.
                             </p>
