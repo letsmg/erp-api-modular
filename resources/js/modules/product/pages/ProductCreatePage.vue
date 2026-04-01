@@ -51,7 +51,7 @@ const {
         <div v-else class="max-w-5xl mx-auto pb-20">
             <div class="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                    <Link :href="route('products.index')" class="flex items-center text-[10px] font-black uppercase text-gray-400 hover:text-indigo-600 transition mb-2 tracking-widest">
+                    <Link :href="route('products.index')" class="flex items-center text-[10px] font-black uppercase text-gray-400 hover:text-red-600 transition mb-2 tracking-widest">
                         <ArrowLeft class="w-3 h-3 mr-1" /> Voltar ao estoque
                     </Link>
                     <div class="flex items-center gap-4">
@@ -60,9 +60,9 @@ const {
                 </div>
 
                 <div class="flex bg-gray-100 p-1 rounded-xl border border-gray-200 shadow-inner">
-                    <button type="button" @click="activeTab = 'geral'" :class="['px-4 py-2 text-[10px] font-black uppercase rounded-lg transition-all', activeTab === 'geral' ? 'bg-white text-indigo-600 shadow-sm' : 'text-gray-500 hover:text-gray-700']">Geral</button>
-                    <button type="button" @click="activeTab = 'precos'" :class="['px-4 py-2 text-[10px] font-black uppercase rounded-lg transition-all', activeTab === 'precos' ? 'bg-white text-indigo-600 shadow-sm' : 'text-gray-500 hover:text-gray-700']">Financeiro</button>
-                    <button type="button" @click="activeTab = 'seo'" :class="['px-4 py-2 text-[10px] font-black uppercase rounded-lg transition-all', activeTab === 'seo' ? 'bg-white text-indigo-600 shadow-sm' : 'text-gray-500 hover:text-gray-700']">Marketing & SEO</button>
+                    <button type="button" @click="activeTab = 'geral'" :class="['px-4 py-2 text-[10px] font-black uppercase rounded-lg transition-all', activeTab === 'geral' ? 'bg-white text-red-600 shadow-sm' : 'text-gray-500 hover:text-gray-700']">Geral</button>
+                    <button type="button" @click="activeTab = 'precos'" :class="['px-4 py-2 text-[10px] font-black uppercase rounded-lg transition-all', activeTab === 'precos' ? 'bg-white text-red-600 shadow-sm' : 'text-gray-500 hover:text-gray-700']">Financeiro</button>
+                    <button type="button" @click="activeTab = 'seo'" :class="['px-4 py-2 text-[10px] font-black uppercase rounded-lg transition-all', activeTab === 'seo' ? 'bg-white text-red-600 shadow-sm' : 'text-gray-500 hover:text-gray-700']">Marketing & SEO</button>
                 </div>
             </div>
 
@@ -70,8 +70,8 @@ const {
             <div class="mb-6 flex justify-center">
                 <div class="inline-flex items-center gap-4 bg-slate-50 px-6 py-3 rounded-2xl border border-gray-200 shadow-sm">
                     <div class="flex items-center gap-2">
-                        <Sparkles class="w-4 h-4 text-indigo-500" />
-                        <span class="text-[11px] font-bold text-indigo-600">CTRL+ALT+1</span>
+                        <Sparkles class="w-4 h-4 text-red-500" />
+                        <span class="text-[11px] font-bold text-red-600">CTRL+ALT+1</span>
                         <span class="text-[11px] text-gray-600">Popular</span>
                     </div>
                     <div class="w-px h-4 bg-gray-300"></div>
@@ -120,12 +120,12 @@ const {
                     <div class="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div class="md:col-span-2">
                             <label class="block text-[10px] font-black uppercase text-gray-400 mb-2">DESCRIÇÃO DO PRODUTO</label>
-                            <input v-model="form.description" type="text" class="w-full border-gray-100 bg-slate-50 rounded-2xl focus:ring-indigo-500 font-bold" required />
+                            <input v-model="form.description" type="text" class="w-full border-gray-100 bg-slate-50 rounded-2xl focus:ring-red-500 font-bold" required />
                             <p v-if="form.errors.description" class="text-red-500 text-xs mt-1">{{ form.errors.description }}</p>
                         </div>
                         <div>
                             <label class="block text-[10px] font-black uppercase text-gray-400 mb-2">Fornecedor Origem</label>
-                            <select v-model="form.supplier_id" class="w-full border-gray-100 bg-slate-50 rounded-2xl focus:ring-indigo-500 text-sm font-bold" required>
+                            <select v-model="form.supplier_id" class="w-full border-gray-100 bg-slate-50 rounded-2xl focus:ring-red-500 text-sm font-bold" required>
                                 <option :value="''">Selecione o Fornecedor...</option>
                                 <option v-for="supplier in suppliers" :key="supplier.id" :value="supplier.id">{{ supplier.company_name }}</option>
                             </select>
@@ -143,7 +143,7 @@ const {
                         </div>
                         <div>
                             <label class="block text-[10px] font-black uppercase text-gray-400 mb-2">Categoria</label>
-                            <select v-model="form.category_id" class="w-full border-gray-100 bg-slate-50 rounded-2xl text-sm font-bold focus:ring-indigo-500">
+                            <select v-model="form.category_id" class="w-full border-gray-100 bg-slate-50 rounded-2xl text-sm font-bold focus:ring-red-500">
                                 <option :value="''">Selecione uma categoria...</option>
                                 <option v-for="category in categories" :key="category.id" :value="category.id">{{ category.name }}</option>
                             </select>

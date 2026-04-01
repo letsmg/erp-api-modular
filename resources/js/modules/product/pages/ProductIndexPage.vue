@@ -99,7 +99,7 @@ onMounted(() => {
 
                     <Link
                         :href="route('products.create')"
-                        class="bg-indigo-600 hover:bg-indigo-700 active:scale-95 active:shadow-lg text-white px-6 py-3 rounded-2xl flex items-center gap-2 transition-all duration-200 shadow-lg shadow-indigo-500/20 hover:shadow-xl font-bold uppercase text-xs tracking-widest cursor-pointer"
+                        class="bg-red-600 hover:bg-red-700 active:scale-95 active:shadow-lg text-white px-6 py-3 rounded-2xl flex items-center gap-2 transition-all duration-200 shadow-lg shadow-red-500/20 hover:shadow-xl font-bold uppercase text-xs tracking-widest cursor-pointer"
                     >
                         <PackagePlus class="w-5 h-5" />
                         Novo Produto
@@ -164,7 +164,7 @@ onMounted(() => {
                             <td class="p-5 text-center">
                                 <span :class="[
                                     'px-3 py-1 rounded-full text-[10px] font-black uppercase inline-block min-w-[60px]',
-                                    product.stock_quantity > 10 ? 'bg-blue-50 text-blue-600' : 'bg-red-50 text-red-600'
+                                    product.stock_quantity > 10 ? 'bg-orange-50 text-orange-600' : 'bg-red-50 text-red-600'
                                 ]">
                                     {{ product.stock_quantity }} un
                                 </span>
@@ -183,7 +183,7 @@ onMounted(() => {
 
                             <td class="p-5 text-center">
                                 <div class="flex justify-center items-center gap-2">
-                                    <Link :href="route('products.edit', product.id)" class="p-2 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all">
+                                    <Link :href="route('products.edit', product.id)" class="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all">
                                         <Edit class="w-5 h-5" />
                                     </Link>
                                     <button v-if="user?.access_level == 1" :disabled="deletingId === product.id" @click="destroy(product.id)" class="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all disabled:opacity-50">
