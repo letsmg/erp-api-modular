@@ -77,7 +77,23 @@ class UserController extends Controller
     {
         $this->authorize('update', $user);
         $this->service->update($user, $request->validated());
-        return redirect()->route('users.index')->with('message', 'Usuario atualizado!');
+        
+        // Verifica se é requisição Inertia (headers específicos)
+        $isInertia = $request->header('x-inertia') || 
+                    $request->header('x-inertia-version') ||
+                    $request->hasHeader('X-Inertia');
+        
+        // Se for requisição Inertia, redireciona
+        if ($isInertia) {
+            return redirect()->route('users.index')->with('message', 'Usuario atualizado!');
+        }
+        
+        // Se for requisição API, retorna JSON
+        return response()->json([
+            'success' => true,
+            'message' => 'Usuario atualizado com sucesso!',
+            'data' => $user->refresh()
+        ]);
     }
 
     public function toggleStatus(User $user)
@@ -107,6 +123,30 @@ class UserController extends Controller
     {
         $this->authorize('delete', $user);
         $this->service->delete($user, auth()->user());
-        return redirect()->route('users.index')->with('message', 'Usuario excluido!');
+        
+        // Verifica se é requisição Inertia (headers específicos)
+        $isInertia = $request->header('x-inertia') || 
+                    $request->header('x-inertia-version') ||
+                    $request->hasHeader('X-Inertia');
+        
+        // Se for requisição Inertia, redireciona
+        if ($isInertia) {
+            return redirect()->route('users.index')->with('message', 'Usuario excluido!');
+        }
+        
+        // Se for requisição API, retorna JSON
+        return $this->deleted('Usuario excluido com sucesso!');
+    }
+
+    /**
+     * Retorna resposta JSON de recurso excluído (status 204)
+     */
+    protected function deleted(string $message = 'Resource deleted successfully')
+    {
+        return response()->json([
+            'success' => true,
+            'message' => $message,
+            'data' => null
+        ], 204);
     }
 }
