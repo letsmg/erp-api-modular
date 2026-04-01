@@ -58,14 +58,14 @@ const submit = async () => {
             <form @submit.prevent="submit" class="space-y-5">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 italic">E-mail</label>
-                    <input v-model="form.email" type="email" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-pink-500 focus:border-pink-500 transition" :class="{ 'border-red-500 ring-1 ring-red-500': form.errors.email }">
+                    <input v-model="form.email" type="email" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500 transition" :class="{ 'border-red-500 ring-1 ring-red-500': form.errors.email }">
                     <div v-if="form.errors.email" class="text-red-500 text-xs mt-1 font-medium">{{ form.errors.email }}</div>
                 </div>
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 italic">Senha / Password</label>
                     <div class="relative mt-1">
-                        <input :type="showPassword ? 'text' : 'password'" v-model="form.password" required class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-pink-500 focus:border-pink-500 transition" :class="{ 'border-red-500 ring-1 ring-red-500': form.errors.password }">
+                        <input :type="showPassword ? 'text' : 'password'" v-model="form.password" required class="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500 transition" :class="{ 'border-red-500 ring-1 ring-red-500': form.errors.password }">
                         <button type="button" @click="showPassword = !showPassword" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 transition">
                             <component :is="showPassword ? EyeOff : Eye" class="h-5 w-5" />
                         </button>
@@ -75,13 +75,13 @@ const submit = async () => {
 
                 <div class="flex items-center justify-between">
                     <div class="flex items-center">
-                        <input id="remember" v-model="form.remember" type="checkbox" class="h-4 w-4 text-pink-600 border-gray-300 rounded cursor-pointer focus:ring-pink-500">
+                        <input id="remember" v-model="form.remember" type="checkbox" class="h-4 w-4 text-green-600 border-gray-300 rounded cursor-pointer focus:ring-green-500">
                         <label for="remember" class="ml-2 block text-sm text-gray-700 cursor-pointer">Lembrar / Remember</label>
                     </div>
-                    <Link :href="route('password.request')" class="text-sm font-medium text-pink-600 hover:text-pink-500 transition">Esqueceu? / Forgot?</Link>
+                    <Link :href="route('password.request')" class="text-sm font-medium text-green-600 hover:text-green-500 transition">Esqueceu? / Forgot?</Link>
                 </div>
 
-                <button type="submit" :disabled="form.processing" class="w-full flex justify-center items-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-bold text-white bg-pink-600 hover:bg-pink-700 disabled:opacity-50 transition transform active:scale-95">
+                <button type="submit" :disabled="form.processing" class="w-full flex justify-center items-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-bold text-white bg-green-600 hover:bg-green-700 disabled:opacity-50 transition transform active:scale-95">
                     <LogIn v-if="!form.processing" class="w-5 h-5 mr-2" />
                     {{ form.processing ? 'Verificando...' : 'ENTRAR / LOGIN' }}
                 </button>
@@ -91,7 +91,7 @@ const submit = async () => {
                 <div class="flex items-center justify-center space-x-2 mb-6 py-1.5 px-3 bg-gray-50 rounded-full border border-gray-100 shadow-sm">
                     <Monitor class="w-3.5 h-3.5 text-gray-400" />
                     <span class="text-[10px] text-gray-500 font-mono tracking-wider uppercase">
-                        IP: <span class="font-bold text-pink-700">{{ userIp || 'Detecting...' }}</span>
+                        IP: <span class="font-bold text-green-700">{{ userIp || 'Detecting...' }}</span>
                     </span>
                 </div>
 
